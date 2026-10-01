@@ -1,0 +1,19 @@
+schema_version: 1
+name: starter-web
+version: 0.1.0
+status: experimental
+kind: general-web
+base: nextjs
+repository: mrst10578/starter-web
+toolkit:
+  repository: mrst10578/pro-web-toolkit
+  starter_catalog: starters/catalog.yml
+  feature_pack_catalog: feature-packs/catalog.yml
+  compatibility_matrix: docs/feature-pack-compatibility.md
+composition:
+  feature_packs_are_optional: true
+  provider_integrations_in_core: false
+  cross_repo_runtime_dependency: false
+template:
+  intended: true
+  enabled: false
