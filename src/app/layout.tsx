@@ -28,16 +28,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="fa" dir="rtl">
       <body className="min-h-dvh bg-background text-foreground antialiased">
         <a
           href="#main-content"
           className="sr-only fixed left-4 top-4 z-50 rounded-md bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only"
         >
-          Skip to content
+          رفتن به محتوای اصلی
         </a>
         {children}
       </body>
     </html>
   );
 }
+

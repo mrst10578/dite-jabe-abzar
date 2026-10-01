@@ -30,3 +30,8 @@ pnpm-debug.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+# Generated static publication output
+/dist/
+/.sites-runtime/

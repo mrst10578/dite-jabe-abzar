@@ -1,14 +1,11 @@
 import { expect, test } from "@playwright/test";
 
-test("home page renders the starter baseline", async ({ page }) => {
-  await page.goto("/");
-
-  await expect(
-    page.getByRole("heading", {
-      level: 1,
-      name: "Build client websites from a clean baseline.",
-    }),
-  ).toBeVisible();
-
-  await expect(page.getByText("Starter is running")).toBeVisible();
+test("home opens the original Aris toolbox", async ({ page }) => {
+  const response = await page.goto("/");
+  expect(response?.ok()).toBe(true);
+  await expect(page).toHaveURL(/\/index\.html$/);
+  await expect(page).toHaveTitle(/آریس آکادمی/);
+  await expect(page.locator("html")).toHaveAttribute("lang", "fa");
+  await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+  await expect(page.locator("#page-title")).toBeVisible();
 });

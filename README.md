@@ -1,96 +1,31 @@
-# starter-web
+# جعبه ابزار انتخاب رشته آریس
 
-A clean, production-oriented Next.js starter for client websites and general web apps.
+فایل ارسالی اصلی از دراپ‌باکس وارد این پروژه شده است. این نسخه مبنای بازطراحی کامل رابط و تجربه کاربری خواهد بود؛ بازطراحی هنوز انجام نشده است.
 
-## What this starter is for
+- فایل کامل سایت: `public/index.html`
+- صفحه اصلی Next.js به نسخه اصلی هدایت می‌شود.
+- تصاویر، فونت‌ها، داده‌ها و قابلیت‌های فایل ارسالی حفظ شده‌اند.
+- خروجی انتشار فعلی: `dist/index.html`؛ پیکربندی در `.openai/hosting.json`.
+- ساختار Next.js و TypeScript برای ساخت نسخه جدید حفظ شده است.
+- نسخه پشتیبان در دراپ‌باکس: `/Aris-Toolbox.html`
 
-Use this repository when the project is a normal website or web application and does not need a more specialized starter such as SaaS, AI, CMS, or Learning.
-
-## Core stack
-
-- Next.js 16.3.5
-- React 19.2.8
-- TypeScript 5.x
-- Tailwind CSS 4.3.3
-- shadcn-compatible component structure
-- Vitest unit tests
-- Playwright E2E smoke tests
-- GitHub Actions CI
-
-React is intentionally pinned to the version used by the current official create-next-app template instead of automatically chasing the newest React release.
-
-## Included
-
-- App Router
-- strict TypeScript
-- responsive starter page
-- SEO metadata baseline
-- robots + sitemap
-- loading, error, and not-found states
-- accessible UI button primitive
-- Tailwind class utility
-- ESLint
-- unit test baseline
-- E2E smoke test
-- CI verification
-- AI coding rules in `AGENTS.md`
-
-## Not included
-
-These belong to feature packs and must be added only when the project needs them:
-
-- authentication
-- database
-- storage
-- payments
-- CMS
-- AI / RAG
-- analytics
-- monitoring
-- search
-- email
-
-## Start a project
-
-1. Create a new repository from this template.
-2. Copy `.env.example` to `.env.local`.
-3. Install dependencies:
+## اجرا و بررسی
 
 ```bash
-npm install
-```
-
-4. Run:
-
-```bash
+npm ci
 npm run dev
-```
-
-## Verification
-
-```bash
 npm run verify
 npm run test:e2e
 ```
 
-The GitHub Actions workflow runs lint, typecheck, unit tests, production build, and Chromium E2E smoke tests.
+گردش‌کار انتقال اولیه، قطعات فایل را با بررسی تعداد بایت و SHA-256 بازسازی می‌کند، فایل کامل را ثبت و قطعات موقت را حذف می‌کند. این قطعات فقط محدودیت اندازه ورودی اتصال را دور می‌زنند.
 
-## Feature packs
+اثر انگشت فایل اصلی:
 
-The source of truth for optional capabilities lives in the separate `pro-web-toolkit` repository. Add only the packs required by the client brief.
+```text
+ebb69da2b9154a4ad1ca578bf6bb9409aba4846715260cd7d706964b35dfdee2
+```
 
-<!-- TOOLKIT-LINK:BEGIN -->
+## مرحله بعد
 
-## Professional Web Toolkit
-
-This repository is the **starter-web** starter in the private Professional Web Toolkit.
-
-- Toolkit source of truth: `mrst10578/pro-web-toolkit`
-- Starter registry key: `starter-web`
-- Starter version: `0.1.0`
-- Maturity: `experimental`
-- Optional capabilities come from Feature Packs in the toolkit; do not hard-code unused providers into this starter.
-- Repository-specific wiring metadata: `starter.yml`
-- Composition rules: `TOOLKIT.md`
-
-<!-- TOOLKIT-LINK:END -->
+بازطراحی ساختار صفحات، پیمایش موبایل، خوانایی، جست‌وجو و فیلترها با حفظ محتوای موجود.
