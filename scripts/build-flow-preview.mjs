@@ -30,10 +30,14 @@ function setMeta(html, attribute, key, content) {
 
 const assetState = manifest.productionReady ? "ready" : "source";
 let preview = source
-  .replace(/<html\b([^>]*)>/, '<html$1 data-flow-theme="midnight">')
+  .replace(/<html\b([^>]*)>/, '<html$1 data-flow-theme="midnight" data-flow-viewport="desktop">')
   .replace(/<body\b/, `<body data-flow-assets="${assetState}"`)
   .replace(/<title>[^<]*<\/title>/, "<title>Flow | جعبه ابزار انتخاب رشته</title>");
 
+// Use the same 1440px desktop canvas on phones; browsers fit it to the screen
+// Lower the browser’s default zoom-out floor so 320px phones fit the canvas too.
+// Pinch zoom stays enabled; desktop browsers keep their normal viewport.
+preview = setMeta(preview, "name", "viewport", "width=1440, minimum-scale=0.1, viewport-fit=cover");
 preview = setMeta(preview, "name", "application-name", "Flow");
 preview = setMeta(preview, "name", "description", "رشته‌شناسی، استان‌شناسی و راهنمای انتخاب رشته در Flow");
 preview = setMeta(preview, "name", "theme-color", "#031319");
