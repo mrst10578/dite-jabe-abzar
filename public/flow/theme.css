@@ -1,4 +1,3 @@
-@import url("/flow/tokens.css");
 
 html[data-flow-theme] body {
   background: var(--flow-bg);
