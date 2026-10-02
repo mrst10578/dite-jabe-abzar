@@ -1,10 +1,12 @@
-import { cp, readdir, rm, stat } from "node:fs/promises";
+import { copyFile, cp, readdir, rm, stat } from "node:fs/promises";
 import { join } from "node:path";
 
 // Only generated output is cleared; public/index.html remains the source of truth.
 await rm("dist", { recursive: true, force: true });
 await import("./build-static.mjs");
 await cp("public", "dist", { recursive: true });
+// The source HTML stays intact; publish the generated active Flow entry.
+await copyFile("public/flow-preview.html", "dist/index.html");
 
 // Workers Free limits: https://developers.cloudflare.com/workers/platform/limits/
 const maxFileBytes = 25 * 1024 * 1024;

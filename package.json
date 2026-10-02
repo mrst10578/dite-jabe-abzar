@@ -6,7 +6,7 @@
     "node": ">=20.19.0"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "node scripts/next-dev.mjs",
     "build": "next build && node scripts/build-static.mjs",
     "start": "next start",
     "lint": "eslint .",
@@ -21,7 +21,8 @@
     "dev:cloudflare": "npm run build:cloudflare && wrangler dev",
     "deploy:cloudflare": "npm run build:cloudflare && wrangler deploy",
     "check:cloudflare": "npm run build:cloudflare && wrangler deploy --dry-run",
-    "test:cloudflare": "npm run build:cloudflare && node scripts/test-cloudflare.mjs"
+    "test:cloudflare": "npm run build:cloudflare && node scripts/test-cloudflare.mjs",
+    "preview:flow": "node scripts/build-static.mjs"
   },
   "dependencies": {
     "class-variance-authority": "0.7.1",

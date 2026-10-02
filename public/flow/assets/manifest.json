@@ -1,0 +1,89 @@
+{
+  "theme": "midnight-flow",
+  "productionReady": true,
+  "reference": "docs/flow/references/selected.webp",
+  "temporarySources": [
+    "flow-source.webp",
+    "hero-source.webp"
+  ],
+  "assets": [
+    {
+      "file": "hero-desktop.webp",
+      "slot": "hero",
+      "width": 1586,
+      "height": 992,
+      "priority": "critical",
+      "status": "ready",
+      "targetWidth": 2560,
+      "targetHeight": 1600,
+      "bytes": 358378,
+      "alphaVerified": false
+    },
+    {
+      "file": "hero-mobile.webp",
+      "slot": "hero-mobile",
+      "width": 1536,
+      "height": 1024,
+      "priority": "critical",
+      "status": "ready",
+      "targetWidth": 1080,
+      "targetHeight": 720,
+      "bytes": 379796,
+      "alphaVerified": false
+    },
+    {
+      "file": "flow-wordmark.webp",
+      "slot": "header-brand",
+      "width": 1942,
+      "height": 809,
+      "priority": "critical",
+      "transparent": true,
+      "status": "ready",
+      "targetWidth": 720,
+      "targetHeight": 300,
+      "bytes": 446712,
+      "alphaVerified": true
+    },
+    {
+      "file": "compass.webp",
+      "slot": "self-knowledge",
+      "width": 1254,
+      "height": 1254,
+      "priority": "support",
+      "transparent": true,
+      "status": "ready",
+      "targetWidth": 768,
+      "targetHeight": 768,
+      "bytes": 569310,
+      "alphaVerified": true
+    },
+    {
+      "file": "guide-book.webp",
+      "slot": "selection-guides",
+      "width": 1254,
+      "height": 1254,
+      "priority": "support",
+      "transparent": true,
+      "status": "ready",
+      "targetWidth": 768,
+      "targetHeight": 768,
+      "bytes": 540498,
+      "alphaVerified": true
+    },
+    {
+      "file": "botanical-divider.webp",
+      "slot": "hero-divider",
+      "width": 1920,
+      "height": 819,
+      "priority": "polish",
+      "transparent": true,
+      "status": "ready",
+      "targetWidth": 2400,
+      "targetHeight": 100,
+      "bytes": 34310,
+      "alphaVerified": true,
+      "layoutNote": "Native transparent canvas includes vertical padding; position the ornament using its alpha bounds during UI integration."
+    }
+  ],
+  "generationNote": "All six generated assets are active; native image dimensions and transparency retained."
+}

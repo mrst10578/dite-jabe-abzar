@@ -33,11 +33,18 @@ try {
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /text\/html/);
   const body = Buffer.from(await response.arrayBuffer());
-  const source = await readFile("public/index.html");
+  const source = await readFile("dist/index.html");
   const hash = (value) => createHash("sha256").update(value).digest("hex");
   assert.equal(body.length, source.length, "The Worker must serve the complete source HTML");
   assert.equal(hash(body), hash(source), "Serving assets must not alter the embedded content");
 
+  assert.match(body.toString("utf8"), /data-flow-assets="ready"/);
+  const manifest = JSON.parse(await readFile("public/flow/assets/manifest.json", "utf8"));
+  for (const asset of manifest.assets) {
+    const response = await fetch(`${baseURL}/flow/assets/${asset.file}`);
+    assert.equal(response.status, 200, `Asset must be served: ${asset.file}`);
+    assert.equal(hash(Buffer.from(await response.arrayBuffer())), hash(await readFile(`public/flow/assets/${asset.file}`)));
+  }
   const alias = await fetch(`${baseURL}/index.html`, { redirect: "manual" });
   assert.equal(alias.status, 307);
   assert.equal(new URL(alias.headers.get("location"), baseURL).pathname, "/");
