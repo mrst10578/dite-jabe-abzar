@@ -15,6 +15,7 @@ jobs:
     env:
       NEXT_TELEMETRY_DISABLED: "1"
       NEXT_PUBLIC_SITE_URL: "http://127.0.0.1:3000"
+      WRANGLER_SEND_METRICS: "false"
 
     steps:
       - name: Checkout
@@ -42,6 +43,12 @@ jobs:
 
       - name: Production build
         run: npm run build
+
+      - name: Cloudflare deploy dry run
+        run: npm run check:cloudflare
+
+      - name: Workers static asset routing
+        run: npm run test:cloudflare
 
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium

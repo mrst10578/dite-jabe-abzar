@@ -1,0 +1,59 @@
+import assert from "node:assert/strict";
+import { spawn } from "node:child_process";
+import { createHash } from "node:crypto";
+import { readFile } from "node:fs/promises";
+import { setTimeout as delay } from "node:timers/promises";
+
+const baseURL = "http://127.0.0.1:8789";
+const server = spawn(process.execPath, [
+  "node_modules/wrangler/bin/wrangler.js", "dev", "--local",
+  "--ip", "127.0.0.1", "--port", "8789", "--log-level", "warn",
+], { stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, WRANGLER_SEND_METRICS: "false" } });
+let output = "";
+for (const stream of [server.stdout, server.stderr]) {
+  stream.on("data", (chunk) => { output = (output + chunk).slice(-12_000); });
+}
+let startupError;
+server.on("error", (error) => { startupError = error; });
+
+try {
+  const deadline = Date.now() + 45_000;
+  while (true) {
+    if (startupError) throw startupError;
+    if (server.exitCode !== null) throw new Error(`Wrangler stopped: ${output}`);
+    try {
+      const probe = await fetch(baseURL, { method: "HEAD", signal: AbortSignal.timeout(2000) });
+      if (probe.status === 200) break;
+    } catch { /* The local runtime may still be starting. */ }
+    if (Date.now() > deadline) throw new Error(`Wrangler startup timed out: ${output}`);
+    await delay(250);
+  }
+
+  const response = await fetch(baseURL, { signal: AbortSignal.timeout(10_000) });
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type") ?? "", /text\/html/);
+  const body = Buffer.from(await response.arrayBuffer());
+  const source = await readFile("public/index.html");
+  const hash = (value) => createHash("sha256").update(value).digest("hex");
+  assert.equal(body.length, source.length, "The Worker must serve the complete source HTML");
+  assert.equal(hash(body), hash(source), "Serving assets must not alter the embedded content");
+
+  const alias = await fetch(`${baseURL}/index.html`, { redirect: "manual" });
+  assert.equal(alias.status, 307);
+  assert.equal(new URL(alias.headers.get("location"), baseURL).pathname, "/");
+  for (const path of ["/__missing_cloudflare_page__", "/__missing_cloudflare_asset__.png"]) {
+    const missing = await fetch(baseURL + path);
+    assert.equal(missing.status, 404, `Missing URL must not return the homepage: ${path}`);
+    await missing.body?.cancel();
+  }
+  console.log(`Workers runtime checks passed: homepage ${body.length} bytes, canonical redirect, real 404s`);
+} finally {
+  server.kill("SIGTERM");
+  if (server.exitCode === null) {
+    await Promise.race([
+      new Promise((resolve) => server.once("exit", resolve)),
+      delay(3000),
+    ]);
+  }
+  if (server.exitCode === null) server.kill("SIGKILL");
+}

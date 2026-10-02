@@ -35,3 +35,8 @@ next-env.d.ts
 # Generated static publication output
 /dist/
 /.sites-runtime/
+
+# Cloudflare local output and secrets
+/.wrangler/
+.dev.vars
+.dev.vars.*
