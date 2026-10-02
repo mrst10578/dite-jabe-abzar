@@ -28,10 +28,14 @@ test("five representative Flow readers preserve authored content and sources", a
     await expect(page.locator("body")).toHaveAttribute("data-flow-reader-family", profile.family);
     await expect(page.locator("#major-document .page")).toHaveAttribute("data-flow-reader-adapter", profile.family);
     await expect(page).toHaveTitle(`${profile.title} | Flow`);
-    expect(await authoredContent(page), profile.slug).toEqual(original);
+    const rebrandedOriginal = await page.evaluate((items) => {
+      const branding = (window as unknown as { FlowBranding: { text(value: string): string; code(value: string): string } }).FlowBranding;
+      return items.map((item) => ({ ...item, text: branding.text(item.text || ""), href: item.href ? branding.code(item.href) : null }));
+    }, original);
+    expect(await authoredContent(page), profile.slug).toEqual(rebrandedOriginal);
     expect(await page.locator("#major-document table").count(), profile.slug).toBeGreaterThanOrEqual(profile.minTables);
-    await expect(page.locator(".aris-footer-credit")).toContainText("آریس آکادمی");
-    await expect(page.locator(".aris-footer-join")).toHaveAttribute("href", "https://t.me/Flow_Konkour");
+    await expect(page.locator(".aris-footer-credit")).toContainText("FLOW");
+    await expect(page.locator(".aris-footer-join")).toHaveAttribute("href", "https://t.me/Flow_KonKour");
     await expect(page.locator(".flow-reader-art")).toHaveCount(1);
   }
 });

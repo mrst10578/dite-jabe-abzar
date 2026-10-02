@@ -78,11 +78,11 @@
       const footerCredit = footer.querySelector(".aris-footer-credit");
       if (footerEyebrow) footerEyebrow.textContent = "Flow · قدم بعدی تو";
       if (footerDescription) footerDescription.textContent = "این راهنما را کنار علاقه‌ها، توانایی‌ها و شرایط خودت بگذار. برای شناخت گزینه‌های بعدی، همراه Flow باش.";
-      if (footerCredit) footerCredit.textContent = "منبع محتوای این پرونده: آریس آکادمی";
+      if (footerCredit) footerCredit.textContent = "FLOW · راهنمای شناخت رشته و محل تحصیل";
       footer.querySelectorAll(".aris-footer-actions a").forEach(function (link) {
-        link.href = "https://t.me/Flow_Konkour";
+        link.href = "https://t.me/Flow_KonKour";
         link.setAttribute("aria-label", "کانال تلگرام Flow");
-        link.textContent = link.classList.contains("aris-footer-join") ? "همراه Flow شو ↗" : "@Flow_Konkour";
+        if (!link.classList.contains("aris-footer-join")) link.textContent = "@Flow_KonKour";
         if (link.classList.contains("aris-footer-handle")) link.dir = "ltr";
       });
     }
@@ -98,8 +98,7 @@
     }
     const link = invite.querySelector("a");
     if (link) {
-      link.href = "https://t.me/Flow_Konkour";
-      link.textContent = "همراه Flow شو ↗";
+      link.href = "https://t.me/Flow_KonKour";
     }
   }
 
@@ -143,6 +142,7 @@
     wrapFlatSections(page);
     repairMarketJump(page);
     brandPortalChrome(page);
+    window.FlowBranding.document(root);
 
     // On direct links the original runtime can scroll before the deferred Flow
     // styles hide the home guide hub. Align once after the final reader layout.

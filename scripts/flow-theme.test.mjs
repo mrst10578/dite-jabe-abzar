@@ -22,7 +22,14 @@ describe("Flow theme projection", () => {
     const originals = nodes(parse(source), payload);
     const projected = nodes(generated, payload);
     expect(originals.length).toBeGreaterThan(180);
-    expect(projected.map((node) => serialize(node))).toEqual(originals.map((node) => serialize(node)));
+    expect(projected.map((node) => serialize(node))).toEqual(originals.map((node) => {
+      const original = serialize(node);
+      // This optional panel has two authorized presentation-copy changes;
+      // every signed record and all other runtime bytes remain identical.
+      return attr(node, "id") === "__ARYO_ARIS_OWNERSHIP__runtime"
+        ? original.replace("بررسی مالکیت آریس", "بررسی منشأ فایل").replace("محتوای آریس", "محتوای سایت")
+        : original;
+    }));
   }, 20_000);
 
   it("is idempotent and keeps every search and launch control unique", async () => {
