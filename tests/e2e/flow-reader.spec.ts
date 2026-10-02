@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 const pilot = "/flow-preview.html#major=computer-engineering";
+const homeTitle = "Flow | جعبه ابزار انتخاب رشته";
 
 test("Flow pilot retains the authored dossier, tables and source links", async ({ page }) => {
   await page.goto("/index.html#major=computer-engineering");
@@ -22,6 +23,7 @@ test("Flow pilot retains the authored dossier, tables and source links", async (
 
 test("pilot navigation, details, close and browser history keep working", async ({ page }) => {
   await page.goto("/flow-preview.html");
+  await expect(page).toHaveTitle(homeTitle);
   await page.locator("#major-search").fill("مهندسی کامپیوتر");
   await page.locator("#major-option-0").click();
   await expect(page.locator("body")).toHaveAttribute("data-flow-reader", "major");
@@ -33,12 +35,15 @@ test("pilot navigation, details, close and browser history keep working", async 
   await page.locator("#major-viewer-close").click();
   await expect(page.locator("#search-form")).toBeVisible();
   await expect(page.locator("body")).not.toHaveAttribute("data-flow-reader");
+  await expect(page).toHaveTitle(homeTitle);
   await page.goForward();
   await expect(page.locator("body")).toHaveAttribute("data-flow-reader", "major");
+  await expect(page).toHaveTitle("مهندسی کامپیوتر | Flow");
   await expect(page.locator(".flow-reader-art")).toHaveCount(1);
   await page.locator('.flow-navigation a[href="#province-search"]').click();
   await expect(page.locator("#province-search")).toBeFocused();
   await expect(page.locator("body")).not.toHaveAttribute("data-flow-reader");
+  await expect(page).toHaveTitle(homeTitle);
   await page.goto("/flow-preview.html#province=gilan");
   await expect(page.locator("#province-viewer")).toBeVisible();
   await expect(page.locator("body")).not.toHaveAttribute("data-flow-reader");
