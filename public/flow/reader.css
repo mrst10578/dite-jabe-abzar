@@ -97,6 +97,11 @@ body[data-flow-reader="major"] #major-document .aris-footer-bottom { border-colo
 body[data-flow-reader="major"] #major-document .aris-footer-credit { color: var(--flow-muted); font-size: 12px; }
 body[data-flow-reader="major"] #major-document .aris-footer-tools button { min-height: 44px; color: var(--flow-cyan); background: transparent; border-color: var(--flow-border); }
 
+@media (max-width: 980px) {
+  body[data-flow-reader="major"] #major-document .hero-copy { width: 100%; }
+  body[data-flow-reader="major"] #major-document .flow-reader-art { display: none; }
+}
+
 @media (max-width: 720px) {
   body[data-flow-reader="major"] .main { width: calc(100% - 32px); padding: 0; margin-inline: auto; }
   body[data-flow-reader="major"] #major-viewer { margin-top: 8px; }
