@@ -29,3 +29,40 @@ ebb69da2b9154a4ad1ca578bf6bb9409aba4846715260cd7d706964b35dfdee2
 ## مرحله بعد
 
 بازطراحی ساختار صفحات، پیمایش موبایل، خوانایی، جست‌وجو و فیلترها با حفظ محتوای موجود.
+
+## دیپلوی روی Cloudflare Workers
+
+این نسخه با Workers Static Assets منتشر می‌شود. `wrangler.jsonc` خروجی `dist/` را معرفی می‌کند؛ فایل اصلی، تصاویر، فونت‌ها و جست‌وجوی داخل آن بدون تغییر می‌مانند. Next.js برای توسعهٔ بعدی حفظ شده، اما در این مسیر به‌عنوان سرور روی Cloudflare اجرا نمی‌شود.
+
+### اتصال ریپو در داشبورد
+
+در Cloudflare از Workers & Pages یک Worker متصل به GitHub بساز و ریپوی `mrst10578/dite-jabe-abzar` را انتخاب کن. تنظیمات:
+
+| گزینه | مقدار |
+|---|---|
+| Worker name | `site-jabe-abzar` |
+| Production branch | `main` |
+| Root directory | ریشهٔ ریپو؛ خالی یا `/` |
+| Build command | `npm run build:cloudflare` |
+| Deploy command | `npm run deploy:cloudflare` |
+| Node.js | `22`؛ مطابق `.nvmrc` |
+
+نام Worker باید با `name` در `wrangler.jsonc` یکی باشد. برای اسم دیگر، هر دو را هماهنگ کن. پیش‌نمایش شاخه‌های دیگر را فعلاً غیرفعال بگذار؛ شاخهٔ بازطراحی Flow هنوز تصاویر نهایی ندارد. برای این سایت استاتیک، D1، R2، متغیر محیطی یا کلید API داخل ریپو لازم نیست؛ احراز هویت انتشار را اتصال Cloudflare به GitHub فراهم می‌کند.
+
+ساخت مخصوص Cloudflare از خروجی تمیز شروع می‌کند، فقط فایل‌های `public/` را کپی می‌کند و اندازهٔ هر فایل و تعداد فایل‌ها را با سقف پلن رایگان کنترل می‌کند. فایل اصلی فعلی ۲۰٬۲۶۴٬۶۰۴ بایت است و از سقف ۲۵ MiB کمتر است. روت `/` سایت را باز می‌کند؛ `/index.html` به `/` هدایت می‌شود و آدرس ناموجود ۴۰۴ می‌گیرد. تولید و فعال‌سازی ظاهر نهایی Flow کار جداگانه‌ای است.
+
+### بررسی و انتشار با خط فرمان
+
+```bash
+npm ci
+npm run check:cloudflare  # ساخت و dry-run؛ چیزی منتشر نمی‌کند
+npm run test:cloudflare  # تست HTTP روی runtime محلی Workers
+npm run dev:cloudflare   # پیش‌نمایش محلی
+
+npx wrangler login
+npm run deploy:cloudflare
+```
+
+تست HTTP تطابق کامل فایل تحویل‌شده با `public/index.html`، هدایت آدرس قدیمی و ۴۰۴ واقعی را بررسی می‌کند. CI علاوه بر تست‌های قبلی، dry-run و همین تست Workers را بدون توکن انتشار اجرا می‌کند.
+
+مراجع: [Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/)، [تنظیمات Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/) و [محدودیت فایل‌ها](https://developers.cloudflare.com/workers/platform/limits/).
