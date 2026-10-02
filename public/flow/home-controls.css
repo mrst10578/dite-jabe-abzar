@@ -179,15 +179,4 @@
   html[data-flow-theme] .flow-guide-entry .flow-support-art {
     grid-row: 1 / 3;
   }
-
-  html[data-flow-theme] .flow-guide-entry a {
-    grid-column: 1 / -1;
-    grid-row: 3;
-    display: flex;
-    min-height: 48px;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 18px;
-    font-size: 14px;
-  }
 }

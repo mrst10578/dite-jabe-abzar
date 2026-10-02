@@ -70,11 +70,11 @@ test("search keeps a full choice visible with a keyboard-sized viewport", async 
   }
 });
 
-test("homepage media stays out of the critical response and province images load on demand", async ({ page }) => {
+test("homepage documents and media stay out of the critical response and province images load on demand", async ({ page }) => {
   const media: string[] = [];
   page.on("request", (request) => { if (request.url().includes("/flow/generated/")) media.push(request.url()); });
   await page.goto("/flow-preview.html");
-  expect(await page.evaluate(() => (performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming).decodedBodySize)).toBeLessThan(6_500_000);
+  expect(await page.evaluate(() => (performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming).decodedBodySize)).toBeLessThan(3_000_000);
   expect(media).toEqual([]);
   await expect(page.locator("#ambient-audio")).toHaveAttribute("preload", "none");
   await page.evaluate(() => { location.hash = "province=gilan"; });
@@ -86,4 +86,39 @@ test("homepage media stays out of the critical response and province images load
     await expect.poll(() => image.evaluate((node) => (node as HTMLImageElement).complete && (node as HTMLImageElement).naturalWidth > 0)).toBe(true);
   }
   expect(media.filter((url) => url.includes("/province-images/")).length).toBe(4);
+});
+
+test("article search stays local and each reader downloads its document only on first open", async ({ page }) => {
+  const payloads: string[] = [];
+  page.on("request", (request) => {
+    const url = new URL(request.url());
+    if (url.pathname.startsWith("/flow/generated/") && url.pathname.endsWith(".json")) payloads.push(url.href);
+  });
+  await page.goto("/flow-preview.html");
+  await page.locator("#guide-search").fill("ترخیص برای ادامه تحصیل");
+  const article = page.locator('[data-guide-id="nezam-vazifeh-mafiyat-tahsili"]');
+  await expect(article).toBeVisible();
+  expect(payloads).toEqual([]);
+  const expectedURL = await page.evaluate(() => {
+    const guides: { id: string; payloadURL: string }[] = JSON.parse(document.getElementById("aris-selection-guides-data")!.textContent!);
+    return new URL(guides.find((guide) => guide.id === "nezam-vazifeh-mafiyat-tahsili")!.payloadURL, location.href).href;
+  });
+  await article.click();
+  const guideBody = page.frameLocator("#guide-reader-frame").locator("body");
+  await expect(guideBody).toHaveCSS("background-color", "rgb(3, 19, 25)");
+  expect(payloads).toEqual([expectedURL]);
+  await page.locator("#guide-reader-close").click();
+  await article.click();
+  await expect(guideBody).toHaveCSS("background-color", "rgb(3, 19, 25)");
+  expect(payloads).toEqual([expectedURL]);
+  await page.locator("#guide-reader-close").click();
+  await page.locator("#aris-psych-test-launch").click();
+  const compassBody = page.frameLocator("#aris-compass-frame").locator("body");
+  await expect(compassBody).toHaveCSS("background-color", "rgb(3, 19, 25)");
+  expect(payloads).toHaveLength(2);
+  expect(new Set(payloads).size).toBe(2);
+  await page.locator("#aris-compass-close").click();
+  await page.locator("#aris-psych-test-launch").click();
+  await expect(compassBody).toHaveCSS("background-color", "rgb(3, 19, 25)");
+  expect(payloads).toHaveLength(2);
 });

@@ -1,4 +1,9 @@
 /* Shared across the portal, native readers, independent guides and compass. */
+/* The old monogram is decorative. Hide it in print/export as well as screen,
+   without changing authored print colors or meaningful pseudo-element labels. */
+html[data-flow-theme] .intro-badge::before,
+html[data-flow-theme] .final-note::after,
+html[data-flow-theme] .share-panel::after { content:none !important; }
 .flow-footer-logo { display:block; width:128px; height:54px; flex:0 0 128px; object-fit:contain; }
 .flow-brand-mark { width:112px; height:48px; border:0; border-radius:0; background:none; box-shadow:none; }
 .flow-brand-mark .flow-footer-logo { width:112px; height:48px; }

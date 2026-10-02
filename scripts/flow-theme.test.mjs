@@ -1,7 +1,9 @@
 import { createHash } from "node:crypto";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
 import { parse, serialize } from "parse5";
+import { inflateRawSync } from "node:zlib";
+import postcss from "postcss";
 import { beforeAll, describe, expect, it } from "vitest";
 import { attr, nodes, projectHome } from "./flow-home.mjs";
 import { themeCss } from "./flow-document-theme.mjs";
@@ -22,8 +24,8 @@ describe("Flow theme projection", () => {
     const originals = nodes(parse(source), payload);
     // Province media has a separate byte-for-byte delivery contract in
     // flow-image-assets.test.mjs. The derived article index is generated data.
-    const retained = originals.filter((node) => !(attr(node, "id") ?? "").startsWith("aris-province-image-"));
-    const projected = nodes(generated, payload).filter((node) => attr(node, "id") !== "flow-guide-search-index");
+    const retained = originals.filter((node) => !(attr(node, "id") ?? "").startsWith("aris-province-image-") && !["aris-selection-guides-data", "aris-compass-html"].includes(attr(node, "id")));
+    const projected = nodes(generated, payload).filter((node) => !["flow-guide-search-index", "aris-selection-guides-data", "aris-compass-html"].includes(attr(node, "id")));
     expect(originals.length).toBeGreaterThan(180);
     expect(projected.map((node) => serialize(node))).toEqual(retained.map((node) => {
       const original = serialize(node);
@@ -33,6 +35,28 @@ describe("Flow theme projection", () => {
         ? original.replace("بررسی مالکیت آریس", "بررسی منشأ فایل").replace("محتوای آریس", "محتوای سایت")
         : original;
     }));
+  }, 20_000);
+
+  it("delivers all 23 authored documents unchanged on demand with matching themes", async () => {
+    const original = parse(await readFile("public/index.html", "utf8"));
+    const generated = parse(await readFile("public/flow-preview.html", "utf8"));
+    const text = (node) => node.childNodes.map((child) => child.value ?? "").join("");
+    const byId = (document, id) => nodes(document, (node) => attr(node, "id") === id)[0];
+    const guides = JSON.parse(text(byId(original, "aris-selection-guides-data")));
+    const metadata = JSON.parse(text(byId(generated, "aris-selection-guides-data")));
+    const omit = (item, field) => Object.fromEntries(Object.entries(item).filter(([key]) => key !== field));
+    expect(metadata.map((guide) => omit(guide, "payloadURL"))).toEqual(guides.map((guide) => omit(guide, "document")));
+    const compass = Buffer.from(text(byId(original, "aris-compass-html")), "base64").toString("utf8");
+    expect(text(byId(generated, "aris-compass-html"))).toBe("");
+    expect(await readdir("public/flow/generated/documents")).toHaveLength(23);
+    for (const guide of [...guides, { id: "compass", document: compass }]) {
+      const url = guide.id === "compass" ? attr(byId(generated, "aris-compass-html"), "data-flow-payload") : metadata.find((item) => item.id === guide.id).payloadURL;
+      const payload = JSON.parse(await readFile(`public${url}`, "utf8"));
+      expect(payload.document, guide.id).toBe(guide.document);
+      expect(payload.theme.styles).toHaveLength(nodes(parse(guide.document), (node) => node.tagName === "style").length);
+      expect(payload.title).toBe(text(nodes(parse(guide.document), (node) => node.tagName === "title")[0]));
+    }
+    expect(Buffer.byteLength(await readFile("public/flow-preview.html", "utf8"))).toBeLessThan(3_000_000);
   }, 20_000);
 
   it("is idempotent and keeps every search and launch control unique", async () => {
@@ -88,4 +112,71 @@ describe("screen document colors", () => {
     expect(result).toContain("color:#031319");
     expect(result).toContain("linear-gradient(90deg,#A96F1C,#E3A83B,#FFD878)");
   });
+
+  it("removes academy watermark boxes without removing answer labels or counters", () => {
+    const css = '.intro-badge:before{content:"A";position:absolute;font:700 8rem/1 Georgia}.final-note:after{content:"A"}.share-panel:after{content:"A"}.answer:before{content:"A"}.step:before{content:counter(step)}@media print{.intro-badge:before{content:"A"}}';
+    const result = themeCss(css);
+    expect(result).toContain('.intro-badge:before{content:none');
+    expect(result).toContain('.final-note:after{content:none}');
+    expect(result).toContain('.share-panel:after{content:none}');
+    expect(result).toContain('.answer:before{content:"A"}');
+    expect(result).toContain('.step:before{content:counter(step)}');
+    expect(result).toContain('@media print{.intro-badge:before{content:"A"}}');
+  });
+
+  it("replaces metallic decoration variables with Flow accents and preserves report fills", () => {
+    const css = '.intro:before,.section:before{height:3px;background:var(--gold-gradient)}.term:before{background:linear-gradient(var(--aris-gold-2),var(--aris-gold-dark))}.eyebrow{color:var(--aris-gold)}.primary{background:var(--gold-gradient);color:#fff}.callout.warn{border-color:var(--gold)}.bar-fill{background:linear-gradient(var(--gold),#FFD878)}.reading-percent{background:conic-gradient(var(--aris-gold) var(--read),#fff 0)}.progress span{background:var(--gold-gradient)}';
+    const result = themeCss(css);
+    expect(result).toContain('height:3px;background:linear-gradient(90deg,#a2e887,#31dded)');
+    expect(result).toContain('.term:before{background:linear-gradient(#31dded,#31dded)');
+    expect(result).toContain('.eyebrow{color:#31dded}');
+    expect(result).toContain('.primary{background:linear-gradient(90deg,#a2e887,#31dded);color:#031319}');
+    expect(result).toContain('.callout.warn{border-color:var(--gold)}');
+    expect(result).toContain('.bar-fill{background:linear-gradient(var(--gold),#FFD878)}');
+    expect(result).toContain('.reading-percent{background:conic-gradient(var(--aris-gold) var(--read),#fff 0)}');
+    expect(result).toContain('.progress span{background:var(--gold-gradient)}');
+  });
+
+  it("covers the remaining decorative A and metallic bars across the complete authored corpus", async () => {
+    const source = await readFile("public/index.html", "utf8");
+    const document = parse(source);
+    const text = (node) => node.childNodes.map((child) => child.value ?? "").join("");
+    const guides = JSON.parse(text(nodes(document, (node) => attr(node, "id") === "aris-selection-guides-data")[0]));
+    const corpus = [{ id: "home", html: source }, ...guides.map((guide) => ({ id: guide.id, html: guide.document })), {
+      id: "compass", html: Buffer.from(text(nodes(document, (node) => attr(node, "id") === "aris-compass-html")[0]), "base64").toString("utf8"),
+    }];
+    for (const name of ["ARIS_CONTENT_PACKS", "ARIS_PROVINCE_CONTENT_PACKS"]) {
+      const packs = JSON.parse(source.match(new RegExp(`var ${name} = (\\[[^;]+\\]);`))[1]);
+      for (const pack of packs) {
+        const decoded = JSON.parse(inflateRawSync(Buffer.from(pack, "base64")).toString("utf8"));
+        corpus.push(...Object.entries(decoded).map(([id, html]) => ({ id, html })));
+      }
+    }
+    expect(corpus).toHaveLength(397);
+    let watermarks = 0;
+    let cardBars = 0;
+    for (const item of corpus) {
+      for (const style of nodes(parse(item.html), (node) => node.tagName === "style")) {
+        const original = postcss.parse(text(style));
+        const compiled = postcss.parse(themeCss(text(style)));
+        original.walkRules((rule) => {
+          const watermark = rule.nodes.some((node) => node.prop === "content" && node.value === '"A"');
+          if (watermark) {
+            watermarks += 1;
+            const themed = [];
+            compiled.walkRules(rule.selector, (rule) => themed.push(rule));
+            expect(themed[0].nodes.find((node) => node.prop === "content").value, item.id).toBe("none");
+          }
+          if (rule.selector === ".intro:before,.section:before") {
+            cardBars += 1;
+            const themed = [];
+            compiled.walkRules(rule.selector, (rule) => themed.push(rule));
+            expect(themed[0].nodes.find((node) => node.prop === "background").value, item.id).toBe("linear-gradient(90deg,#a2e887,#31dded)");
+          }
+        });
+      }
+    }
+    expect(watermarks).toBe(30);
+    expect(cardBars).toBe(10);
+  }, 20_000);
 });

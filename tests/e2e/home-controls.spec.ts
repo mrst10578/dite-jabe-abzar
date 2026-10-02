@@ -1,5 +1,26 @@
 import { expect, test } from "@playwright/test";
 
+test("compass precedes the guide card in RTL reading order without a redundant guide action", async ({ page }) => {
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/flow-preview.html");
+    const compass = page.locator(".flow-supports #aris-smart-tools");
+    const guide = page.locator(".flow-supports .flow-guide-entry");
+    await expect(compass).toBeVisible();
+    await expect(guide).toBeVisible();
+    await expect(guide.locator("a")).toHaveCount(0);
+    await expect(page.locator("#aris-psych-test-launch")).toBeVisible();
+    const compassBounds = (await compass.boundingBox())!;
+    const guideBounds = (await guide.boundingBox())!;
+    if (width === 1440) {
+      expect(compassBounds.x).toBeGreaterThan(guideBounds.x);
+      expect(Math.abs(compassBounds.y - guideBounds.y)).toBeLessThan(1);
+    } else {
+      expect(compassBounds.y + compassBounds.height).toBeLessThanOrEqual(guideBounds.y + 1);
+    }
+  }
+});
+
 test("header actions and the complete quiz label fit mobile, tablet and desktop", async ({ page }) => {
   for (const width of [320, 390, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 });

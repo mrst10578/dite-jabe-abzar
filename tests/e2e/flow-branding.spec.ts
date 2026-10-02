@@ -83,15 +83,16 @@ test("every guide is branded before iframe execution and stays branded after its
   await page.waitForFunction(() => Boolean((window as unknown as { ArisSelectionModule?: unknown }).ArisSelectionModule));
   const guides = await page.evaluate(() => {
     const data = JSON.parse(document.getElementById("aris-selection-guides-data")!.textContent!);
-    const branding = (window as unknown as { FlowBranding: { text(value: string): string } }).FlowBranding;
-    return data.map((guide: { id: string; document: string }) => ({
-      id: guide.id,
-      title: branding.text(new DOMParser().parseFromString(guide.document, "text/html").title),
-    }));
+    return data.map((guide: { id: string }) => ({ id: guide.id }));
   });
   expect(guides).toHaveLength(22);
   for (const guide of guides) {
-    await page.evaluate((id) => (window as unknown as { ArisSelectionModule: { open(id: string): void } }).ArisSelectionModule.open(id), guide.id);
+    await page.evaluate((id) => (window as unknown as { ArisSelectionModule: { open(id: string): Promise<void> } }).ArisSelectionModule.open(id), guide.id);
+    const expectedTitle = await page.evaluate((id) => {
+      const data = JSON.parse(document.getElementById("aris-selection-guides-data")!.textContent!);
+      const original = data.find((guide: { id: string }) => guide.id === id).document as string;
+      return (window as unknown as { FlowBranding: { text(value: string): string } }).FlowBranding.text(new DOMParser().parseFromString(original, "text/html").title);
+    }, guide.id);
     const iframe = page.locator("#guide-reader-frame");
     const source = await iframe.getAttribute("srcdoc");
     expect(source, guide.id).toBeTruthy();
@@ -112,7 +113,7 @@ test("every guide is branded before iframe execution and stays branded after its
     }, source);
     expect(authored, guide.id).toEqual([]);
     const frame = page.frameLocator("#guide-reader-frame");
-    await expect.poll(() => frame.locator("html").evaluate((element) => element.ownerDocument.title)).toBe(guide.title);
+    await expect.poll(() => frame.locator("html").evaluate((element) => element.ownerDocument.title)).toBe(expectedTitle);
     await expect.poll(() => brandingFindings(frame.locator("html")), { message: guide.id }).toEqual([]);
     const flowLinks = frame.locator(`a[href="${channel}"]`);
     for (const link of await flowLinks.all()) {

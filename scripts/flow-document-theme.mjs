@@ -4,7 +4,9 @@ import { attr, nodes } from "./flow-home.mjs";
 
 const palette = { bg: "#031319", surface: "#0a2028", text: "#f7f2e2", muted: "#b6cbd4", cyan: "#31dded", green: "#a2e887", border: "#315c68", gold: "#c6a950" };
 const colorPattern = /url\([^)]*\)|#[\da-f]{3,8}\b|rgba?\([^)]*\)|\b(?:white|black)\b/gi;
-const meaningfulFill = (selector) => /\b(?:bar-fill|progress-fill|readiness)\b|(?:reading-progress|scroll-progress|reader__progress)/.test(selector);
+const meaningfulFill = (selector) => /\b(?:bar-fill|progress-fill|readiness|reading-percent|checkpoint-ring)\b|(?:reading-progress|scroll-progress|reader__progress)|(?:^|[ .#])progress(?:[ .>:]|$)/.test(selector);
+const goldReference = /var\(--(?:(?:aris-)?gold(?:[-\d][\w-]*)?|bronze)\s*(?:,[^)]*)?\)/gi;
+const brandedWatermark = /\.(?:intro-badge|final-note|share-panel)::?(?:before|after)\b/;
 function printed(node) {
   for (let parent = node.parent; parent; parent = parent.parent) {
     if (parent.type === "atrule" && parent.name === "media" && /\bprint\b/i.test(parent.params)) return true;
@@ -43,6 +45,16 @@ function recolor(value, target) {
 // @font-face data, media structure and the deliberately light print stylesheet.
 export function themeCss(css) {
   const root = postcss.parse(css);
+  const filledAccents = new Set();
+  // These three authored pseudo-elements are the old academy's monogram,
+  // rather than document text, an answer label or a counter. Suppress their
+  // generated boxes in the screen projection before a guide can paint.
+  root.walkRules((rule) => {
+    if (printed(rule) || !brandedWatermark.test(rule.selector)) return;
+    rule.walkDecls("content", (decl) => {
+      if (/^["']A["']$/.test(decl.value.trim())) decl.value = "none";
+    });
+  });
   root.walkDecls((decl) => {
     if (printed(decl)) return;
     if (decl.prop.startsWith("--")) {
@@ -55,18 +67,30 @@ export function themeCss(css) {
       // Score widths/rings and progress fills are data, not panel backgrounds.
       if (decl.prop.startsWith("background") && meaningfulFill(selector)) return;
       const semantic = /(?:good|success|support)(?:\b|-)/.test(selector) ? { bg: "#112e29", text: palette.green }
-        : /(?:warn|caution|constraint)(?:\b|-)/.test(selector) ? { bg: "#242b24", text: palette.gold }
+        : /(?:warn|caution|constraint|limited|provisional)(?:\b|-)/.test(selector) ? { bg: "#242b24", text: palette.gold }
         : /(?:danger|error)(?:\b|-)/.test(selector) ? { bg: "#36232a", text: "#ffad9f" } : null;
       const textGradient = decl.parent.nodes?.some((node) => /background-clip$/.test(node.prop ?? "") && node.value === "text");
       const target = decl.prop.includes("background") ? (textGradient ? palette.text : semantic?.bg ?? palette.surface)
         : /border|outline|shadow/.test(decl.prop) ? palette.border : (semantic?.text ?? palette.text);
       decl.value = recolor(decl.value, target);
+      // Recolor literal colors alone cannot replace var(--gold-gradient), so
+      // the original metallic bars survived the first Flow projection. Resolve
+      // decorative gold references locally; warning and report colors keep
+      // their existing variables and progress fills remain source-controlled.
+      if (!semantic && !meaningfulFill(selector)) {
+        const accent = /var\(--(?:(?:aris-)?gold|bronze)/i.test(decl.value);
+        const accentBackground = accent && decl.prop.startsWith("background") && !textGradient;
+        decl.value = decl.value.replace(goldReference, (reference) =>
+          textGradient ? palette.text : /gold-gradient/i.test(reference) && decl.prop.startsWith("background")
+            ? "linear-gradient(90deg,#a2e887,#31dded)" : palette.cyan);
+        if (accentBackground) filledAccents.add(decl.parent);
+      }
     }
   });
   root.walkRules((rule) => {
     if (printed(rule) || meaningfulFill(rule.selector)) return;
     if (rule.nodes.some((node) => /background-clip$/.test(node.prop ?? "") && node.value === "text")) return;
-    const brightFill = rule.nodes.some((node) => /^background(?:-color|-image)?$/.test(node.prop ?? "") &&
+    const brightFill = filledAccents.has(rule) || rule.nodes.some((node) => /^background(?:-color|-image)?$/.test(node.prop ?? "") &&
       /var\(--(?:accent\d*|(?:aris-)?gold(?:-2|-gradient|-light|-soft)?|green2?|flow-cyan|flow-green)\s*\)/.test(node.value));
     if (!brightFill) return;
     const foreground = rule.nodes.find((node) => node.prop === "color");

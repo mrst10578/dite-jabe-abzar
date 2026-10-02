@@ -77,7 +77,11 @@ test("article controls and reading navigation fit small screens and return focus
 
 test("prepared article search indexes match the original full document corpus", async ({ page }) => {
   await page.goto("/flow-preview.html");
-  const differences = await page.evaluate(() => {
+  const differences = await page.evaluate(async () => {
+    const metadata: { id: string }[] = JSON.parse(document.getElementById("aris-selection-guides-data")!.textContent!);
+    // Hydrate authored documents only for this corpus comparison. Real search
+    // must use the prepared index without downloading any article payload.
+    await Promise.all(metadata.map((guide) => (window as unknown as { FlowPayloads: { ensure(id: string): Promise<unknown> } }).FlowPayloads.ensure(guide.id)));
     const guides: { id: string; document: string }[] = JSON.parse(document.getElementById("aris-selection-guides-data")!.textContent!);
     const index: Record<string, string> = JSON.parse(document.getElementById("flow-guide-search-index")!.textContent!);
     const normalize = (value: string) => value.toLowerCase().replace(/[يى]/g, "ی").replace(/ك/g, "ک").replace(/[أإ]/g, "ا").replace(/ة/g, "ه").replace(/[^\u0600-\u06ff0-9a-z]+/gi, " ").trim();
