@@ -80,14 +80,11 @@ async function metrics(target: Page | Frame, selector = "body"): Promise<Metric[
         return child instanceof Element && child.matches(marker) ? Array.from(child.childNodes).filter((node) => node.nodeType === Node.TEXT_NODE) : [];
       }).filter((node) => node.textContent?.trim());
       direct.forEach((node, index) => {
-        const range = document.createRange();
-        range.selectNodeContents(node);
-        if (!Array.from(range.getClientRects()).some((rect) => rect.width > 0 && rect.height > 0)) return;
+        // Include offscreen and temporarily hidden reveal text too. Range
+        // geometry depends on animation timing, while authored font sizes do
+        // not; measuring every text node gives stronger preservation coverage.
         const appearance = getComputedStyle(node.parentElement!);
         const parent = getComputedStyle(element);
-        // Opacity is composited by the original parent; it is not inherited by
-        // a neutral span, so test the same authored element in both documents.
-        if (parent.visibility === "hidden" || parent.opacity === "0") return;
         result.push({
           key: `${path(element)}:text[${index}]`, text: node.textContent!, tag: element.tagName,
           color: appearance.color, parentColor: parent.color, parentSize: parseFloat(parent.fontSize),
@@ -104,22 +101,25 @@ function compare(before: Metric[], after: Metric[], label: string, print = false
   expect(after.map(({ key, text, tag, parentSize, parentColor, weight }) => ({ key, text, tag, parentSize, parentColor, weight })), label)
     .toEqual(before.map(({ key, text, tag, parentSize, parentColor, weight }) => ({ key, text, tag, parentSize, parentColor, weight })));
   let larger = 0;
+  const violations: string[] = [];
   after.forEach((actual, index) => {
     const authored = before[index];
     const context = `${label}: ${actual.tag} ${actual.text.trim().slice(0, 90)}`;
-    expect(actual.color, context).toBe(authored.color);
+    if (actual.color !== authored.color) violations.push(`${context}: color ${authored.color} → ${actual.color}`);
     const difference = actual.size - authored.size;
     if (print || !mutedColors.has(authored.color) || /^H[1-6]$/.test(authored.tag) || authored.size > 24) {
-      expect(actual.size, context).toBe(authored.size);
+      if (actual.size !== authored.size) violations.push(`${context}: protected size ${authored.size} → ${actual.size}`);
     } else {
-      expect(difference, context).toBeGreaterThanOrEqual(0);
-      expect(difference, context).toBeLessThanOrEqual(2.0001);
+      if (difference < 0 || difference > 2.0001) violations.push(`${context}: gray size change ${difference}px`);
       if (difference > .001) {
-        expect(actual.wrapped, context).toBe(true);
+        if (!actual.wrapped) violations.push(`${context}: enlarged without a neutral text span`);
         larger++;
       }
     }
   });
+  // Assert the complete corpus together, retaining a useful message for every
+  // changed font/color without tens of thousands of separate assertion steps.
+  expect(violations, label).toEqual([]);
   return larger;
 }
 
