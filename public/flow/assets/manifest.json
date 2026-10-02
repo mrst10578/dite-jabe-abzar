@@ -2,13 +2,88 @@
   "theme": "midnight-flow",
   "productionReady": false,
   "reference": "docs/flow/references/selected.webp",
-  "temporarySources": ["flow-source.webp", "hero-source.webp"],
+  "temporarySources": [
+    "flow-source.webp",
+    "hero-source.webp"
+  ],
   "assets": [
-    {"file": "hero-desktop.webp", "slot": "hero", "width": 2560, "height": 1600, "priority": "critical", "status": "prompt-ready"},
-    {"file": "hero-mobile.webp", "slot": "hero-mobile", "width": 1080, "height": 720, "priority": "critical", "status": "prompt-ready"},
-    {"file": "flow-wordmark.webp", "slot": "header-brand", "width": 720, "height": 300, "priority": "critical", "transparent": true, "status": "prompt-ready"},
-    {"file": "compass.webp", "slot": "self-knowledge", "width": 768, "height": 768, "priority": "support", "transparent": true, "status": "prompt-ready"},
-    {"file": "guide-book.webp", "slot": "selection-guides", "width": 768, "height": 768, "priority": "support", "transparent": true, "status": "prompt-ready"},
-    {"file": "botanical-divider.webp", "slot": "hero-divider", "width": 2400, "height": 100, "priority": "polish", "transparent": true, "status": "prompt-ready"}
-  ]
+    {
+      "file": "hero-desktop.webp",
+      "slot": "hero",
+      "width": 1586,
+      "height": 992,
+      "priority": "critical",
+      "status": "generated",
+      "targetWidth": 2560,
+      "targetHeight": 1600,
+      "bytes": 358378,
+      "alphaVerified": false
+    },
+    {
+      "file": "hero-mobile.webp",
+      "slot": "hero-mobile",
+      "width": 1536,
+      "height": 1024,
+      "priority": "critical",
+      "status": "generated",
+      "targetWidth": 1080,
+      "targetHeight": 720,
+      "bytes": 379796,
+      "alphaVerified": false
+    },
+    {
+      "file": "flow-wordmark.webp",
+      "slot": "header-brand",
+      "width": 1942,
+      "height": 809,
+      "priority": "critical",
+      "transparent": true,
+      "status": "generated",
+      "targetWidth": 720,
+      "targetHeight": 300,
+      "bytes": 446712,
+      "alphaVerified": true
+    },
+    {
+      "file": "compass.webp",
+      "slot": "self-knowledge",
+      "width": 1254,
+      "height": 1254,
+      "priority": "support",
+      "transparent": true,
+      "status": "generated",
+      "targetWidth": 768,
+      "targetHeight": 768,
+      "bytes": 569310,
+      "alphaVerified": true
+    },
+    {
+      "file": "guide-book.webp",
+      "slot": "selection-guides",
+      "width": 1254,
+      "height": 1254,
+      "priority": "support",
+      "transparent": true,
+      "status": "generated",
+      "targetWidth": 768,
+      "targetHeight": 768,
+      "bytes": 540498,
+      "alphaVerified": true
+    },
+    {
+      "file": "botanical-divider.webp",
+      "slot": "hero-divider",
+      "width": 1920,
+      "height": 819,
+      "priority": "polish",
+      "transparent": true,
+      "status": "generated",
+      "targetWidth": 2400,
+      "targetHeight": 100,
+      "bytes": 34310,
+      "alphaVerified": true,
+      "layoutNote": "Native transparent canvas includes vertical padding; position the ornament using its alpha bounds during UI integration."
+    }
+  ],
+  "generationNote": "All six standalone assets generated and visually checked. Native dimensions retained; final viewport fitting, optimization and UI fidelity checks are pending."
 }
