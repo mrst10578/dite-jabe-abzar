@@ -5,7 +5,7 @@ const profiles = [
   { slug: "computer-engineering", title: "مهندسی کامپیوتر", family: "engineering", minTables: 5 },
   { slug: "medicine", title: "پزشکی", family: "health", minTables: 7 },
   { slug: "law", title: "حقوق", family: "humanities", minTables: 5 },
-  { slug: "graphic-design", title: "گرافیک", family: "art", minTables: 5 },
+  { slug: "graphic-design", title: "ارتباط تصویری", family: "art", minTables: 5 },
   { slug: "psychology", title: "روان‌شناسی", family: "humanities", minTables: 4 },
 ] as const;
 
