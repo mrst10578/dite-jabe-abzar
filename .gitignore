@@ -44,3 +44,4 @@ next-env.d.ts
 # Generated Flow entry
 /public/flow-preview.html
 /public/flow-mobile-qa.html
+/public/flow/generated/

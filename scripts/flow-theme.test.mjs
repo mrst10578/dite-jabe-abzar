@@ -13,16 +13,19 @@ beforeAll(() => {
 }, 20_000);
 
 describe("Flow theme projection", () => {
-  it("retains canonical HTML and every raw data/provenance payload", async () => {
+  it("retains canonical HTML and authored data/provenance payloads", async () => {
     const source = await readFile("public/index.html", "utf8");
     expect(createHash("sha256").update(source).digest("hex")).toBe("ebb69da2b9154a4ad1ca578bf6bb9409aba4846715260cd7d706964b35dfdee2");
     const generated = parse(await readFile("public/flow-preview.html", "utf8"));
     const payload = (node) => node.tagName === "script" &&
       (["application/json", "application/octet-stream", "text/plain"].includes(attr(node, "type")) || (attr(node, "id") ?? "").startsWith("__ARYO_"));
     const originals = nodes(parse(source), payload);
-    const projected = nodes(generated, payload);
+    // Province media has a separate byte-for-byte delivery contract in
+    // flow-image-assets.test.mjs. The derived article index is generated data.
+    const retained = originals.filter((node) => !(attr(node, "id") ?? "").startsWith("aris-province-image-"));
+    const projected = nodes(generated, payload).filter((node) => attr(node, "id") !== "flow-guide-search-index");
     expect(originals.length).toBeGreaterThan(180);
-    expect(projected.map((node) => serialize(node))).toEqual(originals.map((node) => {
+    expect(projected.map((node) => serialize(node))).toEqual(retained.map((node) => {
       const original = serialize(node);
       // This optional panel has two authorized presentation-copy changes;
       // every signed record and all other runtime bytes remain identical.

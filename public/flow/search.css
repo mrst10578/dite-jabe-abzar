@@ -1,0 +1,83 @@
+/* Keep native search results inside a scrollable panel, including whole-domain
+   searches. The form and keyboard selection continue to use the native API. */
+html[data-flow-theme] :is(#suggestion-panel, #province-suggestion-panel) {
+  max-height: var(--flow-search-panel-height, min(480px, 58dvh));
+  overscroll-behavior: contain;
+  box-shadow: 0 16px 36px #0006;
+  animation: none;
+}
+html[data-flow-theme] #suggestion-panel:not([hidden]),
+html[data-flow-theme] #province-suggestion-panel:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+}
+html[data-flow-theme] :is(.panel-head, .panel-foot, .province-results-toolbar) { flex: 0 0 auto; }
+html[data-flow-theme] :is(#major-results, #province-results, #guide-state) {
+  min-height: 0;
+  max-height: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--flow-border) transparent;
+}
+html[data-flow-theme] :is(#major-results, #province-results) { flex: 1 1 auto; }
+html[data-flow-theme] #filter-panel {
+  flex: 0 0 auto;
+  max-height: 160px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+html[data-flow-theme] .filter-options { gap: 8px; }
+html[data-flow-theme] :is(.result-item, .province-result) { min-height: 64px; }
+html[data-flow-theme] .result-item { animation: none; }
+html[data-flow-theme] #major-results .result-name { font-size: 14px; line-height: 1.8; }
+html[data-flow-theme] .search-field > input:focus-visible { outline: none; }
+html[data-flow-theme] .search-field:focus-within { border-color: var(--flow-cyan); box-shadow: 0 0 0 2px #29d6e233; }
+html[data-flow-theme] :is(#search-shell, #province-search-shell) {
+  scroll-margin-top: calc(var(--aris-header-height, 110px) + 16px);
+}
+@media (max-width: 720px) {
+  html[data-flow-theme] :is(#suggestion-panel, #province-suggestion-panel) {
+    position: relative;
+    inset: auto;
+    margin-top: 12px;
+    max-height: var(--flow-search-panel-height, min(400px, 52dvh));
+  }
+  html[data-flow-theme] .panel-foot { display: none; }
+  html[data-flow-theme] #filter-panel { max-height: 136px; }
+  html[data-flow-theme] :is(.panel-head, .province-results-toolbar) { padding: 10px 12px; }
+  html[data-flow-theme] #major-results .result-name { font-size: 13px; }
+}
+/* The software keyboard can leave only a small visual viewport. Reserve room
+   for choices by keeping the active form and domain filters in single rows. */
+html[data-flow-theme] body[data-flow-search-compact] .site-header {
+  min-height: 52px;
+  padding-block: 4px;
+  row-gap: 0;
+}
+html[data-flow-theme] body[data-flow-search-compact] .site-header .flow-navigation { display: none; }
+html[data-flow-theme] body[data-flow-search-tight] .site-header { display: none; }
+html[data-flow-theme] body[data-flow-search-compact] .flow-wordmark { height: 40px; width: 100px; }
+html[data-flow-theme] body[data-flow-search-compact] :is(.search-field, .province-search-field) {
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  gap: 6px;
+  padding: 8px;
+  min-height: 44px;
+}
+html[data-flow-theme] body[data-flow-search-compact] :is(.search-icon, .province-search-icon) { display: none; }
+html[data-flow-theme] body[data-flow-search-compact] :is(#major-search, #province-search) { grid-column: 1; grid-row: 1; height: 44px; min-height: 44px; padding: 0 4px; }
+html[data-flow-theme] body[data-flow-search-compact] :is(.clear-button, .province-search-clear) { grid-column: 2; grid-row: 1; width: 44px; min-width: 44px; height: 44px; min-height: 44px; }
+html[data-flow-theme] body[data-flow-search-compact] #filter-toggle { grid-column: 3; grid-row: 1; padding: 6px; width: 44px; min-width: 44px; height: 44px; min-height: 44px; }
+html[data-flow-theme] body[data-flow-search-compact] .search-submit { grid-column: 4; grid-row: 1; font-size: 12px; padding: 8px 12px; height: 44px; min-height: 44px; min-width: 70px; }
+html[data-flow-theme] body[data-flow-search-compact] .province-search-submit { grid-column: 3 / -1; grid-row: 1; font-size: 12px; padding: 8px 12px; height: 44px; min-height: 44px; min-width: 70px; }
+html[data-flow-theme] body[data-flow-search-compact] .filter-toggle__label { display: none; }
+html[data-flow-theme] body[data-flow-search-compact] :is(.panel-head, .province-results-toolbar) { padding: 4px 8px; min-height: 52px; }
+html[data-flow-theme] body[data-flow-search-compact] .panel-foot,
+html[data-flow-theme] body[data-flow-search-compact] .filter-panel__head { display: none; }
+html[data-flow-theme] body[data-flow-search-compact] #filter-panel { max-height: 56px; padding: 4px 8px; }
+html[data-flow-theme] body[data-flow-search-compact] .filter-options { display: flex; flex-wrap: nowrap; overflow-x: auto; }
+html[data-flow-theme] body[data-flow-search-compact] .filter-chip { flex: 0 0 auto; min-height: 44px; white-space: nowrap; }
+html[data-flow-theme] body[data-flow-search-compact] .result-item { padding-block: 8px; }
+html[data-flow-theme] body[data-flow-search-compact] :is(#major-results, #province-results) { padding-block: 4px; }
+html[data-flow-theme] body[data-flow-search-compact] .result-reason { display: none; }
+html[data-flow-theme] body[data-flow-search-compact] #major-results .result-name { font-size: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
