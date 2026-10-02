@@ -1,0 +1,52 @@
+import { expect, test } from "@playwright/test";
+
+test("Flow retains independent major and province searches", async ({ page }) => {
+  await page.goto("/flow-preview.html");
+  await expect(page.locator("html")).toHaveAttribute("data-flow-ready", "true");
+  await expect(page.locator(".brand-lockup img")).toHaveAttribute("alt", "Flow");
+  await expect(page.locator(".brand-lockup")).not.toContainText("فلو");
+  await expect(page.locator("#search-form")).toBeVisible();
+  await expect(page.locator("#province-search-form")).toBeVisible();
+  await page.locator("#major-search").fill("مهندسی کامپیوتر");
+  await expect(page.locator("#major-results")).toBeVisible();
+  await expect(page.locator("#major-results")).toContainText("کامپیوتر");
+  await page.locator("#province-search").fill("گیلان");
+  await expect(page.locator("#province-results")).toBeVisible();
+  await expect(page.locator("#province-results")).toContainText("گیلان");
+  await expect(page.locator("#major-search")).toHaveValue("مهندسی کامپیوتر");
+  const major = await page.locator("#search-form").boundingBox();
+  const province = await page.locator("#province-search-form").boundingBox();
+  expect(province?.y).toBeGreaterThan((major?.y ?? 0) + (major?.height ?? 0));
+});
+
+test("Flow search controls fit a mobile viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/flow-preview.html");
+  await expect(page.locator("html")).toHaveAttribute("data-flow-ready", "true");
+  for (const id of ["#search-form", "#province-search-form"]) {
+    const box = await page.locator(id).boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.x).toBeGreaterThanOrEqual(0);
+    expect(box!.x + box!.width).toBeLessThanOrEqual(390);
+  }
+  for (const id of ["#major-search", "#province-search"]) {
+    const box = await page.locator(id).boundingBox();
+    expect(box?.width).toBeGreaterThan(120);
+  }
+});
+
+
+
+test("active Flow assets load without placeholders", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("html")).toHaveAttribute("data-flow-ready", "true");
+  await expect(page.locator("body")).toHaveAttribute("data-flow-assets", "ready");
+  const assets = page.locator(".flow-wordmark, .flow-hero-image, .flow-support-art, .flow-botanical-divider");
+  await expect(assets).toHaveCount(5);
+  await expect.poll(() => assets.evaluateAll((images) => images.every((image) => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0))).toBe(true);
+  const sources = await assets.evaluateAll((images) => images.map((image) => (image as HTMLImageElement).currentSrc));
+  expect(sources.every((src) => !src.includes("-source.webp"))).toBe(true);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect.poll(() => page.locator(".flow-hero-image").evaluate((image) => (image as HTMLImageElement).currentSrc)).toContain("hero-mobile.webp");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+});

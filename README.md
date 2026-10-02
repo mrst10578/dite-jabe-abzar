@@ -66,3 +66,11 @@ npm run deploy:cloudflare
 تست HTTP تطابق کامل فایل تحویل‌شده با `public/index.html`، هدایت آدرس قدیمی و ۴۰۴ واقعی را بررسی می‌کند. CI علاوه بر تست‌های قبلی، dry-run و همین تست Workers را بدون توکن انتشار اجرا می‌کند.
 
 مراجع: [Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/)، [تنظیمات Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/) و [محدودیت فایل‌ها](https://developers.cloudflare.com/workers/platform/limits/).
+
+## قالب فعال Flow
+
+هر شش تصویر در `public/flow/assets` فعال هستند. لوگوی سربرگ فقط انگلیسی است و استان‌شناسی زیر رشته‌شناسی قرار دارد.
+
+`npm run build:cloudflare` صفحه اصلی Flow را در `dist/index.html` می‌سازد. فایل اصلی `public/index.html` برای حفظ محتوای کامل دست‌نخورده می‌ماند؛ ورودی توسعه Next به همان خروجی طراحی در `/flow-preview.html` هدایت می‌شود.
+
+برای دیپلوی متصل به گیت، شاخه `main` و دستورهای ساخت و انتشار کلادفلر بالا را استفاده کنید.

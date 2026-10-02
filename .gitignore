@@ -40,3 +40,7 @@ next-env.d.ts
 /.wrangler/
 .dev.vars
 .dev.vars.*
+
+# Generated Flow entry
+/public/flow-preview.html
+/public/flow-mobile-qa.html
