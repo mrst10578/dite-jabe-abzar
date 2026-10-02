@@ -1,0 +1,11 @@
+/* Text-only spans keep the surrounding white headings, controls and inline
+   emphasis at their authored sizes. Neutralize legacy span/chip rules in print
+   as well; the larger text applies only to the screen. */
+html[data-flow-theme] [data-flow-muted-text] { all: unset !important; }
+html[data-flow-theme] [data-flow-muted-text]::before,
+html[data-flow-theme] [data-flow-muted-text]::after { content: none !important; display: none !important; }
+@media screen {
+  html[data-flow-theme] [data-flow-muted-text] {
+    font-size: var(--flow-muted-size) !important;
+  }
+}
