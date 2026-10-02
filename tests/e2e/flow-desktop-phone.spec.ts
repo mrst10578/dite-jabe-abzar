@@ -1,6 +1,8 @@
 import { devices, expect, test, type Page } from "@playwright/test";
 
 const home = () => new URL("/flow-preview.html", test.info().project.use.baseURL ?? "http://127.0.0.1:3000").href;
+const desktopCanvas = 980;
+const phones = ["Pixel 7", "iPhone 13", "iPhone SE"] as const;
 
 async function ready(page: Page, suffix = "") {
   await page.goto(`${home()}${suffix}`);
@@ -16,6 +18,13 @@ async function homepageLayout(page: Page) {
     const hero = bounds(".main > .hero");
     const compass = bounds(".flow-supports #aris-smart-tools");
     const guide = bounds(".flow-supports .flow-guide-entry");
+    const supports = bounds(".flow-supports");
+    const supportStyle = style(".flow-supports");
+    const supportWidth = supports.width - parseFloat(supportStyle.paddingLeft) - parseFloat(supportStyle.paddingRight);
+    const compassArt = bounds("#aris-smart-tools .flow-support-art");
+    const compassCopy = bounds("#aris-smart-tools .smart-tool--beta");
+    const guideArt = bounds(".flow-guide-entry .flow-support-art");
+    const guideCopy = bounds(".flow-guide-entry > div");
     const image = document.querySelector<HTMLImageElement>(".flow-hero-image")!;
     return {
       headerColumns: style(".site-header").gridTemplateColumns,
@@ -26,6 +35,7 @@ async function homepageLayout(page: Page) {
       wordmark: [style(".flow-wordmark").width, style(".flow-wordmark").height],
       heroCopyRatio: Math.round(copy.width / hero.width * 1000),
       heroPadding: style(".main > .hero").padding,
+      heroHeight: Math.round(hero.height),
       titleFont: style("#page-title").fontSize,
       heroSource: new URL(image.currentSrc).pathname,
       heroPosition: style(".flow-hero-image").objectPosition,
@@ -37,34 +47,62 @@ async function homepageLayout(page: Page) {
       provinceSubmitRow: style(".province-search-submit").gridRow,
       supportColumns: style(".flow-supports").gridTemplateColumns,
       supportsShareRow: Math.abs(compass.top - guide.top) < 1,
-      compassRightOfGuide: compass.left > guide.left,
+      compassBeforeGuide: compass.bottom <= guide.top,
+      supportsUseFullWidth: Math.abs(compass.width - supportWidth) < 1 && Math.abs(guide.width - supportWidth) < 1,
+      supportImagesLeftOfCopy: compassArt.right < compassCopy.left && guideArt.right < guideCopy.left,
       guideColumns: style(".selection-guide-grid").gridTemplateColumns,
     };
   });
 }
 
-test("real phones use the same homepage layout and artwork as a 1440px desktop", async ({ browser }) => {
-  const desktop = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+function expectHomepageLayout(actual: Awaited<ReturnType<typeof homepageLayout>>, expected: Awaited<ReturnType<typeof homepageLayout>>, name: string) {
+  const { headerColumns: actualColumns, ...actualLayout } = actual;
+  const { headerColumns: expectedColumns, ...expectedLayout } = expected;
+  expect(actualLayout, name).toEqual(expectedLayout);
+  const columns = actualColumns.split(" ").map(Number.parseFloat);
+  const reference = expectedColumns.split(" ").map(Number.parseFloat);
+  expect(columns, name).toHaveLength(reference.length);
+  // Pixel 7's fitted scale reports a 980.000061px visual viewport. Chromium
+  // rounds 100vw upward, adding one pixel only to the header's flexible column.
+  columns.forEach((width, index) => expect(Math.abs(width - reference[index]), name).toBeLessThanOrEqual(index === 1 ? 1 : 0));
+}
+
+function expectFrameWidth(width: number, name: string) {
+  // Iframes inherit the same possible one-pixel viewport rounding.
+  expect(Math.abs(width - desktopCanvas), name).toBeLessThanOrEqual(1);
+}
+
+test("real phones match the reference screenshot's 980px desktop layout and artwork", async ({ browser }) => {
+  const desktop = await browser.newContext({ viewport: { width: desktopCanvas, height: 900 } });
   const desktopPage = await desktop.newPage();
   await ready(desktopPage);
   const expected = await homepageLayout(desktopPage);
-  expect(expected.supportsShareRow).toBe(true);
-  expect(expected.compassRightOfGuide).toBe(true);
-  expect(expected.guideColumns.split(" ")).toHaveLength(3);
+  expect(expected.supportsShareRow).toBe(false);
+  expect(expected.compassBeforeGuide).toBe(true);
+  expect(expected.supportsUseFullWidth).toBe(true);
+  expect(expected.supportImagesLeftOfCopy).toBe(true);
+  expect(expected.channelLabel).toBe("none");
+  expect(expected.soundLabel).toBe("none");
+  expect(expected.titleFont).toBe("40px");
+  expect(expected.heroHeight).toBe(720);
+  expect(expected.heroSource).toBe("/flow/assets/hero-desktop.webp");
+  expect(expected.guideColumns.split(" ")).toHaveLength(2);
 
-  for (const name of ["iPhone 13", "iPhone SE"]) {
+  for (const name of phones) {
     const context = await browser.newContext({ ...devices[name] });
     const page = await context.newPage();
     await ready(page);
+    // Geometry comes first so a different desktop breakpoint cannot pass merely
+    // by advertising the requested viewport width in a metadata attribute.
+    expectHomepageLayout(await homepageLayout(page), expected, name);
     await expect(page.locator("html"), name).toHaveAttribute("data-flow-viewport", "desktop");
     const viewport = await page.locator('meta[name="viewport"]').getAttribute("content");
-    expect(viewport, name).toContain("width=1440");
+    expect(viewport, name).toContain(`width=${desktopCanvas}`);
     expect(viewport, name).toContain("viewport-fit=cover");
     expect(viewport, name).not.toMatch(/initial-scale|maximum-scale|user-scalable/i);
-    // Chromium's default .25 zoom floor otherwise crops 320px phones.
+    // Preserve pinch-out beyond the initially fitted desktop canvas.
     expect(viewport, name).toContain("minimum-scale=0.1");
-    expect(await page.evaluate(() => window.innerWidth), name).toBe(1440);
-    expect(await homepageLayout(page), name).toEqual(expected);
+    expect(await page.evaluate(() => document.documentElement.clientWidth), name).toBe(desktopCanvas);
     await context.close();
   }
   await desktop.close();
@@ -72,7 +110,7 @@ test("real phones use the same homepage layout and artwork as a 1440px desktop",
 
 test("desktop controls remain usable by touch for searches, articles and the native compass", async ({ browser }) => {
   test.setTimeout(120_000);
-  for (const name of ["iPhone 13", "iPhone SE"]) {
+  for (const name of phones) {
     const context = await browser.newContext({ ...devices[name] });
     const page = await context.newPage();
     await ready(page);
@@ -98,7 +136,7 @@ test("desktop controls remain usable by touch for searches, articles and the nat
     await expect(page.locator("#guide-reader-title")).toContainText("نقشه راه");
     const guideFrame = page.frameLocator("#guide-reader-frame");
     await expect(guideFrame.locator("body")).toHaveCSS("background-color", "rgb(3, 19, 25)");
-    expect(await guideFrame.locator("html").evaluate(() => window.innerWidth), name).toBe(1440);
+    expectFrameWidth(await guideFrame.locator("html").evaluate(() => window.innerWidth), name);
     await expect(guideFrame.locator('meta[name="viewport"]')).toHaveAttribute("content", "width=device-width,initial-scale=1,viewport-fit=cover");
     await page.locator("#guide-reader-next").tap();
     await expect(page.locator("#guide-reader-title")).toContainText("اشتباهات");
@@ -110,7 +148,7 @@ test("desktop controls remain usable by touch for searches, articles and the nat
     await page.locator("#aris-psych-test-launch").tap();
     const compass = page.frameLocator("#aris-compass-frame");
     await expect(compass.locator("#startBtn")).toBeVisible();
-    expect(await compass.locator("html").evaluate(() => window.innerWidth), name).toBe(1440);
+    expectFrameWidth(await compass.locator("html").evaluate(() => window.innerWidth), name);
     await expect(compass.locator('meta[name="viewport"]')).toHaveAttribute("content", "width=device-width,initial-scale=1,viewport-fit=cover");
     await compass.locator("#startBtn").tap();
     await expect(compass.locator("#nextPageBtn")).toHaveText("شروع سؤال‌ها");
@@ -123,40 +161,41 @@ test("desktop controls remain usable by touch for searches, articles and the nat
 });
 
 test("orientation and pinch zoom keep the desktop layout without activating compact search", async ({ browser, browserName }) => {
-  const context = await browser.newContext({ ...devices["iPhone 13"] });
-  const page = await context.newPage();
-  await ready(page);
-  const portrait = await homepageLayout(page);
-  await page.setViewportSize({ width: 844, height: 390 });
-  await expect.poll(() => page.evaluate(() => window.innerWidth)).toBe(1440);
-  await expect.poll(() => homepageLayout(page)).toEqual(portrait);
-  await page.locator("#major-search").tap();
-  await page.locator("#major-search").fill("مهندسی");
-  await expect(page.locator("#suggestion-panel")).toBeVisible();
-  const filledColumns = await page.locator(".search-field").evaluate((node) => getComputedStyle(node).gridTemplateColumns);
+  for (const name of phones) {
+    const context = await browser.newContext({ ...devices[name] });
+    const page = await context.newPage();
+    await ready(page);
+    const portrait = await homepageLayout(page);
+    const { width, height } = devices[name].viewport;
+    await page.setViewportSize({ width: height, height: width });
+    await expect.poll(() => page.evaluate(() => document.documentElement.clientWidth), { message: name }).toBe(desktopCanvas);
+    expectHomepageLayout(await homepageLayout(page), portrait, name);
+    await page.locator("#major-search").tap();
+    await page.locator("#major-search").fill("مهندسی");
+    await expect(page.locator("#suggestion-panel")).toBeVisible();
+    const filledColumns = await page.locator(".search-field").evaluate((node) => getComputedStyle(node).gridTemplateColumns);
 
-  if (browserName === "chromium") {
-    const session = await context.newCDPSession(page);
-    // Zoom the real mobile viewport instead of shrinking a desktop window.
-    // Its CSS layout must stay at desktop width while the visual area shrinks.
-    await session.send("Emulation.setPageScaleFactor", { pageScaleFactor: 2 });
-    await expect.poll(() => page.evaluate(() => window.visualViewport!.height)).toBeLessThan(500);
-    await expect.poll(() => page.evaluate(() => window.visualViewport!.scale)).toBeGreaterThan(1);
-    await expect(page.locator("body")).not.toHaveAttribute("data-flow-search-compact");
-    await expect(page.locator("body")).not.toHaveAttribute("data-flow-search-tight");
-    await expect(page.locator(".flow-navigation")).toHaveCSS("display", "flex");
-    expect(await page.locator(".search-field").evaluate((node) => getComputedStyle(node).gridTemplateColumns)).toBe(filledColumns);
-    expect(await page.locator(".search-submit").evaluate((node) => getComputedStyle(node).gridRow)).toBe(portrait.majorSubmitRow);
-    await session.detach();
+    if (browserName === "chromium") {
+      const session = await context.newCDPSession(page);
+      // Zoom the real mobile viewport instead of shrinking a desktop window.
+      // Its CSS layout must stay at desktop width while the visual area shrinks.
+      await session.send("Emulation.setPageScaleFactor", { pageScaleFactor: 2 });
+      await expect.poll(() => page.evaluate(() => window.visualViewport!.height), { message: name }).toBeLessThan(500);
+      await expect.poll(() => page.evaluate(() => window.visualViewport!.scale), { message: name }).toBeGreaterThan(1);
+      await expect(page.locator("body"), name).not.toHaveAttribute("data-flow-search-compact");
+      await expect(page.locator("body"), name).not.toHaveAttribute("data-flow-search-tight");
+      await expect(page.locator(".flow-navigation"), name).toHaveCSS("display", "flex");
+      expect(await page.locator(".search-field").evaluate((node) => getComputedStyle(node).gridTemplateColumns), name).toBe(filledColumns);
+      expect(await page.locator(".search-submit").evaluate((node) => getComputedStyle(node).gridRow), name).toBe(portrait.majorSubmitRow);
+      await session.detach();
+    }
+    await context.close();
   }
-  await context.close();
 });
 
 test("direct major and province links keep desktop reader columns and text sizes on phones", async ({ browser }) => {
-  const desktop = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const desktop = await browser.newContext({ viewport: { width: desktopCanvas, height: 900 } });
   const desktopPage = await desktop.newPage();
-  const phone = await browser.newContext({ ...devices["iPhone SE"] });
-  const phonePage = await phone.newPage();
   for (const profile of [
     { hash: "major=computer-engineering", container: "#major-document .page", heading: "#major-document h1", grid: "#major-document .aris-snapshot-grid" },
     { hash: "province=gilan", container: "#province-document .province-chapter", heading: "#province-viewer-title", grid: "#province-document .province-card-row--compact-grid" },
@@ -177,11 +216,15 @@ test("direct major and province links keep desktop reader columns and text sizes
     await ready(desktopPage, `#${profile.hash}`);
     await expect(desktopPage.locator(profile.container).first()).toBeVisible();
     const expected = await snapshot(desktopPage);
-    await ready(phonePage, `#${profile.hash}`);
-    await expect(phonePage.locator(profile.container).first()).toBeVisible();
-    expect(await snapshot(phonePage), profile.hash).toEqual(expected);
-    expect(await phonePage.evaluate(() => window.innerWidth)).toBe(1440);
+    for (const name of phones) {
+      const phone = await browser.newContext({ ...devices[name] });
+      const phonePage = await phone.newPage();
+      await ready(phonePage, `#${profile.hash}`);
+      await expect(phonePage.locator(profile.container).first()).toBeVisible();
+      expect(await snapshot(phonePage), `${name}: ${profile.hash}`).toEqual(expected);
+      expect(await phonePage.evaluate(() => document.documentElement.clientWidth), name).toBe(desktopCanvas);
+      await phone.close();
+    }
   }
-  await phone.close();
   await desktop.close();
 });
