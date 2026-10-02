@@ -1,0 +1,25 @@
+/* Shared across the portal, native readers, independent guides and compass. */
+.flow-footer-logo { display:block; width:128px; height:54px; flex:0 0 128px; object-fit:contain; }
+.flow-brand-mark { width:112px; height:48px; border:0; border-radius:0; background:none; box-shadow:none; }
+.flow-brand-mark .flow-footer-logo { width:112px; height:48px; }
+.aris-dossier-footer .flow-channel-join,.aris-inline-invite .flow-channel-join,.flow-channel-join {
+  display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  min-height:48px; max-width:100%; padding:13px 20px; border:1px solid #c1f4d280;
+  border-radius:16px; background:linear-gradient(115deg,#a2e887,#31dded); color:#031319;
+  box-shadow:0 4px 20px #31dded16; font:inherit; font-weight:800; line-height:1.5;
+  text-decoration:none; text-align:center; transition:filter .18s,transform .18s,box-shadow .18s;
+}
+.flow-channel-join .flow-channel-icon { width:20px; height:20px; flex:0 0 20px; }
+.aris-dossier-footer .flow-channel-join:hover,.flow-channel-join:hover { background:linear-gradient(115deg,#a2e887,#31dded); filter:brightness(1.07); transform:translateY(-1px); box-shadow:0 6px 24px #31dded28; }
+html[data-flow-theme] .aris-home-footer a.flow-channel-join { color:#031319; }
+.flow-channel-handle { display:inline-block; margin-inline-start:16px; color:var(--flow-muted,#acbfc4); font-size:13px; }
+.flow-channel-join:active { transform:translateY(0); }
+.flow-channel-join:focus-visible { outline:3px solid #31dded; outline-offset:3px; }
+.aris-dossier-footer .aris-footer-main { gap:20px; }
+@media(max-width:480px) {
+  .aris-dossier-footer .aris-footer-main { flex-wrap:wrap; }
+  .flow-footer-logo { width:112px; height:48px; flex-basis:112px; }
+  .aris-dossier-footer .aris-footer-copy { flex-basis:100%; }
+  .aris-dossier-footer .aris-footer-actions { align-items:flex-start; }
+}
+@media(prefers-reduced-motion:reduce) { .flow-channel-join { transition:none; } .flow-channel-join:hover { transform:none; } }

@@ -76,7 +76,7 @@ test("every guide receives a dark document before srcdoc navigation", async ({ p
     const data = JSON.parse(document.getElementById("aris-selection-guides-data")!.textContent!);
     return data.map((guide: { id: string; document: string }) => ({
       id: guide.id,
-      title: new DOMParser().parseFromString(guide.document, "text/html").title,
+      title: (window as unknown as { FlowBranding: { text(value: string): string } }).FlowBranding.text(new DOMParser().parseFromString(guide.document, "text/html").title),
     }));
   });
   expect(guides).toHaveLength(22);
@@ -89,12 +89,13 @@ test("every guide receives a dark document before srcdoc navigation", async ({ p
     const preserved = await page.evaluate(({ id, source }) => {
       const data = JSON.parse(document.getElementById("aris-selection-guides-data")!.textContent!);
       const original = data.find((guide: { id: string }) => guide.id === id).document;
-      const authored = (html: string) => {
+      const branding = (window as unknown as { FlowBranding: { text(value: string): string; code(value: string): string } }).FlowBranding;
+      const authored = (html: string, original = false) => {
         const doc = new DOMParser().parseFromString(html, "text/html");
         return Array.from(doc.body.querySelectorAll("h1,h2,h3,p,li,th,td,a,script"))
-          .map((node) => ({ tag: node.tagName, text: node.textContent, href: node.getAttribute("href") }));
+          .map((node) => ({ tag: node.tagName, text: original ? (node.tagName === "SCRIPT" ? branding.code(node.textContent || "") : branding.text(node.textContent || "")) : node.textContent, href: original && node.hasAttribute("href") ? branding.code(node.getAttribute("href")!) : node.getAttribute("href") }));
       };
-      return JSON.stringify(authored(original)) === JSON.stringify(authored(source!));
+      return JSON.stringify(authored(original, true)) === JSON.stringify(authored(source!));
     }, { id: guide.id, source });
     expect(preserved, guide.id).toBe(true);
     const frame = page.frameLocator("#guide-reader-frame");
@@ -129,6 +130,15 @@ test("all indexed majors and provinces open with dark surfaces on mobile", async
       const surface = kind === "major" ? "#major-document .hero" : "#province-document .province-chapter";
       await expect(page.locator(surface).first(), item.id).toHaveCSS("background-color", "rgb(10, 32, 40)");
       expect(await page.evaluate(() => document.documentElement.scrollWidth), item.id).toBeLessThanOrEqual(390);
+      const oldBrand = await page.locator(`#${kind}-document`).evaluate((root) => {
+        const bad = /\bAris(?:[\s_-]*Academy)?\b|(?<![\p{L}])[اآ]ریس(?![\p{L}])/iu;
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        while (walker.nextNode()) if (!walker.currentNode.parentElement?.closest("style,script") && bad.test(walker.currentNode.textContent || "")) return true;
+        return Array.from(root.querySelectorAll("a[href],[aria-label],[alt]")).some((node) => ["href", "aria-label", "alt"].some((attr) => bad.test(node.getAttribute(attr) || "")));
+      });
+      expect(oldBrand, item.id).toBe(false);
+      await expect(page.locator(`#${kind}-document .aris-footer-join`), item.id).toHaveAttribute("href", "https://t.me/Flow_KonKour");
+      await expect(page.locator(`#${kind}-document .flow-footer-logo`), item.id).toHaveCount(1);
     }
   }
 });
@@ -143,9 +153,9 @@ test("guide screen theming preserves the original print colors", async ({ page }
     }, id);
     const frameElement = page.locator("#guide-reader-frame");
     const expectedTitle = await page.evaluate((html) => new DOMParser().parseFromString(html, "text/html").title, original);
-    const colors = async () => {
+    const colors = async (title = expectedTitle) => {
       const frame = await (await frameElement.elementHandle())!.contentFrame();
-      await frame!.waitForFunction((title) => document.title === title, expectedTitle);
+      await frame!.waitForFunction((title) => document.title === title, title);
       return frame!.evaluate(() => Array.from(document.querySelectorAll("body,p,th,td,.section,.aris-source-doc"))
         .slice(0, 50).map((node) => {
           const style = getComputedStyle(node);
@@ -160,6 +170,7 @@ test("guide screen theming preserves the original print colors", async ({ page }
     // A different document title prevents accidentally reading the previous frame.
     await expect.poll(() => frameElement.getAttribute("srcdoc")).toContain("data-flow-document-theme");
     await page.waitForFunction(() => (document.getElementById("guide-reader-frame") as HTMLIFrameElement).contentDocument?.documentElement.hasAttribute("data-flow-theme"));
-    expect(await colors(), id).toEqual(before);
+    const brandedTitle = await page.evaluate((title) => (window as unknown as { FlowBranding: { text(value: string): string } }).FlowBranding.text(title), expectedTitle);
+    expect(await colors(brandedTitle), id).toEqual(before);
   }
 });

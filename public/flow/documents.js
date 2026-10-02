@@ -33,6 +33,8 @@
       let meta = doc.head.querySelector('meta[name="theme-color"]');
       if (!meta) { meta = doc.createElement("meta"); meta.name = "theme-color"; doc.head.append(meta); }
       meta.content = "#031319";
+      // Prepare static and dynamically generated branding before srcdoc paints.
+      window.FlowBranding.document(doc);
       return "<!DOCTYPE html>" + doc.documentElement.outerHTML;
     },
   };

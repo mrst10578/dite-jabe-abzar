@@ -2,6 +2,7 @@ import { readFile, writeFile, mkdir, cp } from "node:fs/promises";
 import { parse, serialize } from "parse5";
 import { append, attr, before, markup, nodes, one, projectHome } from "./flow-home.mjs";
 import { documentTheme, themeCss } from "./flow-document-theme.mjs";
+import { brandTree, branding } from "./flow-branding.mjs";
 
 const source = await readFile("public/index.html", "utf8");
 const manifest = JSON.parse(await readFile("public/flow/assets/manifest.json", "utf8"));
@@ -39,6 +40,7 @@ preview = setMeta(preview, "property", "og:site_name", "Flow");
 
 const document = parse(preview);
 projectHome(document, manifest);
+brandTree(document);
 const text = (node) => node.childNodes.map((child) => child.value ?? "").join("");
 const setText = (node, value) => { node.childNodes = [{ nodeName: "#text", value, parentNode: node }]; };
 for (const style of nodes(document, (node) => node.tagName === "style" && !(attr(node, "id") ?? "").startsWith("__ARYO_"))) {
@@ -55,14 +57,18 @@ for (const source of [...guides.map((guide) => guide.document), compass]) {
   themes[title] = theme;
 }
 const tokens = await readFile("public/flow/tokens.css", "utf8");
-const documentCss = tokens + await readFile("public/flow/documents.css", "utf8");
+const brandCss = await readFile("public/flow/branding.css", "utf8");
+const brandRuntime = await readFile("public/flow/branding.js", "utf8");
+const documentCss = tokens + await readFile("public/flow/documents.css", "utf8") + brandCss;
 const documentRuntime = await readFile("public/flow/documents.js", "utf8");
 const head = one(document, (node) => node.tagName === "head", "head");
 append(head, markup(`<style data-flow-tokens>${tokens}</style>`));
 append(head, markup('<link rel="stylesheet" href="/flow/theme.css">'));
 append(head, markup('<link rel="stylesheet" href="/flow/surfaces.css">'));
 append(head, markup('<link rel="stylesheet" href="/flow/reader.css">'));
+append(head, markup('<link rel="stylesheet" href="/flow/branding.css">'));
 append(head, markup('<script src="/flow/theme.js" defer></script>'));
+append(head, markup(`<script data-flow-branding>${brandRuntime}</script>`));
 const configuration = JSON.stringify([themes, documentCss]).replace(/</g, "\\u003c");
 append(head, markup(`<script data-flow-documents>${documentRuntime}\nwindow.FlowDocuments.configure(...${configuration});</script>`));
 
@@ -73,8 +79,19 @@ function integrate(node, oldCode, newCode) {
 }
 integrate(one(document, (node) => attr(node, "data-aris-module") === "selection-guide-browser", "guide runtime"),
   "frame.srcdoc=guide.document;", "frame.srcdoc=window.FlowDocuments.theme(guide.document);");
+integrate(one(document, (node) => attr(node, "data-aris-module") === "selection-guide-browser", "guide runtime"),
+  "guides.forEach(function(g,index){", 'guides.forEach(function(g,index){ ["title","description","eyebrow","categoryLabel"].forEach(function(key){if(typeof g[key]==="string")g[key]=window.FlowBranding.text(g[key]);});');
 integrate(id("aris-compass-host"), "frame.srcdoc = source;", "frame.srcdoc = window.FlowDocuments.theme(source);");
+// Rebrand the optional verification panel's copy while preserving its original
+// signed records, identifiers and verification API.
+integrate(id("__ARYO_ARIS_OWNERSHIP__runtime"), "بررسی مالکیت آریس", "بررسی منشأ فایل");
+integrate(id("__ARYO_ARIS_OWNERSHIP__runtime"), "محتوای آریس", "محتوای سایت");
 const nativeRuntime = one(document, (node) => attr(node, "data-aris-module") === "search-and-content", "native reader runtime");
+integrate(nativeRuntime, "majorDocument.innerHTML = content;", "majorDocument.innerHTML = window.FlowBranding.html(content);");
+integrate(nativeRuntime, "provinceDocument.innerHTML = content;", "provinceDocument.innerHTML = window.FlowBranding.html(content);");
+integrate(nativeRuntime, 'enhanceDossier(majorDocument, "major");', 'enhanceDossier(majorDocument, "major"); window.FlowBranding.document(majorDocument);');
+integrate(nativeRuntime, 'enhanceDossier(provinceDocument, "province");', 'enhanceDossier(provinceDocument, "province"); window.FlowBranding.document(provinceDocument);');
+integrate(nativeRuntime, '<svg class="aris-footer-mark" viewBox="0 0 120 148" aria-hidden="true"><use href="#aris-sigil-shape"></use></svg>', branding.image);
 // Install the existing adapter before native injection. Mutation observers run
 // at its microtask checkpoint, before a dossier can be painted in legacy colors.
 before(nativeRuntime, markup(`<script data-flow-reader-bootstrap>${await readFile("public/flow/reader.js", "utf8")}</script>`));
