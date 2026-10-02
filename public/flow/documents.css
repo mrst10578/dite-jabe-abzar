@@ -1,0 +1,17 @@
+/* Each child owns its theme before navigation; print remains source-controlled. */
+@media screen {
+  html[data-flow-theme] { background: var(--flow-bg); color-scheme: dark; }
+  html[data-flow-theme] body {
+    /* Legacy documents also contain important body gradients. Keep this single
+       screen-canvas override authoritative; component declarations are compiled. */
+    background: var(--flow-bg) !important;
+    color: var(--flow-text);
+    font-family: var(--flow-font);
+  }
+  html[data-flow-theme] :is(h1,h2,h3,h4,strong,b) { color: var(--flow-text); }
+  html[data-flow-theme] :is(a,button,input,select,textarea,summary):focus-visible {
+    outline: 2px solid var(--flow-cyan); outline-offset: 3px;
+  }
+  html[data-flow-theme] :is(input,select,textarea) { color-scheme: dark; }
+  html[data-flow-theme] ::selection { background: #315c68; color: #f7f2e2; }
+}

@@ -157,27 +157,4 @@
   new MutationObserver(enhanceReader).observe(viewer, { attributes: true, attributeFilter: ["hidden"] });
   enhanceReader();
 
-  // Reuse the native close/history path before focusing a home search. The home
-  // navigation otherwise tries to focus a field hidden by the open reader.
-  document.querySelector(".flow-navigation")?.addEventListener("click", function (event) {
-    if (document.body.dataset.flowReader !== "major") return;
-    const link = event.target instanceof Element ? event.target.closest("a") : null;
-    const target = link?.hash ? document.getElementById(link.hash.slice(1)) : null;
-    const closeButton = document.getElementById("major-viewer-close");
-    if (!target || !closeButton) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    const observer = new MutationObserver(finish);
-    function finish() {
-      if (!viewer.hidden) return;
-      observer.disconnect();
-      window.requestAnimationFrame(function () {
-        target.scrollIntoView({ block: "center", behavior: "auto" });
-        target.focus({ preventScroll: true });
-      });
-    }
-    observer.observe(viewer, { attributes: true, attributeFilter: ["hidden"] });
-    closeButton.click();
-    finish();
-  }, true);
 }());

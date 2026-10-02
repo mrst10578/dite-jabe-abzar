@@ -1,0 +1,26 @@
+/* Color-only coverage for the native layouts, independent of pilot adapters. */
+@media screen {
+html[data-flow-theme] :is(#major-viewer,#province-viewer) {
+  --aris-bg: var(--flow-bg); --aris-surface: var(--flow-surface);
+  --aris-text: var(--flow-text); --aris-gold: var(--flow-cyan);
+  --aris-gold-light: var(--flow-green); --aris-muted: var(--flow-muted);
+  --aris-border: var(--flow-border);
+  background: var(--flow-bg); color: var(--flow-text);
+}
+html[data-flow-theme] :is(#major-document,#province-document) :is(.hero,.card,.box,.section,.aris-snapshot,.aris-comparison,.aris-content-section) {
+  background: var(--flow-surface); color: var(--flow-text); border-color: var(--flow-border);
+}
+html[data-flow-theme] #province-document :is(.province-chapter,.province-chapter__header) {
+  background: var(--flow-surface); color: var(--flow-text); border-color: var(--flow-border);
+}
+html[data-flow-theme] :is(.major-viewer__toolbar,.province-viewer__toolbar,.guide-reader__bar,#aris-compass-toolbar) {
+  background: var(--flow-bg); color: var(--flow-text); border-color: var(--flow-border);
+}
+html[data-flow-theme] :is(#guide-reader,#aris-compass-dialog,#aris-compass-loading) {
+  background: var(--flow-bg); color: var(--flow-text); border-color: var(--flow-border);
+}
+html[data-flow-theme] :is(#guide-reader,#aris-compass-dialog)::backdrop { background: #031319e8; }
+html[data-flow-theme] :is(#guide-reader-frame,#aris-compass-frame) { background: var(--flow-bg); color-scheme: dark; }
+html[data-flow-theme] body:is(.has-major-viewer,.has-province-viewer) :is(#aris-selection-module,.flow-other-tools,.aris-home-footer) { display: none; }
+html[data-flow-theme] body:is(.has-major-viewer,.has-province-viewer) .ambient-scene { display: none; }
+}
