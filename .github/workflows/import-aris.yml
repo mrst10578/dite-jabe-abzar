@@ -13,12 +13,12 @@ jobs:
   assemble:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: "22"
       - name: Restore exact original file
-        run: node scripts/build-static.mjs
+        run: FORCE_ARIS_IMPORT=1 node scripts/build-static.mjs
       - name: Commit original HTML and remove transfer chunks
         run: |
           git config user.name "github-actions[bot]"
