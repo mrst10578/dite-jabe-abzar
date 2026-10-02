@@ -51,6 +51,31 @@
       }
     });
 
+    // The original flat H2's closest section was the outer viewer, so the
+    // market button captured the viewer as its target before these wrappers
+    // existed. Correct only that pilot jump, keeping the other native bindings.
+    const marketHeading = Array.from(page.querySelectorAll("h2")).find(function (heading) {
+      return /بازار کار|محیط کار|فرصت.{0,12}شغلی|درآمد|واقعیت.{0,10}کار/.test(heading.textContent);
+    });
+    const marketSection = marketHeading?.closest(".flow-reader-section");
+    if (marketSection) {
+      marketSection.dataset.arisSection = "market";
+      marketSection.tabIndex = -1;
+      const nav = page.querySelector("[data-aris-quick-nav]");
+      nav.addEventListener("click", function (event) {
+        const button = event.target.closest('[data-aris-jump="market"]');
+        if (!button) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        nav.querySelectorAll("button").forEach(function (item) {
+          item.classList.toggle("is-active", item === button);
+        });
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        marketSection.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+        marketSection.focus({ preventScroll: true });
+      }, true);
+    }
+
     // These are portal-generated promotional blocks, not the authored article.
     // Retain the original author credit and all editorial/source references.
     const footer = root.querySelector(".aris-dossier-footer");
