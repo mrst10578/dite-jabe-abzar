@@ -1,0 +1,127 @@
+/* One Flow major-reader pilot. Every rule is gated; other dossier types retain
+   their current layout. Shared colour/spacing values come from tokens.css. */
+html[data-flow-theme] body[data-flow-reader="major"] #aris-selection-module,
+html[data-flow-theme] body[data-flow-reader="major"] .aris-home-footer { display: none; }
+
+body[data-flow-reader="major"] #major-viewer {
+  --aris-text: var(--flow-text);
+  --aris-gold: var(--flow-cyan);
+  --aris-gold-light: var(--flow-green);
+  max-width: 1120px; width: 100%; margin: 20px auto 64px;
+  border: 0; outline: none; padding: 0; background: transparent; box-shadow: none;
+}
+body[data-flow-reader="major"] #major-viewer:focus-visible { outline: none; }
+body[data-flow-reader="major"] #major-viewer .major-viewer__toolbar {
+  border: 0; border-bottom: 1px solid var(--flow-border); border-radius: 0;
+  padding: 12px 4px; margin: 0 0 24px; background: var(--flow-bg);
+  box-shadow: none; backdrop-filter: none; gap: 16px;
+}
+body[data-flow-reader="major"] #major-viewer .major-viewer__star,
+body[data-flow-reader="major"] #major-viewer .major-viewer__channel { display: none; }
+body[data-flow-reader="major"] #major-viewer .major-viewer__kicker { color: var(--flow-muted); font-size: 12px; }
+body[data-flow-reader="major"] #major-viewer .major-viewer__title { color: var(--flow-text); font-size: 14px; }
+body[data-flow-reader="major"] #major-viewer .major-viewer__domain { color: var(--flow-green); }
+body[data-flow-reader="major"] #major-viewer .major-viewer__close {
+  min-height: 44px; padding: 8px 16px; border-radius: 12px;
+  color: var(--flow-text); border: 1px solid var(--flow-border); background: var(--flow-surface);
+}
+body[data-flow-reader="major"] #major-document { padding: 0; border: 0; background: transparent; }
+body[data-flow-reader="major"] #major-document .page { max-width: none; width: 100%; padding: 0; margin: 0; background: transparent; }
+body[data-flow-reader="major"] #major-document .hero {
+  min-height: 270px; position: relative; display: flex; align-items: center;
+  padding: 36px 40px; margin: 0 0 20px; overflow: hidden;
+  border: 1px solid var(--flow-border); border-radius: 24px;
+  background: var(--flow-surface); box-shadow: none;
+}
+body[data-flow-reader="major"] #major-document .hero::before,
+body[data-flow-reader="major"] #major-document .hero::after { display: none; }
+body[data-flow-reader="major"] #major-document .hero-copy { width: 70%; position: relative; z-index: 1; }
+body[data-flow-reader="major"] #major-document .eyebrow { display: block !important; color: var(--flow-cyan); font-size: 13px; font-weight: 600; margin-bottom: 14px; }
+body[data-flow-reader="major"] #major-document h1 { font-size: clamp(28px,3.6vw,42px); line-height: 1.6; color: var(--flow-text); }
+body[data-flow-reader="major"] #major-document .hero p { color: var(--flow-muted); font-size: 16px; max-width: 42ch; }
+body[data-flow-reader="major"] #major-document .hero-tags { margin-top: 22px; gap: 8px; }
+body[data-flow-reader="major"] #major-document .hero-tags span { color: var(--flow-green); border-color: #31584a; background: #112d29; padding: 6px 12px; font-size: 12px; }
+body[data-flow-reader="major"] #major-document .flow-reader-art { position: absolute; left: 20px; width: 280px; height: 280px; object-fit: contain; opacity: .95; }
+body[data-flow-reader="major"] #major-document .aris-quick-nav {
+  display: flex; flex-direction: row; align-items: center; gap: 12px;
+  padding: 8px 12px; margin: 0 0 24px; border-radius: 14px;
+  color: var(--flow-muted); background: var(--flow-bg); border: 1px solid var(--flow-border); box-shadow: none;
+}
+body[data-flow-reader="major"] #major-document .aris-quick-nav > div { display: flex; overflow-x: auto; min-width: 0; gap: 4px; padding: 2px; scrollbar-width: thin; }
+body[data-flow-reader="major"] #major-document .aris-quick-nav button { min-height: 44px; padding: 10px 14px; font-size: 13px; border-radius: 8px; color: var(--flow-muted); }
+body[data-flow-reader="major"] #major-document .aris-quick-nav button:hover,
+body[data-flow-reader="major"] #major-document .aris-quick-nav button.is-active { color: var(--flow-cyan); background: var(--flow-surface); border-color: var(--flow-cyan); }
+body[data-flow-reader="major"] #major-document :is(button,a,summary):focus-visible { outline: 2px solid var(--flow-cyan); outline-offset: 3px; }
+body[data-flow-reader="major"] #major-document :is(.flow-reader-section,.aris-content-section,.aris-snapshot,.aris-comparison) {
+  min-width: 0; padding: 28px 32px; margin: 0 0 20px;
+  border: 1px solid var(--flow-border); border-radius: 20px; background: var(--flow-surface); box-shadow: none;
+}
+body[data-flow-reader="major"] #major-document h2 { color: var(--flow-text); font-size: 24px; line-height: 1.7; border: 0; padding: 0; margin: 0 0 16px; }
+body[data-flow-reader="major"] #major-document h3 { color: var(--flow-green); font-size: 17px; line-height: 1.8; }
+body[data-flow-reader="major"] #major-document :is(p,li,dd) { color: #d1e0e2; font-size: 16px; line-height: 2.1; }
+body[data-flow-reader="major"] #major-document p { max-width: 86ch; margin: 12px 0; }
+body[data-flow-reader="major"] #major-document ul { padding-inline-start: 24px; margin: 14px 0; }
+body[data-flow-reader="major"] #major-document li { margin-bottom: 8px; }
+body[data-flow-reader="major"] #major-document li::marker { color: var(--flow-cyan); }
+body[data-flow-reader="major"] #major-document a { color: var(--flow-cyan); text-underline-offset: 4px; overflow-wrap: anywhere; }
+body[data-flow-reader="major"] #major-document .aris-decision-head > span { color: var(--flow-green); font-size: 12px; }
+body[data-flow-reader="major"] #major-document .aris-snapshot-grid { gap: 12px; }
+body[data-flow-reader="major"] #major-document :is(.aris-snapshot-grid article,.aris-compare-card,.card,.box) {
+  padding: 20px; background: #0c2730; border: 1px solid #2a4f5a; border-radius: 14px; box-shadow: none;
+}
+body[data-flow-reader="major"] #major-document .aris-card-label,
+body[data-flow-reader="major"] #major-document :is(.card b,.grid strong,dt) { color: var(--flow-cyan); }
+body[data-flow-reader="major"] #major-document .aris-snapshot-grid p { font-size: 14px; line-height: 2; }
+body[data-flow-reader="major"] #major-document :is(.aris-snapshot-alert,.box.good,.aris-compare-card.is-current) { border-color: #437456; background: #112e29; }
+body[data-flow-reader="major"] #major-document :is(.box.caution,.note,.aris-compare-rule) { border-color: #746844; background: #242b24; color: var(--flow-text); }
+body[data-flow-reader="major"] #major-document .aris-current-tag { background: #224535; color: var(--flow-green); border: 0; }
+body[data-flow-reader="major"] #major-document :is(.aris-comparison-details,.aris-evidence) { border: 1px solid var(--flow-border); border-radius: 12px; background: var(--flow-bg); color: var(--flow-muted); box-shadow: none; }
+body[data-flow-reader="major"] #major-document summary { min-height: 48px; padding: 12px 16px; color: var(--flow-cyan); font-size: 14px; }
+body[data-flow-reader="major"] #major-document .aris-comparison-body { padding: 20px; }
+body[data-flow-reader="major"] #major-document .lead { border: 0; border-inline-start: 3px solid var(--flow-green); background: transparent; padding: 8px 24px; margin: 28px 8px; box-shadow: none; border-radius: 0; }
+body[data-flow-reader="major"] #major-document .grid { margin: 20px 0 28px; gap: 16px; }
+body[data-flow-reader="major"] #major-document :is(.table-wrap,.aris-table-shell) { border: 1px solid var(--flow-border); border-radius: 12px; background: var(--flow-bg); box-shadow: none; }
+body[data-flow-reader="major"] #major-document table { color: #d1e0e2; font-size: 14px; background: transparent; }
+body[data-flow-reader="major"] #major-document :is(th,td) { padding: 14px 18px; border-color: #27434c; background: transparent; line-height: 1.9; }
+body[data-flow-reader="major"] #major-document th { color: var(--flow-cyan); background: #102b34; }
+body[data-flow-reader="major"] #major-document tr:nth-child(even) td { background: #0b2028; }
+body[data-flow-reader="major"] #major-document .table-scroll-guide { background: #132d35; color: var(--flow-muted); border-color: var(--flow-border); }
+body[data-flow-reader="major"] #major-document .aris-inline-invite { border: 1px solid #437456; background: #112e29; border-radius: 16px; margin: 24px 0; padding: 20px 28px; box-shadow: none; }
+body[data-flow-reader="major"] #major-document .aris-inline-invite a { color: var(--flow-green); border-color: #437456; background: transparent; }
+body[data-flow-reader="major"] #major-document .aris-dossier-footer { background: var(--flow-surface); border: 1px solid var(--flow-border); border-radius: 20px; margin-top: 28px; padding: 32px; box-shadow: none; }
+body[data-flow-reader="major"] #major-document .aris-footer-mark { display: none; }
+body[data-flow-reader="major"] #major-document .aris-footer-eyebrow { color: var(--flow-green); font-size: 13px; }
+body[data-flow-reader="major"] #major-document .aris-footer-title { color: var(--flow-text); }
+body[data-flow-reader="major"] #major-document .aris-footer-join { background: var(--flow-cyan); color: var(--flow-bg); border-color: var(--flow-cyan); border-radius: 12px; min-height: 44px; }
+body[data-flow-reader="major"] #major-document .aris-footer-bottom { border-color: var(--flow-border); }
+body[data-flow-reader="major"] #major-document .aris-footer-credit { color: var(--flow-muted); font-size: 12px; }
+body[data-flow-reader="major"] #major-document .aris-footer-tools button { min-height: 44px; color: var(--flow-cyan); background: transparent; border-color: var(--flow-border); }
+
+@media (max-width: 720px) {
+  body[data-flow-reader="major"] .main { width: calc(100% - 32px); padding: 0; margin-inline: auto; }
+  body[data-flow-reader="major"] #major-viewer { margin-top: 8px; }
+  body[data-flow-reader="major"] #major-viewer .major-viewer__toolbar { margin-bottom: 16px; gap: 8px; }
+  body[data-flow-reader="major"] #major-viewer .major-viewer__labels { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
+  body[data-flow-reader="major"] #major-viewer .major-viewer__kicker { display: none; }
+  body[data-flow-reader="major"] #major-viewer .major-viewer__title { font-size: 12px; }
+  body[data-flow-reader="major"] #major-viewer .major-viewer__domain { font-size: 10px; }
+  body[data-flow-reader="major"] #major-viewer .major-viewer__close { font-size: 11px; padding: 8px 10px; }
+  body[data-flow-reader="major"] #major-document .hero { min-height: 0; padding: 24px 22px; border-radius: 18px; }
+  body[data-flow-reader="major"] #major-document .hero-copy { width: 100%; }
+  body[data-flow-reader="major"] #major-document .flow-reader-art { display: none; }
+  body[data-flow-reader="major"] #major-document h1 { font-size: 28px; }
+  body[data-flow-reader="major"] #major-document .hero p { font-size: 14px; }
+  body[data-flow-reader="major"] #major-document .hero-tags span { font-size: 10px; padding: 5px 8px; }
+  body[data-flow-reader="major"] #major-document .aris-quick-nav { padding: 6px; gap: 0; margin-bottom: 16px; }
+  body[data-flow-reader="major"] #major-document .aris-quick-nav > span { display: none; }
+  body[data-flow-reader="major"] #major-document .aris-quick-nav button { font-size: 12px; padding: 8px 12px; }
+  body[data-flow-reader="major"] #major-document :is(.flow-reader-section,.aris-content-section,.aris-snapshot,.aris-comparison) { padding: 22px 18px; border-radius: 16px; margin-bottom: 16px; }
+  body[data-flow-reader="major"] #major-document h2 { font-size: 20px; }
+  body[data-flow-reader="major"] #major-document :is(p,li,dd) { font-size: 15px; line-height: 2; }
+  body[data-flow-reader="major"] #major-document :is(.aris-snapshot-grid,.aris-compare-grid,.grid) { grid-template-columns: 1fr; }
+  body[data-flow-reader="major"] #major-document :is(.aris-snapshot-grid article,.aris-compare-card,.card,.box) { padding: 16px; }
+  body[data-flow-reader="major"] #major-document .aris-comparison-body { padding: 12px; }
+  body[data-flow-reader="major"] #major-document :is(th,td) { padding: 12px; }
+  body[data-flow-reader="major"] #major-document .aris-inline-invite { padding: 20px; }
+  body[data-flow-reader="major"] #major-document .aris-dossier-footer { padding: 24px 20px; }
+}
