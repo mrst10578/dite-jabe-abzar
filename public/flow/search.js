@@ -7,7 +7,7 @@
   ].map(function (selectors) { return selectors.map(function (selector) { return document.querySelector(selector); }); });
   let frame = 0;
   function desktopViewport() {
-    return document.documentElement.dataset.flowViewport === "desktop" && window.matchMedia("(min-width: 1440px)").matches;
+    return document.documentElement.dataset.flowViewport === "desktop" && window.matchMedia("(min-width: 980px)").matches;
   }
   function align(shell) {
     const header = document.querySelector(".site-header");

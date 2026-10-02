@@ -34,10 +34,11 @@ let preview = source
   .replace(/<body\b/, `<body data-flow-assets="${assetState}"`)
   .replace(/<title>[^<]*<\/title>/, "<title>Flow | جعبه ابزار انتخاب رشته</title>");
 
-// Use the same 1440px desktop canvas on phones; browsers fit it to the screen
-// Lower the browser’s default zoom-out floor so 320px phones fit the canvas too.
-// Pinch zoom stays enabled; desktop browsers keep their normal viewport.
-preview = setMeta(preview, "name", "viewport", "width=1440, minimum-scale=0.1, viewport-fit=cover");
+// Match the supplied reference: Chrome’s 980px desktop canvas on phones.
+// Browsers fit it to the screen with horizontal forms and stacked support rows.
+// Retain pinch zoom and the relaxed zoom-out limit.
+// Desktop browsers keep their normal viewport.
+preview = setMeta(preview, "name", "viewport", "width=980, minimum-scale=0.1, viewport-fit=cover");
 preview = setMeta(preview, "name", "application-name", "Flow");
 preview = setMeta(preview, "name", "description", "رشته‌شناسی، استان‌شناسی و راهنمای انتخاب رشته در Flow");
 preview = setMeta(preview, "name", "theme-color", "#031319");
