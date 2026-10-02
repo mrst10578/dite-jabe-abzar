@@ -7,41 +7,27 @@
 
   const homeTitle = document.title;
 
-  // The pilot is deliberately one real dossier. Luna can extend this allowlist
-  // after checking each content family; names and URL text are not selectors.
-  const pilotProfiles = new Set(["computer-engineering"]);
+  // Roll out through an explicit adapter registry. These profiles were inspected
+  // in the real reader first; all other majors intentionally keep the legacy UI.
+  const majorAdapters = new Map([
+    ["computer-engineering", { family: "engineering" }],
+    ["medicine", { family: "health" }],
+    ["law", { family: "humanities" }],
+    ["graphic-design", { family: "art" }],
+    ["psychology", { family: "humanities" }],
+  ]);
 
-  function enhanceReader() {
-    const page = root.querySelector(".page[data-aris-profile]");
-    const active = !viewer.hidden && page && pilotProfiles.has(page.dataset.arisProfile);
-    const wasFlowReader = document.body.dataset.flowReader === "major";
-    if (!active) {
-      if (wasFlowReader && viewer.hidden) document.title = homeTitle;
-      delete document.body.dataset.flowReader;
-      return;
-    }
-    document.body.dataset.flowReader = "major";
-    const viewerTitle = document.getElementById("major-viewer-title")?.textContent?.trim();
-    document.title = (viewerTitle || "رشته‌شناسی") + " | Flow";
-    if (page.dataset.flowReaderTemplate) return;
-    page.dataset.flowReaderTemplate = "1";
+  function getAdapter(page) {
+    return page ? majorAdapters.get(page.dataset.arisProfile) : null;
+  }
 
-    const hero = page.querySelector("header.hero");
-    const eyebrow = hero?.querySelector(".eyebrow");
-    if (eyebrow) eyebrow.textContent = "رشته‌شناسی · Flow";
-    if (hero) {
-      const art = document.createElement("img");
-      art.className = "flow-reader-art";
-      art.src = "/flow/assets/guide-book.webp";
-      art.alt = "";
-      art.width = 1254;
-      art.height = 1254;
-      art.decoding = "async";
-      hero.append(art);
-    }
+  function clearReaderState(wasFlowReader) {
+    if (wasFlowReader && viewer.hidden) document.title = homeTitle;
+    delete document.body.dataset.flowReader;
+    delete document.body.dataset.flowReaderFamily;
+  }
 
-    // Group the legacy flat heading + content runs without cloning or rewriting
-    // their nodes. Existing jump listeners, tables, details and references survive.
+  function wrapFlatSections(page) {
     let section = null;
     Array.from(page.children).forEach(function (node) {
       if (node.tagName === "H2") {
@@ -55,36 +41,35 @@
         section = null;
       }
     });
+  }
 
-    // The original flat H2's closest section was the outer viewer, so the
-    // market button captured the viewer as its target before these wrappers
-    // existed. Correct only that pilot jump, keeping the other native bindings.
+  function repairMarketJump(page) {
     const marketHeading = Array.from(page.querySelectorAll("h2")).find(function (heading) {
       return /بازار کار|محیط کار|فرصت.{0,12}شغلی|درآمد|واقعیت.{0,10}کار/.test(heading.textContent);
     });
     const marketSection = marketHeading?.closest(".flow-reader-section");
     const nav = page.querySelector("[data-aris-quick-nav]");
-    if (marketSection && nav) {
-      marketSection.dataset.arisSection = "market";
-      marketSection.tabIndex = -1;
-      nav.addEventListener("click", function (event) {
-        const button = event.target instanceof Element
-          ? event.target.closest('[data-aris-jump="market"]')
-          : null;
-        if (!button) return;
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        nav.querySelectorAll("button").forEach(function (item) {
-          item.classList.toggle("is-active", item === button);
-        });
-        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        marketSection.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
-        marketSection.focus({ preventScroll: true });
-      }, true);
-    }
+    if (!marketSection || !nav) return;
 
-    // These are portal-generated promotional blocks, not the authored article.
-    // Retain the original author credit and all editorial/source references.
+    marketSection.dataset.arisSection = "market";
+    marketSection.tabIndex = -1;
+    nav.addEventListener("click", function (event) {
+      const button = event.target instanceof Element
+        ? event.target.closest('[data-aris-jump="market"]')
+        : null;
+      if (!button) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      nav.querySelectorAll("button").forEach(function (item) {
+        item.classList.toggle("is-active", item === button);
+      });
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      marketSection.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+      marketSection.focus({ preventScroll: true });
+    }, true);
+  }
+
+  function brandPortalChrome(page) {
     const footer = root.querySelector(".aris-dossier-footer");
     if (footer) {
       footer.setAttribute("aria-label", "پایان راهنما و همراهی با Flow");
@@ -101,21 +86,64 @@
         if (link.classList.contains("aris-footer-handle")) link.dir = "ltr";
       });
     }
+
     const invite = page.querySelector(".aris-inline-invite");
-    if (invite) {
-      invite.setAttribute("aria-label", "ادامهٔ مسیر با Flow");
-      const paragraph = invite.querySelector("p");
-      if (paragraph) {
-        const strong = paragraph.querySelector("b");
-        if (strong) paragraph.replaceChildren(strong, "راهنماهای بعدی را در کانال Flow دنبال کن.");
-        else paragraph.textContent = "راهنماهای بعدی را در کانال Flow دنبال کن.";
-      }
-      const link = invite.querySelector("a");
-      if (link) {
-        link.href = "https://t.me/Flow_Konkour";
-        link.textContent = "همراه Flow شو ↗";
-      }
+    if (!invite) return;
+    invite.setAttribute("aria-label", "ادامهٔ مسیر با Flow");
+    const paragraph = invite.querySelector("p");
+    if (paragraph) {
+      const strong = paragraph.querySelector("b");
+      if (strong) paragraph.replaceChildren(strong, "راهنماهای بعدی را در کانال Flow دنبال کن.");
+      else paragraph.textContent = "راهنماهای بعدی را در کانال Flow دنبال کن.";
     }
+    const link = invite.querySelector("a");
+    if (link) {
+      link.href = "https://t.me/Flow_Konkour";
+      link.textContent = "همراه Flow شو ↗";
+    }
+  }
+
+  function enhanceReader() {
+    const page = root.querySelector(".page[data-aris-profile]");
+    const adapter = getAdapter(page);
+    const active = !viewer.hidden && page && adapter;
+    const wasFlowReader = document.body.dataset.flowReader === "major";
+
+    if (!active) {
+      clearReaderState(wasFlowReader);
+      return;
+    }
+
+    document.body.dataset.flowReader = "major";
+    document.body.dataset.flowReaderFamily = adapter.family;
+    const viewerTitle = document.getElementById("major-viewer-title")?.textContent?.trim();
+    document.title = (viewerTitle || "رشته‌شناسی") + " | Flow";
+
+    if (page.dataset.flowReaderTemplate) return;
+    page.dataset.flowReaderTemplate = "1";
+    page.dataset.flowReaderAdapter = adapter.family;
+
+    const hero = page.querySelector("header.hero");
+    const eyebrow = hero?.querySelector(".eyebrow");
+    if (eyebrow) eyebrow.textContent = "رشته‌شناسی · Flow";
+    if (hero) {
+      const art = document.createElement("img");
+      art.className = "flow-reader-art";
+      art.src = "/flow/assets/guide-book.webp";
+      art.alt = "";
+      art.width = 1254;
+      art.height = 1254;
+      art.decoding = "async";
+      hero.append(art);
+    }
+
+    // All five inspected families share the same flat H2 runs, while their lead,
+    // table and evidence blocks vary. Wrap only those flat runs and leave authored
+    // structural sections untouched.
+    wrapFlatSections(page);
+    repairMarketJump(page);
+    brandPortalChrome(page);
+
     // On direct links the original runtime can scroll before the deferred Flow
     // styles hide the home guide hub. Align once after the final reader layout.
     window.requestAnimationFrame(function () {
