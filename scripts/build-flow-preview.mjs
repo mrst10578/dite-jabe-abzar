@@ -13,11 +13,10 @@ const preview = source
   .replace(/<html\b([^>]*)>/, '<html$1 data-flow-theme="midnight">')
   .replace(/<body\b/, `<body data-flow-assets="${assetState}"`)
   .replace(/<title>[^<]*<\/title>/, "<title>Flow | جعبه ابزار انتخاب رشته</title>")
-  .replace("</head>", '<link rel="stylesheet" href="/flow/theme.css"><script src="/flow/theme.js" defer></script></head>');
+  .replace("</head>", '<link rel="stylesheet" href="/flow/theme.css"><link rel="stylesheet" href="/flow/reader.css"><script src="/flow/theme.js" defer></script><script src="/flow/reader.js" defer></script></head>');
 await writeFile("public/flow-preview.html", preview);
 await mkdir("dist", { recursive: true });
 await writeFile("dist/flow-preview.html", preview);
 await writeFile("dist/index.html", preview);
 await cp("public/flow", "dist/flow", { recursive: true });
 console.log(`Flow preview prepared; assets: ${assetState}. Original toolbox preserved.`);
-
