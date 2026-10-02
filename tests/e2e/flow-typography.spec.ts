@@ -47,6 +47,13 @@ async function settled(target: Page | Frame) {
 }
 
 async function metrics(target: Page | Frame, selector = "body"): Promise<Metric[]> {
+  // Exercise disclosure content too. Chromium can retain phantom range rects
+  // for the first text node inside a closed details element; open the same
+  // panels in both documents before comparing actual rendered typography.
+  await target.locator(selector).evaluate((root) => {
+    root.querySelectorAll("details").forEach((details) => { details.open = true; });
+  });
+  await settled(target);
   return target.locator(selector).evaluate((root) => {
     // Finish finite intro reveals and color fades so both documents are sampled
     // after their authored animation, with the same final text visibility.
