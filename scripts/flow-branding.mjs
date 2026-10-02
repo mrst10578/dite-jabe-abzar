@@ -13,6 +13,9 @@ export function brandTree(root) {
       if (item.name === "href") item.value = branding.code(item.value);
       if (item.name === "content" && node.tagName === "meta" && /^(description|application-name|copyright|og:|twitter:)/.test(attr(node, "name") || attr(node, "property") || "")) item.value = branding.text(item.value);
     }
+    if (node.tagName === "link" && /(?:^|\s)icon(?:\s|$)/.test(attr(node, "rel") || "")) {
+      setAttr(node, "href", "/flow/favicon.svg"); setAttr(node, "type", "image/svg+xml");
+    }
     if (["script", "style"].includes(node.tagName) && !(attr(node, "id") ?? "").startsWith("__ARYO_") && (!attr(node, "type") || attr(node, "type") === "text/javascript")) {
       for (const child of node.childNodes) if (child.value) child.value = branding.code(child.value);
     }

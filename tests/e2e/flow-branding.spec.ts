@@ -53,6 +53,7 @@ test("the no-JavaScript homepage already contains only Flow branding", async ({ 
     await page.goto("/flow-preview.html");
     expect(await brandingFindings(page.locator("html"))).toEqual([]);
     await expect(page.locator(".flow-wordmark")).toHaveAttribute("alt", /flow/i);
+    await expect(page.locator('link[rel="icon"]')).toHaveAttribute("href", "/flow/favicon.svg");
     await expectFlowChannel(page.locator(".aris-home-footer .flow-channel-join"));
     await expect(page.locator(".aris-home-footer")).toContainText("@Flow_KonKour");
   } finally {

@@ -35,6 +35,9 @@
       if (!node.parentElement?.closest("script,style,textarea")) node.nodeValue = text(node.nodeValue);
     }
     root.querySelectorAll("*").forEach(function (element) {
+      if (element.matches('link[rel="icon"],link[rel="shortcut icon"]')) {
+        element.setAttribute("href", "/flow/favicon.svg"); element.setAttribute("type", "image/svg+xml");
+      }
       for (const name of ["title", "alt", "aria-label", "placeholder"]) {
         if (element.hasAttribute(name)) element.setAttribute(name, text(element.getAttribute(name)));
       }
