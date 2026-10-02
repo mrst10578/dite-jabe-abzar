@@ -60,8 +60,9 @@ for (const width of [320, 390, 768]) {
     await expect.poll(async () => page.evaluate(() => {
       const nav = document.querySelector(".aris-quick-nav")!.getBoundingClientRect();
       const heading = Array.from(document.querySelectorAll("#major-document h2"))
-        .find((node) => node.textContent === "مسیرهای شغلی")!;
-      return heading.getBoundingClientRect().top >= nav.bottom - 2;
+        .find((node) => node.textContent === "درآمد و عوامل مؤثر بر آن")!;
+      const top = heading.getBoundingClientRect().top;
+      return top >= nav.bottom - 2 && top < window.innerHeight;
     })).toBe(true);
     await page.locator(".aris-evidence summary").click();
     await expect(page.locator(".aris-evidence")).toHaveAttribute("open", "");
