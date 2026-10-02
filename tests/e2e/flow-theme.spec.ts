@@ -70,18 +70,27 @@ test("filled accent buttons in the boomi guide keep a readable dark label", asyn
 });
 
 test("every guide receives a dark document before srcdoc navigation", async ({ page }) => {
+  const canonical = await readFile("public/index.html", "utf8");
+  const encodedGuides = canonical.match(/<script\b[^>]*\bid="aris-selection-guides-data"[^>]*>([\s\S]*?)<\/script>/)?.[1];
+  expect(encodedGuides).toBeTruthy();
+  const originalGuides: { id: string; document: string }[] = JSON.parse(encodedGuides!);
   await page.goto("/flow-preview.html");
   await page.waitForFunction(() => Boolean((window as unknown as { ArisSelectionModule?: unknown }).ArisSelectionModule));
   const guides = await page.evaluate(() => {
     const data = JSON.parse(document.getElementById("aris-selection-guides-data")!.textContent!);
-    return data.map((guide: { id: string; document: string }) => ({
-      id: guide.id,
-      title: (window as unknown as { FlowBranding: { text(value: string): string } }).FlowBranding.text(new DOMParser().parseFromString(guide.document, "text/html").title),
-    }));
+    return data.map((guide: { id: string }) => ({ id: guide.id }));
   });
   expect(guides).toHaveLength(22);
   for (const guide of guides) {
-    await page.evaluate((id) => (window as unknown as { ArisSelectionModule: { open(id: string): void } }).ArisSelectionModule.open(id), guide.id);
+    await page.evaluate((id) => (window as unknown as { ArisSelectionModule: { open(id: string): Promise<void> } }).ArisSelectionModule.open(id), guide.id);
+    const original = await page.evaluate((id) => {
+      const data = JSON.parse(document.getElementById("aris-selection-guides-data")!.textContent!);
+      return data.find((guide: { id: string }) => guide.id === id).document as string;
+    }, guide.id);
+    // Network hydration must return the authored source byte for byte, not a
+    // rewritten substitute that would make the srcdoc comparison tautological.
+    expect(original, guide.id).toBe(originalGuides.find((item) => item.id === guide.id)!.document);
+    const expectedTitle = await page.evaluate((html) => (window as unknown as { FlowBranding: { text(value: string): string } }).FlowBranding.text(new DOMParser().parseFromString(html, "text/html").title), original);
     const source = await page.locator("#guide-reader-frame").getAttribute("srcdoc");
     expect(source?.includes("data-flow-theme"), guide.id).toBe(true);
     expect(source?.includes("--flow-bg"), guide.id).toBe(true);
@@ -99,7 +108,7 @@ test("every guide receives a dark document before srcdoc navigation", async ({ p
     }, { id: guide.id, source });
     expect(preserved, guide.id).toBe(true);
     const frame = page.frameLocator("#guide-reader-frame");
-    await expect.poll(() => frame.locator("html").evaluate((element) => element.ownerDocument.title)).toBe(guide.title);
+    await expect.poll(() => frame.locator("html").evaluate((element) => element.ownerDocument.title)).toBe(expectedTitle);
     await expect(frame.locator("body")).toHaveCSS("background-color", "rgb(3, 19, 25)");
     await expect(frame.locator("html")).toHaveCSS("color-scheme", "dark");
     const bright = await frame.locator("body").evaluate((body) => Array.from(body.querySelectorAll("*"))
@@ -147,7 +156,8 @@ test("guide screen theming preserves the original print colors", async ({ page }
   await page.goto("/flow-preview.html");
   await page.emulateMedia({ media: "print" });
   for (const id of ["rahnamaye-karbordi-entekhab-reshte", "nezam-vazifeh-mafiyat-tahsili"]) {
-    const original = await page.evaluate((id) => {
+    const original = await page.evaluate(async (id) => {
+      await (window as unknown as { FlowPayloads: { ensure(id: string): Promise<unknown> } }).FlowPayloads.ensure(id);
       const data = JSON.parse(document.getElementById("aris-selection-guides-data")!.textContent!);
       return data.find((guide: { id: string }) => guide.id === id).document as string;
     }, id);
@@ -172,5 +182,10 @@ test("guide screen theming preserves the original print colors", async ({ page }
     await page.waitForFunction(() => (document.getElementById("guide-reader-frame") as HTMLIFrameElement).contentDocument?.documentElement.hasAttribute("data-flow-theme"));
     const brandedTitle = await page.evaluate((title) => (window as unknown as { FlowBranding: { text(value: string): string } }).FlowBranding.text(title), expectedTitle);
     expect(await colors(brandedTitle), id).toEqual(before);
+    const frame = await (await frameElement.elementHandle())!.contentFrame();
+    const watermarks = await frame!.evaluate(() => Array.from(document.querySelectorAll(".intro-badge,.final-note,.share-panel"))
+      .flatMap((node) => [getComputedStyle(node, "::before").content, getComputedStyle(node, "::after").content]));
+    expect(watermarks, id).not.toContain('"A"');
+    if (id === "rahnamaye-karbordi-entekhab-reshte") expect(watermarks.length).toBeGreaterThan(0);
   }
 });

@@ -45,14 +45,14 @@ try {
     assert.equal(response.status, 200, `Asset must be served: ${asset.file}`);
     assert.equal(hash(Buffer.from(await response.arrayBuffer())), hash(await readFile(`public/flow/assets/${asset.file}`)));
   }
-  for (const [directory, contentType, expected] of [["province-images", "image/webp", 186], ["audio", "audio/mpeg", 1]]) {
+  for (const [directory, contentType, expected] of [["province-images", "image/webp", 186], ["audio", "audio/mpeg", 1], ["documents", "application/json", 23]]) {
     const files = await readdir(`public/flow/generated/${directory}`);
     assert.equal(files.length, expected);
     for (let start = 0; start < files.length; start += 8) {
       await Promise.all(files.slice(start, start + 8).map(async (file) => {
         const response = await fetch(`${baseURL}/flow/generated/${directory}/${file}`);
         assert.equal(response.status, 200, `On-demand media must be served: ${file}`);
-        assert.equal(response.headers.get("content-type"), contentType);
+        assert.equal(response.headers.get("content-type")?.split(";")[0], contentType);
         assert.equal(hash(Buffer.from(await response.arrayBuffer())), hash(await readFile(`public/flow/generated/${directory}/${file}`)));
       }));
     }

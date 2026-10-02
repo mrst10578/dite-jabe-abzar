@@ -51,7 +51,12 @@ export function projectHome(document, manifest) {
   if (attr(html, "data-flow-layout") === "1") return;
   setAttr(html, "data-flow-layout", "1");
   const ready = manifest.productionReady;
-  const image = (file, cls, width, height, alt = "") => `<img src="/flow/assets/${file}" class="${cls}" width="${width}" height="${height}" alt="${alt}" decoding="async">`;
+  const image = (file, cls, width, height, alt = "", deferred = false) => {
+    const asset = manifest.assets?.find((item) => item.file === file);
+    const dimensions = { width: asset?.width ?? width, height: asset?.height ?? height };
+    const delivery = deferred ? ' loading="lazy" fetchpriority="low"' : ' loading="eager"';
+    return `<img src="/flow/assets/${file}" class="${cls}" width="${dimensions.width}" height="${dimensions.height}" alt="${alt}" decoding="async"${delivery}>`;
+  };
   const header = byClass(document, "site-header"), brand = byClass(header, "brand-lockup");
   replaceContent(brand, image(ready ? "flow-wordmark.webp" : "flow-source.webp", "flow-wordmark", 180, 78, "Flow"));
   setAttr(brand, "aria-label", "Flow؛ بازگشت به جست‌وجو");
@@ -74,12 +79,12 @@ export function projectHome(document, manifest) {
   append(details, soon);
   detach(byClass(tools, "smart-tools__divider"));
   replaceContent(one(byClass(tools, "smart-tool--beta"), (node) => node.tagName === "h3", "compass heading"), "قطب‌نمای انتخاب رشته");
-  if (ready) before(tools.childNodes[0], markup(image("compass.webp", "flow-support-art", 1254, 1254)));
+  if (ready) before(tools.childNodes[0], markup(image("compass.webp", "flow-support-art", 1254, 1254, "", true)));
   const supports = markup('<section class="flow-supports" aria-label="قطب‌نما و راهنماهای انتخاب رشته"></section>');
-  const guide = markup(`<article class="flow-guide-entry">${ready ? image("guide-book.webp", "flow-support-art", 1254, 1254) : ""}<div><h2>راهنمای انتخاب رشته</h2><p>مقالات و راهنماهای کاربردی برای آشنایی با رشته‌ها و مسیرهای تحصیلی مختلف.</p><a href="#selection-guide-hub">مطالعهٔ راهنماها</a></div></article>`);
-  append(supports, guide, tools, byId("aris-smart-tools-script"));
+  const guide = markup(`<article class="flow-guide-entry">${ready ? image("guide-book.webp", "flow-support-art", 1254, 1254, "", true) : ""}<div><h2>راهنمای انتخاب رشته</h2><p>مقالات و راهنماهای کاربردی برای آشنایی با رشته‌ها و مسیرهای تحصیلی مختلف.</p></div></article>`);
+  append(supports, tools, guide, byId("aris-smart-tools-script"));
   const selection = byId("aris-selection-module");
-  if (ready) before(selection, markup(`<div class="flow-divider-frame">${image("botanical-divider.webp", "flow-botanical-divider", 1536, 656)}</div>`));
+  if (ready) before(selection, markup(`<div class="flow-divider-frame">${image("botanical-divider.webp", "flow-botanical-divider", 1536, 656, "", true)}</div>`));
   before(selection, supports);
   const next = main.childNodes[main.childNodes.indexOf(selection) + 1];
   if (next) before(next, details); else append(main, details);

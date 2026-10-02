@@ -1,4 +1,5 @@
 @media screen {
+  html[data-flow-theme] #aris-selection-module .guide-reader__progress span { background:linear-gradient(90deg,var(--flow-green),var(--flow-cyan)); }
   html[data-flow-theme] #aris-selection-module { margin: 0 auto !important; padding-bottom: 48px; }
   html[data-flow-theme] #aris-selection-module .guide-hub { margin: 0; padding-top: 0; border-top: 0; scroll-margin-top: 130px; }
   html[data-flow-theme] #aris-selection-module .guide-hub__shell { padding: 32px; border-radius: 24px; background: var(--flow-surface); }

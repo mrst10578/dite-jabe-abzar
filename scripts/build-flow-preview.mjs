@@ -4,6 +4,7 @@ import { append, attr, before, markup, nodes, one, projectHome } from "./flow-ho
 import { documentTheme, themeCss } from "./flow-document-theme.mjs";
 import { brandTree, branding } from "./flow-branding.mjs";
 import { projectGuideBrowser } from "./flow-guide-browser.mjs";
+import { externalizeDocuments } from "./flow-payloads.mjs";
 import { externalizeAmbientAudio, externalizeProvinceImages } from "./flow-image-assets.mjs";
 
 const source = await readFile("public/index.html", "utf8");
@@ -76,7 +77,7 @@ append(head, markup('<link rel="stylesheet" href="/flow/guides.css">'));
 append(head, markup('<script src="/flow/theme.js" defer></script>'));
 append(head, markup('<script src="/flow/search.js" defer></script>'));
 append(head, markup(`<script data-flow-branding>${brandRuntime}</script>`));
-const configuration = JSON.stringify([themes, documentCss]).replace(/</g, "\\u003c");
+const configuration = JSON.stringify([{}, documentCss]).replace(/</g, "\\u003c");
 append(head, markup(`<script data-flow-documents>${documentRuntime}\nwindow.FlowDocuments.configure(...${configuration});</script>`));
 
 function integrate(node, oldCode, newCode) {
@@ -108,6 +109,16 @@ integrate(nativeRuntime, `} else if (event.key === "Escape" && provinceSearchInp
 // Install the existing adapter before native injection. Mutation observers run
 // at its microtask checkpoint, before a dossier can be painted in legacy colors.
 before(nativeRuntime, markup(`<script data-flow-reader-bootstrap>${await readFile("public/flow/reader.js", "utf8")}</script>`));
+// Paint a small native status while the initial HTML prepares its controls.
+const loadingCss = await readFile("public/flow/loading.css", "utf8");
+const loadingRuntime = await readFile("public/flow/loading.js", "utf8");
+const charset = one(head, (node) => node.tagName === "meta" && attr(node, "charset"), "charset");
+const afterCharset = head.childNodes[head.childNodes.indexOf(charset) + 1];
+before(afterCharset, markup(`<style data-flow-loading>${loadingCss}</style>`));
+before(afterCharset, markup(`<script data-flow-loading>${loadingRuntime}</script>`));
+const body = one(document, (node) => node.tagName === "body", "body");
+before(body.childNodes[0], markup('<div class="flow-startup" id="flow-startup"><div class="flow-startup__content"><div class="flow-startup__brand" lang="en">FLOW</div><span class="flow-loading-orbit" aria-hidden="true"></span><p role="status" aria-live="polite">در حال آماده‌سازی جعبه ابزار انتخاب رشته…</p><small>چند لحظه تا شناخت بهتر مسیرت</small><button type="button" hidden>بارگذاری دوباره</button></div></div>'));
+await externalizeDocuments(document, themes, await readFile("public/flow/payloads.js", "utf8"));
 // Deliver the identical media files only when their feature needs them. Their
 // former inline payloads delayed the search runtime behind 15 MB of base64.
 await externalizeProvinceImages(document, {
