@@ -1,9 +1,10 @@
 (function () {
   "use strict";
   window.FlowDocuments = {
-    configure: function (themes, css) {
+    configure: function (themes, css, typography) {
       this.themes = themes;
       this.css = css;
+      this.typography = typography;
     },
     theme: function (source) {
       const doc = new DOMParser().parseFromString(source, "text/html");
@@ -30,6 +31,10 @@
       css.dataset.flowDocumentTheme = "1";
       css.textContent = this.css + "\n@media screen {" + inlineRules.join("\n") + "}";
       doc.head.append(css);
+      const typography = doc.createElement("script");
+      typography.dataset.flowTypography = "1";
+      typography.textContent = this.typography || "";
+      doc.head.append(typography);
       let meta = doc.head.querySelector('meta[name="theme-color"]');
       if (!meta) { meta = doc.createElement("meta"); meta.name = "theme-color"; doc.head.append(meta); }
       meta.content = "#031319";

@@ -68,7 +68,9 @@ for (const source of [...guides.map((guide) => guide.document), compass]) {
 const tokens = await readFile("public/flow/tokens.css", "utf8");
 const brandCss = await readFile("public/flow/branding.css", "utf8");
 const brandRuntime = await readFile("public/flow/branding.js", "utf8");
-const documentCss = tokens + await readFile("public/flow/documents.css", "utf8") + brandCss;
+const typographyCss = await readFile("public/flow/typography.css", "utf8");
+const typographyRuntime = await readFile("public/flow/typography.js", "utf8");
+const documentCss = tokens + await readFile("public/flow/documents.css", "utf8") + brandCss + typographyCss;
 const documentRuntime = await readFile("public/flow/documents.js", "utf8");
 const head = one(document, (node) => node.tagName === "head", "head");
 append(head, markup(`<style data-flow-tokens>${tokens}</style>`));
@@ -79,10 +81,12 @@ append(head, markup('<link rel="stylesheet" href="/flow/branding.css">'));
 append(head, markup('<link rel="stylesheet" href="/flow/home-controls.css">'));
 append(head, markup('<link rel="stylesheet" href="/flow/search.css">'));
 append(head, markup('<link rel="stylesheet" href="/flow/guides.css">'));
+append(head, markup(`<style data-flow-typography>${typographyCss}</style>`));
+append(head, markup(`<script data-flow-typography>${typographyRuntime}</script>`));
 append(head, markup('<script src="/flow/theme.js" defer></script>'));
 append(head, markup('<script src="/flow/search.js" defer></script>'));
 append(head, markup(`<script data-flow-branding>${brandRuntime}</script>`));
-const configuration = JSON.stringify([{}, documentCss]).replace(/</g, "\\u003c");
+const configuration = JSON.stringify([{}, documentCss, typographyRuntime]).replace(/</g, "\\u003c");
 append(head, markup(`<script data-flow-documents>${documentRuntime}\nwindow.FlowDocuments.configure(...${configuration});</script>`));
 
 function integrate(node, oldCode, newCode) {
