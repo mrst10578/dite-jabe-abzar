@@ -3,6 +3,8 @@ import { parse, serialize } from "parse5";
 import { append, attr, before, markup, nodes, one, projectHome } from "./flow-home.mjs";
 import { documentTheme, themeCss } from "./flow-document-theme.mjs";
 import { brandTree, branding } from "./flow-branding.mjs";
+import { projectGuideBrowser } from "./flow-guide-browser.mjs";
+import { externalizeAmbientAudio, externalizeProvinceImages } from "./flow-image-assets.mjs";
 
 const source = await readFile("public/index.html", "utf8");
 const manifest = JSON.parse(await readFile("public/flow/assets/manifest.json", "utf8"));
@@ -40,6 +42,7 @@ preview = setMeta(preview, "property", "og:site_name", "Flow");
 
 const document = parse(preview);
 projectHome(document, manifest);
+projectGuideBrowser(document);
 brandTree(document);
 const text = (node) => node.childNodes.map((child) => child.value ?? "").join("");
 const setText = (node, value) => { node.childNodes = [{ nodeName: "#text", value, parentNode: node }]; };
@@ -67,7 +70,11 @@ append(head, markup('<link rel="stylesheet" href="/flow/theme.css">'));
 append(head, markup('<link rel="stylesheet" href="/flow/surfaces.css">'));
 append(head, markup('<link rel="stylesheet" href="/flow/reader.css">'));
 append(head, markup('<link rel="stylesheet" href="/flow/branding.css">'));
+append(head, markup('<link rel="stylesheet" href="/flow/home-controls.css">'));
+append(head, markup('<link rel="stylesheet" href="/flow/search.css">'));
+append(head, markup('<link rel="stylesheet" href="/flow/guides.css">'));
 append(head, markup('<script src="/flow/theme.js" defer></script>'));
+append(head, markup('<script src="/flow/search.js" defer></script>'));
 append(head, markup(`<script data-flow-branding>${brandRuntime}</script>`));
 const configuration = JSON.stringify([themes, documentCss]).replace(/</g, "\\u003c");
 append(head, markup(`<script data-flow-documents>${documentRuntime}\nwindow.FlowDocuments.configure(...${configuration});</script>`));
@@ -92,9 +99,25 @@ integrate(nativeRuntime, "provinceDocument.innerHTML = content;", "provinceDocum
 integrate(nativeRuntime, 'enhanceDossier(majorDocument, "major");', 'enhanceDossier(majorDocument, "major"); window.FlowBranding.document(majorDocument);');
 integrate(nativeRuntime, 'enhanceDossier(provinceDocument, "province");', 'enhanceDossier(provinceDocument, "province"); window.FlowBranding.document(provinceDocument);');
 integrate(nativeRuntime, '<svg class="aris-footer-mark" viewBox="0 0 120 148" aria-hidden="true"><use href="#aris-sigil-shape"></use></svg>', branding.image);
+integrate(nativeRuntime, `} else if (event.key === "Escape" && provinceSearchInput.value) {
+            event.preventDefault();
+            provinceSearchInput.value = "";
+            provinceSearchClear.hidden = true;
+            renderProvinceResults("");
+        } else if (event.key === "Escape") {`, `} else if (event.key === "Escape") {`);
 // Install the existing adapter before native injection. Mutation observers run
 // at its microtask checkpoint, before a dossier can be painted in legacy colors.
 before(nativeRuntime, markup(`<script data-flow-reader-bootstrap>${await readFile("public/flow/reader.js", "utf8")}</script>`));
+// Deliver the identical media files only when their feature needs them. Their
+// former inline payloads delayed the search runtime behind 15 MB of base64.
+await externalizeProvinceImages(document, {
+  outputDirectory: "public/flow/generated/province-images",
+  publicPath: "/flow/generated/province-images/",
+});
+await externalizeAmbientAudio(document, {
+  outputDirectory: "public/flow/generated/audio",
+  publicPath: "/flow/generated/audio/",
+});
 preview = serialize(document);
 
 await writeFile("public/flow-preview.html", preview);

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { setTimeout as delay } from "node:timers/promises";
 
 const baseURL = "http://127.0.0.1:8789";
@@ -44,6 +44,18 @@ try {
     const response = await fetch(`${baseURL}/flow/assets/${asset.file}`);
     assert.equal(response.status, 200, `Asset must be served: ${asset.file}`);
     assert.equal(hash(Buffer.from(await response.arrayBuffer())), hash(await readFile(`public/flow/assets/${asset.file}`)));
+  }
+  for (const [directory, contentType, expected] of [["province-images", "image/webp", 186], ["audio", "audio/mpeg", 1]]) {
+    const files = await readdir(`public/flow/generated/${directory}`);
+    assert.equal(files.length, expected);
+    for (let start = 0; start < files.length; start += 8) {
+      await Promise.all(files.slice(start, start + 8).map(async (file) => {
+        const response = await fetch(`${baseURL}/flow/generated/${directory}/${file}`);
+        assert.equal(response.status, 200, `On-demand media must be served: ${file}`);
+        assert.equal(response.headers.get("content-type"), contentType);
+        assert.equal(hash(Buffer.from(await response.arrayBuffer())), hash(await readFile(`public/flow/generated/${directory}/${file}`)));
+      }));
+    }
   }
   const alias = await fetch(`${baseURL}/index.html`, { redirect: "manual" });
   assert.equal(alias.status, 307);
