@@ -1,0 +1,15 @@
+:root[data-flow-theme] {
+  color-scheme: dark;
+  --flow-bg: #031319;
+  --flow-surface: #0a2028;
+  --flow-field: #10262f;
+  --flow-text: #f7f2e2;
+  --flow-muted: #b6cbd4;
+  --flow-cyan: #31dded;
+  --flow-green: #a2e887;
+  --flow-gold: #c6a950;
+  --flow-border: #315c68;
+  --flow-radius: 20px;
+  --flow-font: "Vazirmatn", Tahoma, sans-serif;
+  --flow-max-width: 1440px;
+}

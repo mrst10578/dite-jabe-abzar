@@ -35,3 +35,7 @@ next-env.d.ts
 # Generated static publication output
 /dist/
 /.sites-runtime/
+
+# Generated from the preserved original toolbox plus the Flow theme.
+/public/flow-preview.html
+/public/flow-mobile-qa.html

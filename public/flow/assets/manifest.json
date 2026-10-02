@@ -1,0 +1,14 @@
+{
+  "theme": "midnight-flow",
+  "productionReady": false,
+  "reference": "docs/flow/references/selected.webp",
+  "temporarySources": ["flow-source.webp", "hero-source.webp"],
+  "assets": [
+    {"file": "hero-desktop.webp", "slot": "hero", "width": 2560, "height": 1600, "priority": "critical", "status": "prompt-ready"},
+    {"file": "hero-mobile.webp", "slot": "hero-mobile", "width": 1080, "height": 720, "priority": "critical", "status": "prompt-ready"},
+    {"file": "flow-wordmark.webp", "slot": "header-brand", "width": 720, "height": 300, "priority": "critical", "transparent": true, "status": "prompt-ready"},
+    {"file": "compass.webp", "slot": "self-knowledge", "width": 768, "height": 768, "priority": "support", "transparent": true, "status": "prompt-ready"},
+    {"file": "guide-book.webp", "slot": "selection-guides", "width": 768, "height": 768, "priority": "support", "transparent": true, "status": "prompt-ready"},
+    {"file": "botanical-divider.webp", "slot": "hero-divider", "width": 2400, "height": 100, "priority": "polish", "transparent": true, "status": "prompt-ready"}
+  ]
+}

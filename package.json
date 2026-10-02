@@ -6,8 +6,8 @@
     "node": ">=20.19.0"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build && node scripts/build-static.mjs",
+    "dev": "node scripts/next-dev.mjs",
+    "build": "next build && node scripts/build-static.mjs && node scripts/build-flow-preview.mjs",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
@@ -15,8 +15,9 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "verify": "npm run lint && npm run typecheck && npm run test && npm run build",
-    "prebuild": "node scripts/build-static.mjs",
-    "predev": "node scripts/build-static.mjs"
+    "prebuild": "node scripts/build-static.mjs && node scripts/build-flow-preview.mjs",
+    "predev": "node scripts/build-static.mjs && node scripts/build-flow-preview.mjs",
+    "preview:flow": "node scripts/build-static.mjs && node scripts/build-flow-preview.mjs"
   },
   "dependencies": {
     "class-variance-authority": "0.7.1",
