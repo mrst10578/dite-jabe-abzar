@@ -19,6 +19,17 @@ test("Flow retains independent major and province searches", async ({ page }) =>
   expect(province?.y).toBeGreaterThan((major?.y ?? 0) + (major?.height ?? 0));
 });
 
+test("Flow exposes Flow metadata instead of legacy Aris sharing metadata", async ({ page }) => {
+  await page.goto("/flow-preview.html");
+  await expect(page).toHaveTitle("Flow | جعبه ابزار انتخاب رشته");
+  await expect(page.locator('meta[name="application-name"]')).toHaveAttribute("content", "Flow");
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute("content", /Flow/);
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#031319");
+  await expect(page.locator('meta[property="og:title"]')).toHaveAttribute("content", "Flow | جعبه ابزار انتخاب رشته");
+  await expect(page.locator('meta[property="og:description"]')).toHaveAttribute("content", /Flow/);
+  await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute("content", "Flow");
+});
+
 test("Flow search controls fit a mobile viewport", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/flow-preview.html");
@@ -34,8 +45,6 @@ test("Flow search controls fit a mobile viewport", async ({ page }) => {
     expect(box?.width).toBeGreaterThan(120);
   }
 });
-
-
 
 test("active Flow assets load without placeholders", async ({ page }) => {
   await page.goto("/");
