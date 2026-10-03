@@ -83,9 +83,60 @@ export function projectHome(document, manifest) {
   const supports = markup('<section class="flow-supports" aria-label="قطب‌نما و راهنماهای انتخاب رشته"></section>');
   const guide = markup(`<article class="flow-guide-entry">${ready ? image("guide-book.webp", "flow-support-art", 1254, 1254, "", true) : ""}<div><h2>راهنمای انتخاب رشته</h2><p>مقالات و راهنماهای کاربردی برای آشنایی با رشته‌ها و مسیرهای تحصیلی مختلف.</p></div></article>`);
   append(supports, tools, guide, byId("aris-smart-tools-script"));
+
+  const dataTools = markup(`<section class="flow-data-tools" aria-labelledby="flow-data-tools-title">
+    <header class="flow-data-tools__head">
+      <span>داده‌های واقعی برای انتخاب دقیق‌تر</span>
+      <h2 id="flow-data-tools-title">آرشیو قبولی‌ها و آمار پذیرش دانشگاه‌ها</h2>
+      <p>برای اینکه انتخاب رشته فقط بر پایه حدس نباشد، این بخش داده‌های قبولی سال‌های گذشته، آخرین قبولی‌ها و تعداد پذیرش دانشگاه‌ها را کنار هم جمع می‌کند.</p>
+    </header>
+
+    <article class="flow-data-card flow-data-card--featured" id="historical-admissions">
+      <div class="flow-data-card__copy">
+        <span class="flow-data-card__eyebrow">پوشش سال‌های ۱۳۹۰ تا ۱۴۰۴</span>
+        <h3>دیتابیس قبولی سال‌های گذشته</h3>
+        <p>این دیتابیس هزاران کارنامه و رکورد قبولی از سال ۱۳۹۰ تا ۱۴۰۴ را در یک مجموعه یکپارچه پوشش می‌دهد؛ می‌توانید قبولی‌های سال‌های مختلف را کنار هم ببینید، انتخاب‌ها را با نمونه‌های واقعی مقایسه کنید و با دید بازتری سراغ چینش انتخاب رشته بروید.</p>
+        <a class="flow-data-action" href="https://konkour.data-base.loprax.workers.dev" target="_blank" rel="noopener noreferrer">ورود به دیتابیس قبولی‌ها</a>
+      </div>
+      <div class="flow-data-card__stat" aria-hidden="true"><strong>۱۵</strong><span>سال داده</span><small>۱۳۹۰ ← ۱۴۰۴</small></div>
+    </article>
+
+    <article class="flow-data-card" id="last-admission-data">
+      <div class="flow-data-card__copy">
+        <span class="flow-data-card__eyebrow">آخرین مرزهای قبولی</span>
+        <h3>دیتای آخرین قبولی‌های دانشگاه‌ها در چند رشته مختلف</h3>
+        <p>اینجا آخرین رتبه‌ها و نمونه‌های قبولی رشته‌های منتخب در دانشگاه‌های مختلف قرار می‌گیرد تا سریع‌تر ببینید مرز قبولی هر رشته و دانشگاه در داده‌های موجود کجا بوده و مقایسه بین انتخاب‌ها ساده‌تر شود.</p>
+        <span class="flow-data-action flow-data-action--disabled" aria-disabled="true">نمایش آخرین قبولی‌ها · به‌زودی</span>
+        <p class="flow-data-card__note">جایگاه این بخش آماده است؛ فایل HTML که بدهی، همین قسمت به نسخه کاملاً Native سایت تبدیل می‌شود.</p>
+      </div>
+    </article>
+
+    <article class="flow-data-card flow-data-card--tool" id="admission-count-tool">
+      <div class="flow-data-card__copy">
+        <span class="flow-data-card__eyebrow">ابزار آمار پذیرش</span>
+        <h3>تعداد داوطلبان پذیرش‌شده دانشگاه‌ها در رشته‌های مختلف</h3>
+        <p>نام رشته را وارد کنید تا آمار پذیرش آن رشته در دانشگاه‌های مختلف نمایش داده شود؛ یا دانشگاه را هم اضافه کنید تا نتیجه فقط برای همان ترکیب رشته و دانشگاه فیلتر شود.</p>
+      </div>
+      <fieldset class="flow-admission-query" disabled>
+        <label><span>رشته</span><input type="search" placeholder="مثلاً پزشکی یا مهندسی کامپیوتر"></label>
+        <label><span>دانشگاه <small>اختیاری</small></span><input type="search" placeholder="مثلاً دانشگاه تهران"></label>
+        <button type="button">نمایش آمار پذیرش</button>
+      </fieldset>
+      <div class="flow-admission-years" aria-label="سال‌های تحت پوشش">
+        <span><b>۱۴۰۱</b><small>آماده اتصال</small></span>
+        <span><b>۱۴۰۲</b><small>آماده اتصال</small></span>
+        <span><b>۱۴۰۳</b><small>آماده اتصال</small></span>
+        <span><b>۱۴۰۴</b><small>آماده اتصال</small></span>
+        <span class="is-soon"><b>۱۴۰۵</b><small>به‌زودی</small></span>
+      </div>
+      <p class="flow-data-card__note">رابط ابزار آماده شده؛ با اضافه‌شدن دیتاست تعداد پذیرش، جست‌وجو برای سال‌های ۱۴۰۱ تا ۱۴۰۴ فعال می‌شود.</p>
+    </article>
+  </section>`);
+
   const selection = byId("aris-selection-module");
   if (ready) before(selection, markup(`<div class="flow-divider-frame">${image("botanical-divider.webp", "flow-botanical-divider", 1536, 656, "", true)}</div>`));
   before(selection, supports);
+  before(selection, dataTools);
   const next = main.childNodes[main.childNodes.indexOf(selection) + 1];
   if (next) before(next, details); else append(main, details);
   detach(byClass(stage, "channel-pulse"));
