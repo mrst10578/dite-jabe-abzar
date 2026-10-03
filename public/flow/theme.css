@@ -279,3 +279,264 @@ html[data-flow-theme] .flow-divider-frame { position: relative; z-index: 1; }
 html[data-flow-theme] .flow-divider-frame { height: 32px; }
 html[data-flow-theme] .flow-botanical-divider { margin-top: -32px; background: transparent; }
 html[data-flow-theme] .flow-botanical-divider { width: 480px; height: 205px; max-width: 100%; }
+
+
+/* Admissions data hub below the compass/support area. */
+html[data-flow-theme] .flow-data-tools {
+  display: grid;
+  gap: 18px;
+  padding: 8px 32px 56px;
+  background: var(--flow-bg);
+}
+html[data-flow-theme] .flow-data-tools__head {
+  max-width: 860px;
+  padding: 18px 0 8px;
+}
+html[data-flow-theme] .flow-data-tools__head > span,
+html[data-flow-theme] .flow-data-card__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 5px 12px;
+  border: 1px solid var(--flow-border);
+  border-radius: 999px;
+  color: var(--flow-green);
+  background: var(--flow-surface);
+  font-size: 12px;
+  font-weight: 800;
+}
+html[data-flow-theme] .flow-data-tools__head h2 {
+  margin: 14px 0 10px;
+  color: var(--flow-text);
+  font-size: clamp(26px, 3vw, 38px);
+  line-height: 1.55;
+}
+html[data-flow-theme] .flow-data-tools__head p {
+  max-width: 72ch;
+  margin: 0;
+  color: var(--flow-muted);
+  font-size: 15px;
+  line-height: 2;
+}
+html[data-flow-theme] .flow-data-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 28px;
+  align-items: center;
+  overflow: hidden;
+  padding: 28px 30px;
+  border: 1px solid var(--flow-border);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 12% 8%, color-mix(in srgb, var(--flow-cyan) 10%, transparent), transparent 34%),
+    var(--flow-surface);
+}
+html[data-flow-theme] .flow-data-card::after {
+  content: "";
+  position: absolute;
+  inset: auto -64px -72px auto;
+  width: 180px;
+  height: 180px;
+  border: 1px solid color-mix(in srgb, var(--flow-cyan) 24%, transparent);
+  border-radius: 50%;
+  pointer-events: none;
+}
+html[data-flow-theme] .flow-data-card--featured {
+  border-color: color-mix(in srgb, var(--flow-cyan) 55%, var(--flow-border));
+}
+html[data-flow-theme] .flow-data-card__copy {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+html[data-flow-theme] .flow-data-card h3 {
+  margin: 14px 0 10px;
+  color: var(--flow-text);
+  font-size: 24px;
+  line-height: 1.7;
+}
+html[data-flow-theme] .flow-data-card p {
+  margin: 0;
+  color: var(--flow-muted);
+  font-size: 15px;
+  line-height: 2;
+}
+html[data-flow-theme] .flow-data-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  margin-top: 20px;
+  padding: 11px 22px;
+  border: 1px solid var(--flow-cyan);
+  border-radius: 999px;
+  background: var(--flow-bg);
+  color: var(--flow-text);
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: none;
+}
+html[data-flow-theme] a.flow-data-action:hover {
+  background: var(--flow-cyan);
+  color: #052026;
+}
+html[data-flow-theme] .flow-data-action--disabled {
+  cursor: default;
+  border-color: var(--flow-border);
+  color: var(--flow-muted);
+  opacity: .75;
+}
+html[data-flow-theme] .flow-data-card__note {
+  margin-top: 14px !important;
+  font-size: 12px !important;
+  line-height: 1.9 !important;
+}
+html[data-flow-theme] .flow-data-card__stat {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  min-width: 156px;
+  min-height: 156px;
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--flow-green) 45%, var(--flow-border));
+  border-radius: 50%;
+  background: var(--flow-bg);
+  text-align: center;
+}
+html[data-flow-theme] .flow-data-card__stat strong {
+  color: var(--flow-cyan);
+  font-size: 42px;
+  line-height: 1;
+}
+html[data-flow-theme] .flow-data-card__stat span {
+  color: var(--flow-text);
+  font-size: 13px;
+  font-weight: 800;
+}
+html[data-flow-theme] .flow-data-card__stat small {
+  color: var(--flow-muted);
+  font-size: 11px;
+}
+html[data-flow-theme] .flow-data-card--tool {
+  grid-template-columns: minmax(0, 1fr);
+}
+html[data-flow-theme] .flow-admission-query {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: 12px;
+  margin: 22px 0 0;
+  padding: 0;
+  border: 0;
+}
+html[data-flow-theme] .flow-admission-query label {
+  display: grid;
+  gap: 8px;
+  color: var(--flow-text);
+  font-size: 12px;
+  font-weight: 800;
+}
+html[data-flow-theme] .flow-admission-query label small {
+  color: var(--flow-muted);
+  font-weight: 500;
+}
+html[data-flow-theme] .flow-admission-query input {
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 15px;
+  border: 1px solid var(--flow-border);
+  border-radius: 14px;
+  background: var(--flow-bg);
+  color: var(--flow-text);
+  font: inherit;
+}
+html[data-flow-theme] .flow-admission-query button {
+  align-self: end;
+  min-height: 52px;
+  padding: 12px 20px;
+  border: 1px solid var(--flow-border);
+  border-radius: 14px;
+  background: var(--flow-field);
+  color: var(--flow-muted);
+  font-family: var(--flow-font);
+  font-weight: 800;
+}
+html[data-flow-theme] .flow-admission-query:disabled,
+html[data-flow-theme] .flow-admission-query[disabled] {
+  opacity: .72;
+}
+html[data-flow-theme] .flow-admission-years {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+html[data-flow-theme] .flow-admission-years > span {
+  display: grid;
+  gap: 4px;
+  min-height: 72px;
+  padding: 12px 8px;
+  border: 1px solid var(--flow-border);
+  border-radius: 16px;
+  background: var(--flow-bg);
+  text-align: center;
+}
+html[data-flow-theme] .flow-admission-years b {
+  color: var(--flow-text);
+  font-size: 17px;
+}
+html[data-flow-theme] .flow-admission-years small {
+  color: var(--flow-muted);
+  font-size: 10px;
+}
+html[data-flow-theme] .flow-admission-years .is-soon {
+  border-color: color-mix(in srgb, var(--flow-green) 45%, var(--flow-border));
+}
+html[data-flow-theme] .flow-admission-years .is-soon small {
+  color: var(--flow-green);
+}
+html[data-flow-theme] .has-major-viewer .flow-data-tools,
+html[data-flow-theme] .has-province-viewer .flow-data-tools {
+  display: none;
+}
+@media (max-width: 720px) {
+  html[data-flow-theme] .flow-data-tools {
+    padding: 8px 16px 40px;
+  }
+  html[data-flow-theme] .flow-data-card {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 22px 18px;
+    border-radius: 22px;
+  }
+  html[data-flow-theme] .flow-data-card h3 {
+    font-size: 20px;
+  }
+  html[data-flow-theme] .flow-data-card p {
+    font-size: 14px;
+  }
+  html[data-flow-theme] .flow-data-card__stat {
+    min-width: 0;
+    width: 100%;
+    min-height: 86px;
+    border-radius: 18px;
+    grid-template-columns: auto auto auto;
+    gap: 12px;
+    justify-content: start;
+  }
+  html[data-flow-theme] .flow-data-card__stat strong {
+    font-size: 30px;
+  }
+  html[data-flow-theme] .flow-admission-query {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  html[data-flow-theme] .flow-admission-query button {
+    width: 100%;
+  }
+  html[data-flow-theme] .flow-admission-years {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  html[data-flow-theme] .flow-admission-years .is-soon {
+    grid-column: 1 / -1;
+  }
+}
