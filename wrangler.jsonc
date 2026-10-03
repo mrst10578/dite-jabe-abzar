@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "site-jabe-abzar",
+  "name": "entekhab-reshte",
   "compatibility_date": "2026-10-02",
   "previews": {},
   "assets": {
