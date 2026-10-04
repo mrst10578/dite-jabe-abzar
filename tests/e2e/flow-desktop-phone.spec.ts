@@ -17,7 +17,7 @@ async function homepageLayout(page: Page) {
     const copy = bounds(".flow-hero-copy");
     const hero = bounds(".main > .hero");
     const compass = bounds(".flow-supports #aris-smart-tools");
-    const guide = bounds(".flow-supports .flow-guide-entry");
+    const guide = bounds(".flow-guide-entry");
     const supports = bounds(".flow-supports");
     const supportStyle = style(".flow-supports");
     const supportWidth = supports.width - parseFloat(supportStyle.paddingLeft) - parseFloat(supportStyle.paddingRight);

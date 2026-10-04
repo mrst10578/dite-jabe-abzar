@@ -92,7 +92,7 @@
     content: none;
   }
 
-  /* Two image-and-text cards need more than a narrow tablet column. */
+  /* Keep the compass row and guide copy full width on tablets. */
   html[data-flow-theme] .flow-supports {
     grid-template-columns: minmax(0, 1fr);
     gap: 12px;
@@ -137,7 +137,8 @@
     row-gap: 16px;
   }
 
-  html[data-flow-theme] .flow-supports .flow-support-art {
+  html[data-flow-theme] .flow-supports .flow-support-art,
+  html[data-flow-theme] .flow-guide-entry .flow-support-art {
     grid-column: 2;
     grid-row: 1;
     width: 104px;
