@@ -1,4 +1,4 @@
-import { YEARS, GROUPS, compareLabels, normalizePersian, capacityTotals } from "./model.js";
+import { YEARS, GROUPS, compareLabels, normalizeUniversity, universityNames, capacityTotals } from "./model.js";
 
 const byId = (id) => document.getElementById(id);
 const number = new Intl.NumberFormat("fa-IR");
@@ -44,7 +44,9 @@ async function enterGroup(id) {
     if (!catalog) {
       const loaded = await json("/capacity/data/catalog.json");
       if (loaded.schemaVersion !== 1 || !/^[a-f0-9]{16}$/.test(loaded.snapshotId) || !/^[a-f0-9]{40}$/.test(loaded.source?.commit) || !loaded.groups?.every((item) => GROUPS.some((known) => known.id === item.id) && Array.isArray(item.majors))) throw new Error("Invalid catalog");
-      catalog = loaded;
+      catalog = { ...loaded, groups: loaded.groups.map((item) => ({ ...item,
+        majors: item.majors.map((entry) => ({ ...entry, universities: universityNames(entry.universities) })),
+      })) };
     }
     if (token !== request) return;
     group = catalog.groups.find((item) => item.id === id);
@@ -73,10 +75,10 @@ byId("change-group").addEventListener("click", () => {
 });
 
 function filterUniversities() {
-  const query = normalizePersian(search.value);
+  const query = normalizeUniversity(search.value);
   let visible = 0;
   for (const label of options.children) {
-    label.hidden = !normalizePersian(label.textContent).includes(query);
+    label.hidden = !normalizeUniversity(label.textContent).includes(query);
     if (!label.hidden) visible += 1;
   }
   byId("universities-empty").hidden = visible > 0;
@@ -114,7 +116,7 @@ async function loadMajor() {
     let shard = cache.get(current.id);
     if (!shard) {
       shard = await json(`/capacity/data/${current.path}?snapshot=${catalog.snapshotId}`, controller.signal);
-      if (shard.snapshotId !== catalog.snapshotId || shard.id !== current.id || shard.group !== group.id || shard.major !== current.label || !Array.isArray(shard.records) || !shard.records.every((row) => YEARS.includes(row.year) && Number.isSafeInteger(row.capacity) && row.capacity >= 0 && current.universities.includes(row.university))) throw new Error("Invalid capacity snapshot");
+      if (shard.snapshotId !== catalog.snapshotId || shard.id !== current.id || shard.group !== group.id || shard.major !== current.label || !Array.isArray(shard.records) || !shard.records.every((row) => YEARS.includes(row.year) && Number.isSafeInteger(row.capacity) && row.capacity >= 0 && current.universities.includes(normalizeUniversity(row.university)))) throw new Error("Invalid capacity snapshot");
       cache.set(current.id, shard);
     }
     if (token !== request || major !== current) return;
@@ -152,10 +154,10 @@ function valuesRow(university, values, total = false) {
 
 function renderDetails() {
   if (!byId("capacity-details").open || !records) return;
-  const chosen = records.filter((row) => selected.has(row.university)).sort((a, b) => b.year - a.year || compareLabels(a.university, b.university) || compareLabels(a.program_type || "", b.program_type || ""));
+  const chosen = records.filter((row) => selected.has(normalizeUniversity(row.university))).sort((a, b) => b.year - a.year || compareLabels(normalizeUniversity(a.university), normalizeUniversity(b.university)) || compareLabels(a.program_type || "", b.program_type || ""));
   byId("capacity-detail-rows").replaceChildren(...chosen.map((record) => {
     const row = element("tr");
-    const university = record.university + (record.campus ? ` · ${record.campus}` : "");
+    const university = normalizeUniversity(record.university) + (record.campus ? ` · ${normalizeUniversity(record.campus)}` : "");
     const conditions = element("td", record.admission_conditions || record.admission_category || "—");
     if (record.notes) conditions.append(element("small", record.notes));
     const source = element("td", `${record.source_id} · صفحه ${record.source_page || "نامشخص"}`);
