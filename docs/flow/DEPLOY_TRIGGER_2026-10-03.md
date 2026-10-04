@@ -1,6 +1,9 @@
 # Cloudflare deploy trigger
 
-This file exists only to create a fresh push on `main` after the admissions data hub update.
+This file exists only to force a fresh production build after the admissions data hub update.
 
-Target worker: `site-jabe-abzar`
-Source commit before trigger: `ed65741dbeb6d40de892245116627f290d52c4e2`
+Connected Worker: `entekhab-reshte`
+Admissions hub source commit: `ed65741dbeb6d40de892245116627f290d52c4e2`
+Wrangler name aligned on main: `entekhab-reshte`
+
+Production retrigger requested through PR merge on 2026-10-04.
