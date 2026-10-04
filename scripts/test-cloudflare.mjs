@@ -60,12 +60,31 @@ try {
   const alias = await fetch(`${baseURL}/index.html`, { redirect: "manual" });
   assert.equal(alias.status, 307);
   assert.equal(new URL(alias.headers.get("location"), baseURL).pathname, "/");
+  const capacityPage = await fetch(`${baseURL}/capacity/`);
+  assert.equal(capacityPage.status, 200, "Independent capacity page must be served");
+  assert.equal(hash(Buffer.from(await capacityPage.arrayBuffer())), hash(await readFile("public/capacity/index.html")));
+  for (const file of ["app.js", "model.js", "capacity.css", "vazirmatn.woff2"]) {
+    const response = await fetch(`${baseURL}/capacity/${file}`);
+    assert.equal(response.status, 200, `Capacity asset must be served: ${file}`);
+    assert.equal(hash(Buffer.from(await response.arrayBuffer())), hash(await readFile(`public/capacity/${file}`)));
+  }
+  const snapshot = JSON.parse(await readFile("public/capacity/data/manifest.json", "utf8"));
+  const servedManifest = await fetch(`${baseURL}/capacity/data/manifest.json`);
+  assert.equal(servedManifest.status, 200);
+  assert.equal(hash(Buffer.from(await servedManifest.arrayBuffer())), hash(await readFile("public/capacity/data/manifest.json")));
+  for (let start = 0; start < snapshot.files.length; start += 8) {
+    await Promise.all(snapshot.files.slice(start, start + 8).map(async (file) => {
+      const response = await fetch(`${baseURL}/capacity/data/${file.path}`);
+      assert.equal(response.status, 200, `Snapshot asset must be served: ${file.path}`);
+      assert.equal(hash(Buffer.from(await response.arrayBuffer())), file.sha256, `Snapshot asset hash: ${file.path}`);
+    }));
+  }
   for (const path of ["/__missing_cloudflare_page__", "/__missing_cloudflare_asset__.png"]) {
     const missing = await fetch(baseURL + path);
     assert.equal(missing.status, 404, `Missing URL must not return the homepage: ${path}`);
     await missing.body?.cancel();
   }
-  console.log(`Workers runtime checks passed: homepage ${body.length} bytes, canonical redirect, real 404s`);
+  console.log(`Workers runtime checks passed: homepage ${body.length} bytes, independent capacity page, ${snapshot.files.length} snapshot files, canonical redirect, real 404s`);
 } finally {
   server.kill("SIGTERM");
   if (server.exitCode === null) {

@@ -67,7 +67,29 @@ npm run deploy:cloudflare
 
 مراجع: [Workers Static Assets](https://developers.cloudflare.com/workers/static-assets/)، [تنظیمات Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/) و [محدودیت فایل‌ها](https://developers.cloudflare.com/workers/platform/limits/).
 
-## قالب فعال Flow
+## ابزار مستقل ظرفیت پذیرش
+
+ابزار در `/capacity/` منتشر می‌شود. بازدیدکننده ابتدا تجربی، ریاضی یا انسانی
+را انتخاب می‌کند؛ سپس رشتهٔ دانشگاهی و یک یا چند دانشگاه را برمی‌گزیند و ظرفیت
+سال‌های ۱۴۰۴ تا ۱۴۰۱ را می‌بیند. سال ۱۴۰۵ فعلاً «به‌زودی» است. کارت صفحهٔ اصلی
+به صفحهٔ مستقل ابزار لینک می‌دهد.
+
+snapshot ثبت‌شده: `52ff02d0dcfd4e11` از commit
+`e48c51abb5511b9d36a5594f96dfff3817f4192a` مخزن `mrst10578/Entekhab-Reshte`؛
+۳۳٬۳۲۶ ردیف ظرفیت و ۸۳ رشته/خانواده. `public/capacity/data/manifest.json`
+هش‌های SHA-256، شمار ردیف‌ها و منشأ فایل‌ها را نگه می‌دارد. فایل‌های CSV نهایی
+چهار سال عیناً در `public/capacity/data/source/` هستند. build فقط اعتبارسنجی
+می‌کند و داده‌ها را خودکار به‌روز نمی‌کند.
+
+همگام‌سازی صریح از checkout تمیز منبع:
+
+```bash
+CAPACITY_SOURCE_ROOT=../Entekhab-Reshte npm run data:capacity
+```
+
+جزئیات پوشش، اعتبارسنجی و به‌روزرسانی در [گزارش ظرفیت](docs/flow/CAPACITY_REPORT_FA.md).
+
+## ظاهر فعال Flow
 
 هر شش تصویر در `public/flow/assets` فعال هستند. لوگوی سربرگ فقط انگلیسی است و استان‌شناسی زیر رشته‌شناسی قرار دارد.
 
