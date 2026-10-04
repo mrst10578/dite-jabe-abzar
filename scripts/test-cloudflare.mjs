@@ -63,7 +63,7 @@ try {
   const capacityPage = await fetch(`${baseURL}/capacity/`);
   assert.equal(capacityPage.status, 200, "Independent capacity page must be served");
   assert.equal(hash(Buffer.from(await capacityPage.arrayBuffer())), hash(await readFile("public/capacity/index.html")));
-  for (const file of ["app.js", "model.js", "capacity.css", "vazirmatn.woff2"]) {
+  for (const file of ["app.js", "model.js", "university-aliases.js", "capacity.css", "vazirmatn.woff2"]) {
     const response = await fetch(`${baseURL}/capacity/${file}`);
     assert.equal(response.status, 200, `Capacity asset must be served: ${file}`);
     assert.equal(hash(Buffer.from(await response.arrayBuffer())), hash(await readFile(`public/capacity/${file}`)));
