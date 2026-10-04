@@ -1,0 +1,1424 @@
+{
+  "status": "extracted_from_supplied_files",
+  "years": [
+    {
+      "year": 1401,
+      "base_rows": 1576,
+      "added_rows": 0,
+      "deleted_rows": 3,
+      "amendment_events": 9,
+      "final_rows": 1573,
+      "university_summary_rows": 797,
+      "capacities": {
+        "پزشکی": 9012,
+        "دندانپزشکی": 1860,
+        "داروسازی": 1372,
+        "فیزیوتراپی": 376,
+        "پرستاری": 5671,
+        "اتاق عمل": 1366,
+        "هوشبری": 1185,
+        "گفتاردرمانی": 255,
+        "بینایی‌سنجی": 91,
+        "شنوایی‌شناسی": 195
+      },
+      "total_capacity": 21383,
+      "all_amendment_codes_matched": false,
+      "all_declared_before_capacities_matched": true,
+      "all_explicit_gender_totals_matched": true,
+      "aggregate_totals_matched": true,
+      "unresolved_capacity_rows": 1,
+      "source_intake_discrepancies": 0,
+      "period_not_explicit_rows": 722
+    },
+    {
+      "year": 1402,
+      "base_rows": 1152,
+      "added_rows": 3,
+      "deleted_rows": 3,
+      "amendment_events": 21,
+      "final_rows": 1152,
+      "university_summary_rows": 861,
+      "capacities": {
+        "پزشکی": 11101,
+        "دندانپزشکی": 2060,
+        "داروسازی": 1271,
+        "فیزیوتراپی": 387,
+        "پرستاری": 6033,
+        "اتاق عمل": 1510,
+        "هوشبری": 1226,
+        "گفتاردرمانی": 280,
+        "بینایی‌سنجی": 102,
+        "شنوایی‌شناسی": 200
+      },
+      "total_capacity": 24170,
+      "all_amendment_codes_matched": true,
+      "all_declared_before_capacities_matched": true,
+      "all_explicit_gender_totals_matched": true,
+      "aggregate_totals_matched": true,
+      "unresolved_capacity_rows": 0,
+      "source_intake_discrepancies": 0,
+      "period_not_explicit_rows": 274
+    },
+    {
+      "year": 1403,
+      "base_rows": 1599,
+      "added_rows": 0,
+      "deleted_rows": 0,
+      "amendment_events": 1,
+      "final_rows": 1599,
+      "university_summary_rows": 1251,
+      "capacities": {
+        "پزشکی": 12803,
+        "دندانپزشکی": 2362,
+        "داروسازی": 1285,
+        "فیزیوتراپی": 392,
+        "پرستاری": 6518,
+        "اتاق عمل": 1709,
+        "هوشبری": 1437,
+        "گفتاردرمانی": 280,
+        "بینایی‌سنجی": 102,
+        "شنوایی‌شناسی": 201
+      },
+      "total_capacity": 27089,
+      "all_amendment_codes_matched": true,
+      "all_declared_before_capacities_matched": true,
+      "all_explicit_gender_totals_matched": true,
+      "aggregate_totals_matched": true,
+      "unresolved_capacity_rows": 0,
+      "source_intake_discrepancies": 0,
+      "period_not_explicit_rows": 316
+    },
+    {
+      "year": 1404,
+      "base_rows": 1915,
+      "added_rows": 138,
+      "deleted_rows": 125,
+      "amendment_events": 792,
+      "final_rows": 1928,
+      "university_summary_rows": 1237,
+      "capacities": {
+        "پزشکی": 14437,
+        "دندانپزشکی": 2507,
+        "داروسازی": 1322,
+        "فیزیوتراپی": 377,
+        "پرستاری": 6749,
+        "اتاق عمل": 1632,
+        "هوشبری": 1435,
+        "گفتاردرمانی": 222,
+        "بینایی‌سنجی": 90,
+        "شنوایی‌شناسی": 142
+      },
+      "total_capacity": 28913,
+      "all_amendment_codes_matched": true,
+      "all_declared_before_capacities_matched": true,
+      "all_explicit_gender_totals_matched": true,
+      "aggregate_totals_matched": true,
+      "unresolved_capacity_rows": 0,
+      "source_intake_discrepancies": 10,
+      "period_not_explicit_rows": 572
+    }
+  ],
+  "original_archive": {
+    "file_name": "Download.zip",
+    "library_file_id": "libfile_b480d2d1cdc0819190de3ef33f72835b",
+    "sha256": "f514dc47e062750e399a4d1b687f6c6e686d60e02211bfaf9479e9e86ac4c1da"
+  },
+  "scope": [
+    "پزشکی",
+    "دندانپزشکی",
+    "داروسازی",
+    "فیزیوتراپی",
+    "پرستاری",
+    "اتاق عمل",
+    "هوشبری",
+    "گفتاردرمانی",
+    "بینایی‌سنجی",
+    "شنوایی‌شناسی"
+  ],
+  "legacy_scope_note": "Top-level scope/years retain the original ten health majors. dataset is the current complete capacity export.",
+  "dataset": {
+    "major_families": 83,
+    "rows": 33326,
+    "capacity": 520845,
+    "years": {
+      "1401": {
+        "year": 1401,
+        "rows": 7813,
+        "capacity": 126992,
+        "university_summary_rows": 4937,
+        "input_files": [
+          {
+            "path": "capacities-accounting.csv",
+            "rows": 221,
+            "capacity": 2470
+          },
+          {
+            "path": "capacities-aerospace-engineering.csv",
+            "rows": 21,
+            "capacity": 460
+          },
+          {
+            "path": "capacities-architecture-engineering.csv",
+            "rows": 127,
+            "capacity": 1643
+          },
+          {
+            "path": "capacities-biomedical-engineering.csv",
+            "rows": 35,
+            "capacity": 785
+          },
+          {
+            "path": "capacities-biotechnology-zoology.csv",
+            "rows": 102,
+            "capacity": 2893
+          },
+          {
+            "path": "capacities-business-management.csv",
+            "rows": 69,
+            "capacity": 905
+          },
+          {
+            "path": "capacities-cell-molecular-biology.csv",
+            "rows": 83,
+            "capacity": 2464
+          },
+          {
+            "path": "capacities-chemical-engineering.csv",
+            "rows": 109,
+            "capacity": 2938
+          },
+          {
+            "path": "capacities-chemistry-math.csv",
+            "rows": 140,
+            "capacity": 1713
+          },
+          {
+            "path": "capacities-chemistry-tehran-day.csv",
+            "rows": 8,
+            "capacity": 176
+          },
+          {
+            "path": "capacities-civil-engineering.csv",
+            "rows": 210,
+            "capacity": 4742
+          },
+          {
+            "path": "capacities-computer-engineering.csv",
+            "rows": 260,
+            "capacity": 5330
+          },
+          {
+            "path": "capacities-computer-science.csv",
+            "rows": 88,
+            "capacity": 2148
+          },
+          {
+            "path": "capacities-counseling.csv",
+            "rows": 40,
+            "capacity": 773
+          },
+          {
+            "path": "capacities-economics.csv",
+            "rows": 81,
+            "capacity": 1428
+          },
+          {
+            "path": "capacities-educational-sciences.csv",
+            "rows": 62,
+            "capacity": 1450
+          },
+          {
+            "path": "capacities-electrical-engineering.csv",
+            "rows": 255,
+            "capacity": 6575
+          },
+          {
+            "path": "capacities-elementary-education.csv",
+            "rows": 1403,
+            "capacity": 10820
+          },
+          {
+            "path": "capacities-energy-engineering.csv",
+            "rows": 21,
+            "capacity": 437
+          },
+          {
+            "path": "capacities-financial-management.csv",
+            "rows": 20,
+            "capacity": 289
+          },
+          {
+            "path": "capacities-food-science-vet-associate-meat-inspection.csv",
+            "rows": 77,
+            "capacity": 1215
+          },
+          {
+            "path": "capacities-geography.csv",
+            "rows": 62,
+            "capacity": 1725
+          },
+          {
+            "path": "capacities-health-management-hit.csv",
+            "rows": 82,
+            "capacity": 854
+          },
+          {
+            "path": "capacities-history.csv",
+            "rows": 42,
+            "capacity": 902
+          },
+          {
+            "path": "capacities-industrial-engineering.csv",
+            "rows": 112,
+            "capacity": 2651
+          },
+          {
+            "path": "capacities-industrial-management.csv",
+            "rows": 42,
+            "capacity": 560
+          },
+          {
+            "path": "capacities-knowledge-information-science.csv",
+            "rows": 34,
+            "capacity": 489
+          },
+          {
+            "path": "capacities-lab-occupational-therapy.csv",
+            "rows": 153,
+            "capacity": 1854
+          },
+          {
+            "path": "capacities-law.csv",
+            "rows": 96,
+            "capacity": 2579
+          },
+          {
+            "path": "capacities-manufacturing-engineering.csv",
+            "rows": 23,
+            "capacity": 439
+          },
+          {
+            "path": "capacities-marine-ship-engineering.csv",
+            "rows": 15,
+            "capacity": 482
+          },
+          {
+            "path": "capacities-materials-metallurgy-engineering.csv",
+            "rows": 74,
+            "capacity": 2322
+          },
+          {
+            "path": "capacities-maternity-emergency.csv",
+            "rows": 120,
+            "capacity": 1728
+          },
+          {
+            "path": "capacities-mathematics.csv",
+            "rows": 107,
+            "capacity": 3287
+          },
+          {
+            "path": "capacities-mechanical-engineering.csv",
+            "rows": 255,
+            "capacity": 5353
+          },
+          {
+            "path": "capacities-microbiology.csv",
+            "rows": 47,
+            "capacity": 1824
+          },
+          {
+            "path": "capacities-mining-engineering.csv",
+            "rows": 46,
+            "capacity": 1303
+          },
+          {
+            "path": "capacities-nuclear-medicine-library.csv",
+            "rows": 12,
+            "capacity": 198
+          },
+          {
+            "path": "capacities-nutrition-radiology.csv",
+            "rows": 128,
+            "capacity": 1503
+          },
+          {
+            "path": "capacities-orthotics-veterinary.csv",
+            "rows": 66,
+            "capacity": 1452
+          },
+          {
+            "path": "capacities-persian-language-literature.csv",
+            "rows": 85,
+            "capacity": 1963
+          },
+          {
+            "path": "capacities-petroleum-engineering.csv",
+            "rows": 40,
+            "capacity": 685
+          },
+          {
+            "path": "capacities-physics.csv",
+            "rows": 85,
+            "capacity": 2787
+          },
+          {
+            "path": "capacities-plant-food-vetlab.csv",
+            "rows": 86,
+            "capacity": 1793
+          },
+          {
+            "path": "capacities-political-science.csv",
+            "rows": 54,
+            "capacity": 1153
+          },
+          {
+            "path": "capacities-polymer-engineering.csv",
+            "rows": 31,
+            "capacity": 592
+          },
+          {
+            "path": "capacities-psychology.csv",
+            "rows": 87,
+            "capacity": 1183
+          },
+          {
+            "path": "capacities-public-environmental-occupational-health.csv",
+            "rows": 274,
+            "capacity": 3757
+          },
+          {
+            "path": "capacities-public-management.csv",
+            "rows": 29,
+            "capacity": 285
+          },
+          {
+            "path": "capacities-radiotherapy-dental-prosthesis.csv",
+            "rows": 17,
+            "capacity": 231
+          },
+          {
+            "path": "capacities-railway-engineering.csv",
+            "rows": 21,
+            "capacity": 171
+          },
+          {
+            "path": "capacities-social-work.csv",
+            "rows": 15,
+            "capacity": 210
+          },
+          {
+            "path": "capacities-sociology.csv",
+            "rows": 65,
+            "capacity": 1365
+          },
+          {
+            "path": "capacities-sport-sciences.csv",
+            "rows": 185,
+            "capacity": 1722
+          },
+          {
+            "path": "capacities-statistics.csv",
+            "rows": 75,
+            "capacity": 1926
+          },
+          {
+            "path": "capacities-survey-geomatics-engineering.csv",
+            "rows": 39,
+            "capacity": 769
+          },
+          {
+            "path": "capacities-textile-engineering.csv",
+            "rows": 14,
+            "capacity": 503
+          },
+          {
+            "path": "capacities-tourism.csv",
+            "rows": 37,
+            "capacity": 435
+          },
+          {
+            "path": "capacities-urban-planning-engineering.csv",
+            "rows": 53,
+            "capacity": 920
+          },
+          {
+            "path": "capacities.csv",
+            "rows": 1573,
+            "capacity": 21383
+          }
+        ],
+        "export": "capacities-all.csv",
+        "humanities_rows": 2729,
+        "humanities_capacity": 32706,
+        "humanities_qa": {
+          "duplicate_joint_keys": 0,
+          "forbidden_universities": 0,
+          "invalid_capacities": 0,
+          "invalid_years": 0,
+          "untraceable_source_pages": 0,
+          "aggregate_totals_matched": true
+        }
+      },
+      "1402": {
+        "year": 1402,
+        "rows": 8318,
+        "capacity": 127520,
+        "university_summary_rows": 5532,
+        "input_files": [
+          {
+            "path": "capacities-accounting.csv",
+            "rows": 282,
+            "capacity": 2624
+          },
+          {
+            "path": "capacities-aerospace-engineering.csv",
+            "rows": 27,
+            "capacity": 487
+          },
+          {
+            "path": "capacities-architecture-engineering.csv",
+            "rows": 132,
+            "capacity": 1663
+          },
+          {
+            "path": "capacities-biomedical-engineering.csv",
+            "rows": 34,
+            "capacity": 845
+          },
+          {
+            "path": "capacities-biotechnology-zoology.csv",
+            "rows": 112,
+            "capacity": 2933
+          },
+          {
+            "path": "capacities-business-management.csv",
+            "rows": 118,
+            "capacity": 976
+          },
+          {
+            "path": "capacities-cell-molecular-biology.csv",
+            "rows": 83,
+            "capacity": 2289
+          },
+          {
+            "path": "capacities-chemical-engineering.csv",
+            "rows": 183,
+            "capacity": 3069
+          },
+          {
+            "path": "capacities-chemistry-math.csv",
+            "rows": 157,
+            "capacity": 1721
+          },
+          {
+            "path": "capacities-chemistry-tehran-day.csv",
+            "rows": 15,
+            "capacity": 206
+          },
+          {
+            "path": "capacities-civil-engineering.csv",
+            "rows": 249,
+            "capacity": 4858
+          },
+          {
+            "path": "capacities-computer-engineering.csv",
+            "rows": 393,
+            "capacity": 5733
+          },
+          {
+            "path": "capacities-computer-science.csv",
+            "rows": 96,
+            "capacity": 2144
+          },
+          {
+            "path": "capacities-counseling.csv",
+            "rows": 40,
+            "capacity": 791
+          },
+          {
+            "path": "capacities-economics.csv",
+            "rows": 74,
+            "capacity": 718
+          },
+          {
+            "path": "capacities-educational-sciences.csv",
+            "rows": 66,
+            "capacity": 1217
+          },
+          {
+            "path": "capacities-electrical-engineering.csv",
+            "rows": 441,
+            "capacity": 6875
+          },
+          {
+            "path": "capacities-elementary-education.csv",
+            "rows": 1156,
+            "capacity": 5706
+          },
+          {
+            "path": "capacities-energy-engineering.csv",
+            "rows": 38,
+            "capacity": 503
+          },
+          {
+            "path": "capacities-financial-management.csv",
+            "rows": 22,
+            "capacity": 281
+          },
+          {
+            "path": "capacities-food-science-vet-associate-meat-inspection.csv",
+            "rows": 91,
+            "capacity": 1266
+          },
+          {
+            "path": "capacities-geography.csv",
+            "rows": 71,
+            "capacity": 1649
+          },
+          {
+            "path": "capacities-health-management-hit.csv",
+            "rows": 63,
+            "capacity": 947
+          },
+          {
+            "path": "capacities-history.csv",
+            "rows": 57,
+            "capacity": 901
+          },
+          {
+            "path": "capacities-industrial-engineering.csv",
+            "rows": 215,
+            "capacity": 2899
+          },
+          {
+            "path": "capacities-industrial-management.csv",
+            "rows": 52,
+            "capacity": 601
+          },
+          {
+            "path": "capacities-knowledge-information-science.csv",
+            "rows": 41,
+            "capacity": 528
+          },
+          {
+            "path": "capacities-lab-occupational-therapy.csv",
+            "rows": 119,
+            "capacity": 1742
+          },
+          {
+            "path": "capacities-law.csv",
+            "rows": 97,
+            "capacity": 2417
+          },
+          {
+            "path": "capacities-manufacturing-engineering.csv",
+            "rows": 37,
+            "capacity": 529
+          },
+          {
+            "path": "capacities-marine-ship-engineering.csv",
+            "rows": 21,
+            "capacity": 470
+          },
+          {
+            "path": "capacities-materials-metallurgy-engineering.csv",
+            "rows": 146,
+            "capacity": 2508
+          },
+          {
+            "path": "capacities-maternity-emergency.csv",
+            "rows": 149,
+            "capacity": 2246
+          },
+          {
+            "path": "capacities-mathematics.csv",
+            "rows": 130,
+            "capacity": 3258
+          },
+          {
+            "path": "capacities-mechanical-engineering.csv",
+            "rows": 413,
+            "capacity": 7702
+          },
+          {
+            "path": "capacities-microbiology.csv",
+            "rows": 49,
+            "capacity": 1726
+          },
+          {
+            "path": "capacities-mining-engineering.csv",
+            "rows": 55,
+            "capacity": 1390
+          },
+          {
+            "path": "capacities-nuclear-medicine-library.csv",
+            "rows": 12,
+            "capacity": 225
+          },
+          {
+            "path": "capacities-nutrition-radiology.csv",
+            "rows": 112,
+            "capacity": 1550
+          },
+          {
+            "path": "capacities-orthotics-veterinary.csv",
+            "rows": 65,
+            "capacity": 800
+          },
+          {
+            "path": "capacities-persian-language-literature.csv",
+            "rows": 95,
+            "capacity": 1906
+          },
+          {
+            "path": "capacities-petroleum-engineering.csv",
+            "rows": 48,
+            "capacity": 739
+          },
+          {
+            "path": "capacities-physics.csv",
+            "rows": 108,
+            "capacity": 2715
+          },
+          {
+            "path": "capacities-plant-food-vetlab.csv",
+            "rows": 94,
+            "capacity": 1726
+          },
+          {
+            "path": "capacities-political-science.csv",
+            "rows": 62,
+            "capacity": 1179
+          },
+          {
+            "path": "capacities-polymer-engineering.csv",
+            "rows": 50,
+            "capacity": 679
+          },
+          {
+            "path": "capacities-psychology.csv",
+            "rows": 90,
+            "capacity": 1103
+          },
+          {
+            "path": "capacities-public-environmental-occupational-health.csv",
+            "rows": 258,
+            "capacity": 3662
+          },
+          {
+            "path": "capacities-public-management.csv",
+            "rows": 29,
+            "capacity": 285
+          },
+          {
+            "path": "capacities-radiotherapy-dental-prosthesis.csv",
+            "rows": 18,
+            "capacity": 231
+          },
+          {
+            "path": "capacities-railway-engineering.csv",
+            "rows": 22,
+            "capacity": 144
+          },
+          {
+            "path": "capacities-social-work.csv",
+            "rows": 17,
+            "capacity": 221
+          },
+          {
+            "path": "capacities-sociology.csv",
+            "rows": 73,
+            "capacity": 1279
+          },
+          {
+            "path": "capacities-sport-sciences.csv",
+            "rows": 209,
+            "capacity": 1747
+          },
+          {
+            "path": "capacities-statistics.csv",
+            "rows": 91,
+            "capacity": 1925
+          },
+          {
+            "path": "capacities-survey-geomatics-engineering.csv",
+            "rows": 50,
+            "capacity": 826
+          },
+          {
+            "path": "capacities-textile-engineering.csv",
+            "rows": 23,
+            "capacity": 537
+          },
+          {
+            "path": "capacities-tourism.csv",
+            "rows": 54,
+            "capacity": 497
+          },
+          {
+            "path": "capacities-urban-planning-engineering.csv",
+            "rows": 62,
+            "capacity": 956
+          },
+          {
+            "path": "capacities.csv",
+            "rows": 1152,
+            "capacity": 24170
+          }
+        ],
+        "export": "capacities-all.csv",
+        "humanities_rows": 2705,
+        "humanities_capacity": 26626,
+        "humanities_qa": {
+          "duplicate_joint_keys": 0,
+          "forbidden_universities": 0,
+          "invalid_capacities": 0,
+          "invalid_years": 0,
+          "untraceable_source_pages": 0,
+          "aggregate_totals_matched": true
+        }
+      },
+      "1403": {
+        "year": 1403,
+        "rows": 8697,
+        "capacity": 131617,
+        "university_summary_rows": 6174,
+        "input_files": [
+          {
+            "path": "capacities-accounting.csv",
+            "rows": 247,
+            "capacity": 2666
+          },
+          {
+            "path": "capacities-aerospace-engineering.csv",
+            "rows": 24,
+            "capacity": 501
+          },
+          {
+            "path": "capacities-architecture-engineering.csv",
+            "rows": 139,
+            "capacity": 1724
+          },
+          {
+            "path": "capacities-biomedical-engineering.csv",
+            "rows": 35,
+            "capacity": 1005
+          },
+          {
+            "path": "capacities-biotechnology-zoology.csv",
+            "rows": 115,
+            "capacity": 3064
+          },
+          {
+            "path": "capacities-business-management.csv",
+            "rows": 81,
+            "capacity": 1017
+          },
+          {
+            "path": "capacities-cell-molecular-biology.csv",
+            "rows": 193,
+            "capacity": 5427
+          },
+          {
+            "path": "capacities-chemical-engineering.csv",
+            "rows": 129,
+            "capacity": 3093
+          },
+          {
+            "path": "capacities-chemistry-math.csv",
+            "rows": 168,
+            "capacity": 1674
+          },
+          {
+            "path": "capacities-chemistry-tehran-day.csv",
+            "rows": 15,
+            "capacity": 219
+          },
+          {
+            "path": "capacities-civil-engineering.csv",
+            "rows": 243,
+            "capacity": 4864
+          },
+          {
+            "path": "capacities-computer-engineering.csv",
+            "rows": 322,
+            "capacity": 5461
+          },
+          {
+            "path": "capacities-computer-science.csv",
+            "rows": 100,
+            "capacity": 2209
+          },
+          {
+            "path": "capacities-counseling.csv",
+            "rows": 46,
+            "capacity": 899
+          },
+          {
+            "path": "capacities-economics.csv",
+            "rows": 88,
+            "capacity": 747
+          },
+          {
+            "path": "capacities-educational-sciences.csv",
+            "rows": 62,
+            "capacity": 1461
+          },
+          {
+            "path": "capacities-electrical-engineering.csv",
+            "rows": 307,
+            "capacity": 6666
+          },
+          {
+            "path": "capacities-elementary-education.csv",
+            "rows": 1351,
+            "capacity": 3454
+          },
+          {
+            "path": "capacities-energy-engineering.csv",
+            "rows": 45,
+            "capacity": 711
+          },
+          {
+            "path": "capacities-financial-management.csv",
+            "rows": 24,
+            "capacity": 307
+          },
+          {
+            "path": "capacities-food-science-vet-associate-meat-inspection.csv",
+            "rows": 77,
+            "capacity": 1310
+          },
+          {
+            "path": "capacities-geography.csv",
+            "rows": 67,
+            "capacity": 1563
+          },
+          {
+            "path": "capacities-health-management-hit.csv",
+            "rows": 73,
+            "capacity": 1268
+          },
+          {
+            "path": "capacities-history.csv",
+            "rows": 54,
+            "capacity": 946
+          },
+          {
+            "path": "capacities-industrial-engineering.csv",
+            "rows": 132,
+            "capacity": 2836
+          },
+          {
+            "path": "capacities-industrial-management.csv",
+            "rows": 51,
+            "capacity": 649
+          },
+          {
+            "path": "capacities-knowledge-information-science.csv",
+            "rows": 32,
+            "capacity": 505
+          },
+          {
+            "path": "capacities-lab-occupational-therapy.csv",
+            "rows": 159,
+            "capacity": 1827
+          },
+          {
+            "path": "capacities-law.csv",
+            "rows": 109,
+            "capacity": 2703
+          },
+          {
+            "path": "capacities-manufacturing-engineering.csv",
+            "rows": 31,
+            "capacity": 601
+          },
+          {
+            "path": "capacities-marine-ship-engineering.csv",
+            "rows": 31,
+            "capacity": 542
+          },
+          {
+            "path": "capacities-materials-metallurgy-engineering.csv",
+            "rows": 86,
+            "capacity": 2430
+          },
+          {
+            "path": "capacities-maternity-emergency.csv",
+            "rows": 261,
+            "capacity": 2432
+          },
+          {
+            "path": "capacities-mathematics.csv",
+            "rows": 131,
+            "capacity": 3202
+          },
+          {
+            "path": "capacities-mechanical-engineering.csv",
+            "rows": 283,
+            "capacity": 5321
+          },
+          {
+            "path": "capacities-microbiology.csv",
+            "rows": 46,
+            "capacity": 1692
+          },
+          {
+            "path": "capacities-mining-engineering.csv",
+            "rows": 59,
+            "capacity": 1363
+          },
+          {
+            "path": "capacities-nuclear-medicine-library.csv",
+            "rows": 15,
+            "capacity": 263
+          },
+          {
+            "path": "capacities-nutrition-radiology.csv",
+            "rows": 144,
+            "capacity": 1835
+          },
+          {
+            "path": "capacities-orthotics-veterinary.csv",
+            "rows": 66,
+            "capacity": 808
+          },
+          {
+            "path": "capacities-persian-language-literature.csv",
+            "rows": 108,
+            "capacity": 1909
+          },
+          {
+            "path": "capacities-petroleum-engineering.csv",
+            "rows": 36,
+            "capacity": 765
+          },
+          {
+            "path": "capacities-physics.csv",
+            "rows": 109,
+            "capacity": 2721
+          },
+          {
+            "path": "capacities-plant-food-vetlab.csv",
+            "rows": 85,
+            "capacity": 1674
+          },
+          {
+            "path": "capacities-political-science.csv",
+            "rows": 55,
+            "capacity": 1192
+          },
+          {
+            "path": "capacities-polymer-engineering.csv",
+            "rows": 44,
+            "capacity": 805
+          },
+          {
+            "path": "capacities-psychology.csv",
+            "rows": 103,
+            "capacity": 1339
+          },
+          {
+            "path": "capacities-public-environmental-occupational-health.csv",
+            "rows": 301,
+            "capacity": 4171
+          },
+          {
+            "path": "capacities-public-management.csv",
+            "rows": 28,
+            "capacity": 310
+          },
+          {
+            "path": "capacities-radiotherapy-dental-prosthesis.csv",
+            "rows": 21,
+            "capacity": 240
+          },
+          {
+            "path": "capacities-railway-engineering.csv",
+            "rows": 18,
+            "capacity": 131
+          },
+          {
+            "path": "capacities-social-work.csv",
+            "rows": 20,
+            "capacity": 343
+          },
+          {
+            "path": "capacities-sociology.csv",
+            "rows": 72,
+            "capacity": 1259
+          },
+          {
+            "path": "capacities-sport-sciences.csv",
+            "rows": 198,
+            "capacity": 1772
+          },
+          {
+            "path": "capacities-statistics.csv",
+            "rows": 91,
+            "capacity": 1925
+          },
+          {
+            "path": "capacities-survey-geomatics-engineering.csv",
+            "rows": 47,
+            "capacity": 851
+          },
+          {
+            "path": "capacities-textile-engineering.csv",
+            "rows": 18,
+            "capacity": 495
+          },
+          {
+            "path": "capacities-tourism.csv",
+            "rows": 45,
+            "capacity": 434
+          },
+          {
+            "path": "capacities-urban-planning-engineering.csv",
+            "rows": 58,
+            "capacity": 927
+          },
+          {
+            "path": "capacities.csv",
+            "rows": 1599,
+            "capacity": 27089
+          }
+        ],
+        "export": "capacities-all.csv",
+        "humanities_rows": 2841,
+        "humanities_capacity": 25475,
+        "humanities_qa": {
+          "duplicate_joint_keys": 0,
+          "forbidden_universities": 0,
+          "invalid_capacities": 0,
+          "invalid_years": 0,
+          "untraceable_source_pages": 0,
+          "aggregate_totals_matched": true
+        }
+      },
+      "1404": {
+        "year": 1404,
+        "rows": 8498,
+        "capacity": 134716,
+        "university_summary_rows": 5905,
+        "input_files": [
+          {
+            "path": "capacities-accounting.csv",
+            "rows": 250,
+            "capacity": 2660
+          },
+          {
+            "path": "capacities-aerospace-engineering.csv",
+            "rows": 25,
+            "capacity": 532
+          },
+          {
+            "path": "capacities-architecture-engineering.csv",
+            "rows": 92,
+            "capacity": 1682
+          },
+          {
+            "path": "capacities-biomedical-engineering.csv",
+            "rows": 39,
+            "capacity": 1070
+          },
+          {
+            "path": "capacities-biotechnology-zoology.csv",
+            "rows": 112,
+            "capacity": 2987
+          },
+          {
+            "path": "capacities-business-management.csv",
+            "rows": 80,
+            "capacity": 941
+          },
+          {
+            "path": "capacities-cell-molecular-biology.csv",
+            "rows": 194,
+            "capacity": 5600
+          },
+          {
+            "path": "capacities-chemical-engineering.csv",
+            "rows": 127,
+            "capacity": 3108
+          },
+          {
+            "path": "capacities-chemistry-math.csv",
+            "rows": 152,
+            "capacity": 1786
+          },
+          {
+            "path": "capacities-chemistry-tehran-day.csv",
+            "rows": 8,
+            "capacity": 147
+          },
+          {
+            "path": "capacities-civil-engineering.csv",
+            "rows": 177,
+            "capacity": 4799
+          },
+          {
+            "path": "capacities-computer-engineering.csv",
+            "rows": 217,
+            "capacity": 5252
+          },
+          {
+            "path": "capacities-computer-science.csv",
+            "rows": 105,
+            "capacity": 2241
+          },
+          {
+            "path": "capacities-counseling.csv",
+            "rows": 48,
+            "capacity": 898
+          },
+          {
+            "path": "capacities-economics.csv",
+            "rows": 85,
+            "capacity": 710
+          },
+          {
+            "path": "capacities-educational-sciences.csv",
+            "rows": 60,
+            "capacity": 1429
+          },
+          {
+            "path": "capacities-electrical-engineering.csv",
+            "rows": 200,
+            "capacity": 6505
+          },
+          {
+            "path": "capacities-elementary-education.csv",
+            "rows": 1336,
+            "capacity": 3781
+          },
+          {
+            "path": "capacities-energy-engineering.csv",
+            "rows": 51,
+            "capacity": 762
+          },
+          {
+            "path": "capacities-financial-management.csv",
+            "rows": 26,
+            "capacity": 338
+          },
+          {
+            "path": "capacities-food-science-vet-associate-meat-inspection.csv",
+            "rows": 88,
+            "capacity": 1278
+          },
+          {
+            "path": "capacities-geography.csv",
+            "rows": 61,
+            "capacity": 1520
+          },
+          {
+            "path": "capacities-health-management-hit.csv",
+            "rows": 75,
+            "capacity": 1398
+          },
+          {
+            "path": "capacities-history.csv",
+            "rows": 49,
+            "capacity": 879
+          },
+          {
+            "path": "capacities-industrial-engineering.csv",
+            "rows": 131,
+            "capacity": 2825
+          },
+          {
+            "path": "capacities-industrial-management.csv",
+            "rows": 46,
+            "capacity": 583
+          },
+          {
+            "path": "capacities-knowledge-information-science.csv",
+            "rows": 32,
+            "capacity": 500
+          },
+          {
+            "path": "capacities-lab-occupational-therapy.csv",
+            "rows": 154,
+            "capacity": 2251
+          },
+          {
+            "path": "capacities-law.csv",
+            "rows": 117,
+            "capacity": 2931
+          },
+          {
+            "path": "capacities-manufacturing-engineering.csv",
+            "rows": 31,
+            "capacity": 572
+          },
+          {
+            "path": "capacities-marine-ship-engineering.csv",
+            "rows": 29,
+            "capacity": 576
+          },
+          {
+            "path": "capacities-materials-metallurgy-engineering.csv",
+            "rows": 81,
+            "capacity": 2337
+          },
+          {
+            "path": "capacities-maternity-emergency.csv",
+            "rows": 280,
+            "capacity": 2965
+          },
+          {
+            "path": "capacities-mathematics.csv",
+            "rows": 114,
+            "capacity": 3110
+          },
+          {
+            "path": "capacities-mechanical-engineering.csv",
+            "rows": 188,
+            "capacity": 5189
+          },
+          {
+            "path": "capacities-microbiology.csv",
+            "rows": 50,
+            "capacity": 1844
+          },
+          {
+            "path": "capacities-mining-engineering.csv",
+            "rows": 56,
+            "capacity": 1324
+          },
+          {
+            "path": "capacities-nuclear-medicine-library.csv",
+            "rows": 13,
+            "capacity": 251
+          },
+          {
+            "path": "capacities-nutrition-radiology.csv",
+            "rows": 147,
+            "capacity": 1832
+          },
+          {
+            "path": "capacities-orthotics-veterinary.csv",
+            "rows": 66,
+            "capacity": 793
+          },
+          {
+            "path": "capacities-persian-language-literature.csv",
+            "rows": 91,
+            "capacity": 1858
+          },
+          {
+            "path": "capacities-petroleum-engineering.csv",
+            "rows": 39,
+            "capacity": 758
+          },
+          {
+            "path": "capacities-physics.csv",
+            "rows": 92,
+            "capacity": 2509
+          },
+          {
+            "path": "capacities-plant-food-vetlab.csv",
+            "rows": 91,
+            "capacity": 1628
+          },
+          {
+            "path": "capacities-political-science.csv",
+            "rows": 53,
+            "capacity": 1107
+          },
+          {
+            "path": "capacities-polymer-engineering.csv",
+            "rows": 43,
+            "capacity": 822
+          },
+          {
+            "path": "capacities-psychology.csv",
+            "rows": 103,
+            "capacity": 1322
+          },
+          {
+            "path": "capacities-public-environmental-occupational-health.csv",
+            "rows": 300,
+            "capacity": 5219
+          },
+          {
+            "path": "capacities-public-management.csv",
+            "rows": 26,
+            "capacity": 272
+          },
+          {
+            "path": "capacities-radiotherapy-dental-prosthesis.csv",
+            "rows": 17,
+            "capacity": 211
+          },
+          {
+            "path": "capacities-railway-engineering.csv",
+            "rows": 19,
+            "capacity": 133
+          },
+          {
+            "path": "capacities-social-work.csv",
+            "rows": 28,
+            "capacity": 299
+          },
+          {
+            "path": "capacities-sociology.csv",
+            "rows": 63,
+            "capacity": 1143
+          },
+          {
+            "path": "capacities-sport-sciences.csv",
+            "rows": 173,
+            "capacity": 1735
+          },
+          {
+            "path": "capacities-statistics.csv",
+            "rows": 80,
+            "capacity": 1888
+          },
+          {
+            "path": "capacities-survey-geomatics-engineering.csv",
+            "rows": 48,
+            "capacity": 887
+          },
+          {
+            "path": "capacities-textile-engineering.csv",
+            "rows": 14,
+            "capacity": 462
+          },
+          {
+            "path": "capacities-tourism.csv",
+            "rows": 44,
+            "capacity": 428
+          },
+          {
+            "path": "capacities-urban-planning-engineering.csv",
+            "rows": 54,
+            "capacity": 936
+          },
+          {
+            "path": "capacities.csv",
+            "rows": 1928,
+            "capacity": 28913
+          }
+        ],
+        "export": "capacities-all.csv",
+        "humanities_rows": 2771,
+        "humanities_capacity": 25334,
+        "humanities_qa": {
+          "duplicate_joint_keys": 0,
+          "forbidden_universities": 0,
+          "invalid_capacities": 0,
+          "invalid_years": 0,
+          "untraceable_source_pages": 0,
+          "aggregate_totals_matched": true
+        }
+      }
+    },
+    "humanities_summary": "HUMANITIES_SUMMARY.json",
+    "completed_packages": 4
+  }
+}

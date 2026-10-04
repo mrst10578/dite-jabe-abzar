@@ -114,22 +114,18 @@ export function projectHome(document, manifest) {
     <article class="flow-data-card flow-data-card--tool" id="admission-count-tool">
       <div class="flow-data-card__copy">
         <span class="flow-data-card__eyebrow">ابزار آمار پذیرش</span>
-        <h3>تعداد داوطلبان پذیرش‌شده دانشگاه‌ها در رشته‌های مختلف</h3>
-        <p>نام رشته را وارد کنید تا آمار پذیرش آن رشته در دانشگاه‌های مختلف نمایش داده شود؛ یا دانشگاه را هم اضافه کنید تا نتیجه فقط برای همان ترکیب رشته و دانشگاه فیلتر شود.</p>
+        <h3>ظرفیت پذیرش دانشگاه‌ها در رشته‌های مختلف</h3>
+        <p>گروه آزمایشی، رشته و دانشگاه‌های موردنظرت را انتخاب کن و ظرفیت اعلام‌شده در سال‌های ۱۴۰۱ تا ۱۴۰۴ را کنار هم ببین. این ابزار در صفحه‌ای مستقل باز می‌شود.</p>
+        <a class="flow-data-action" href="/capacity/">ورود به ابزار ظرفیت پذیرش</a>
       </div>
-      <fieldset class="flow-admission-query" disabled>
-        <label><span>رشته</span><input type="search" placeholder="مثلاً پزشکی یا مهندسی کامپیوتر"></label>
-        <label><span>دانشگاه <small>اختیاری</small></span><input type="search" placeholder="مثلاً دانشگاه تهران"></label>
-        <button type="button">نمایش آمار پذیرش</button>
-      </fieldset>
       <div class="flow-admission-years" aria-label="سال‌های تحت پوشش">
-        <span><b>۱۴۰۱</b><small>آماده اتصال</small></span>
-        <span><b>۱۴۰۲</b><small>آماده اتصال</small></span>
-        <span><b>۱۴۰۳</b><small>آماده اتصال</small></span>
-        <span><b>۱۴۰۴</b><small>آماده اتصال</small></span>
         <span class="is-soon"><b>۱۴۰۵</b><small>به‌زودی</small></span>
+        <span><b>۱۴۰۴</b><small>قابل مشاهده</small></span>
+        <span><b>۱۴۰۳</b><small>قابل مشاهده</small></span>
+        <span><b>۱۴۰۲</b><small>قابل مشاهده</small></span>
+        <span><b>۱۴۰۱</b><small>قابل مشاهده</small></span>
       </div>
-      <p class="flow-data-card__note">رابط ابزار آماده شده؛ با اضافه‌شدن دیتاست تعداد پذیرش، جست‌وجو برای سال‌های ۱۴۰۱ تا ۱۴۰۴ فعال می‌شود.</p>
+      <p class="flow-data-card__note">ظرفیت اعلام‌شده با تعداد افراد پذیرفته‌شده متفاوت است؛ جزئیات دوره‌ها و منابع در صفحهٔ ابزار در دسترس است.</p>
     </article>
   </section>`);
 

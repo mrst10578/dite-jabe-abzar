@@ -27,3 +27,4 @@ await mkdir("dist", { recursive: true });
 await copyFile("public/index.html", "dist/index.html");
 
 await import("./build-flow-preview.mjs");
+await import("./build-capacity.mjs");

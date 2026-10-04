@@ -22,7 +22,8 @@
     "deploy:cloudflare": "npm run build:cloudflare && wrangler deploy",
     "check:cloudflare": "npm run build:cloudflare && wrangler deploy --dry-run",
     "test:cloudflare": "npm run build:cloudflare && node scripts/test-cloudflare.mjs",
-    "preview:flow": "node scripts/build-static.mjs"
+    "preview:flow": "node scripts/build-static.mjs",
+    "data:capacity": "node scripts/capacity-snapshot.mjs"
   },
   "dependencies": {
     "class-variance-authority": "0.7.1",
