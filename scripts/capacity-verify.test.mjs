@@ -1,10 +1,27 @@
 import { createHash } from "node:crypto";
-import { readFile, mkdtemp, cp, writeFile, rm } from "node:fs/promises";
+import { readFile, mkdtemp, mkdir, cp, writeFile, rm } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { expect, it } from "vitest";
 import { verifySnapshot } from "./capacity-verify.mjs";
 import { parseCsv } from "./capacity-snapshot.mjs";
+
+it("exports the capacity page and fixed snapshot in the ordinary static build", async () => {
+  const root = await mkdtemp(join(tmpdir(), "flow-capacity-build-"));
+  try {
+    await mkdir(join(root, "public"));
+    await cp("public/capacity", join(root, "public/capacity"), { recursive: true });
+    await writeFile(join(root, "public/index.html"), "data:font/woff2;base64,dGVzdA==");
+    execFileSync(process.execPath, [resolve("scripts/build-capacity.mjs")], { cwd: root });
+    expect(await readFile(join(root, "dist/capacity/index.html"), "utf8")).toBe(await readFile("public/capacity/index.html", "utf8"));
+    expect((await verifySnapshot(join(root, "dist/capacity/data"))).snapshotId).toBe("52ff02d0dcfd4e11");
+    for (const file of ["app.js", "model.js", "capacity.css"]) {
+      expect(await readFile(join(root, "dist/capacity", file), "utf8")).toBe(await readFile(join("public/capacity", file), "utf8"));
+    }
+    expect(await readFile(join(root, "dist/capacity/vazirmatn.woff2"), "utf8")).toBe("test");
+  } finally { await rm(root, { recursive: true, force: true }); }
+}, 20_000);
 
 it("verifies the committed snapshot and preserves every canonical source field", async () => {
   const directory = "public/capacity/data";
