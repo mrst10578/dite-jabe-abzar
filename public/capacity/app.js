@@ -1,4 +1,4 @@
-import { YEARS, GROUPS, compareLabels, normalizeUniversity, universityNames, capacityTotals } from "./model.js";
+import { YEARS, GROUPS, compareLabels, normalizeUniversity, recordUniversity, universityNames, capacityTotals } from "./model.js";
 
 const byId = (id) => document.getElementById(id);
 const number = new Intl.NumberFormat("fa-IR");
@@ -6,7 +6,7 @@ const picker = byId("group-picker"), explorer = byId("capacity-explorer");
 const majorSelect = byId("capacity-major"), universitiesField = byId("capacity-universities");
 const options = byId("university-options"), search = byId("university-search");
 const results = byId("capacity-results"), message = byId("capacity-message"), retry = byId("capacity-retry");
-let catalog = null, group = null, major = null, records = null, request = 0, controller = null, retryAction = null;
+let catalog = null, group = null, major = null, records = null, universities = [], request = 0, controller = null, retryAction = null;
 const selected = new Set(), cache = new Map();
 
 function element(tag, text, className) {
@@ -26,7 +26,7 @@ async function json(url, signal) {
 
 function resetMajor() {
   request += 1; controller?.abort(); controller = null;
-  major = null; records = null; selected.clear();
+  major = null; records = null; universities = []; selected.clear();
   results.hidden = true; search.value = ""; options.replaceChildren(); universitiesField.disabled = true;
   byId("selected-count").textContent = "";
   byId("universities-empty").hidden = false; byId("universities-empty").textContent = "اول رشته را انتخاب کن.";
@@ -44,9 +44,7 @@ async function enterGroup(id) {
     if (!catalog) {
       const loaded = await json("/capacity/data/catalog.json");
       if (loaded.schemaVersion !== 1 || !/^[a-f0-9]{16}$/.test(loaded.snapshotId) || !/^[a-f0-9]{40}$/.test(loaded.source?.commit) || !loaded.groups?.every((item) => GROUPS.some((known) => known.id === item.id) && Array.isArray(item.majors))) throw new Error("Invalid catalog");
-      catalog = { ...loaded, groups: loaded.groups.map((item) => ({ ...item,
-        majors: item.majors.map((entry) => ({ ...entry, universities: universityNames(entry.universities) })),
-      })) };
+      catalog = loaded;
     }
     if (token !== request) return;
     group = catalog.groups.find((item) => item.id === id);
@@ -75,10 +73,10 @@ byId("change-group").addEventListener("click", () => {
 });
 
 function filterUniversities() {
-  const query = normalizeUniversity(search.value);
+  const query = normalizeUniversity(search.value, { major: major?.label });
   let visible = 0;
   for (const label of options.children) {
-    label.hidden = !normalizeUniversity(label.textContent).includes(query);
+    label.hidden = !normalizeUniversity(label.textContent, { major: major?.label }).includes(query);
     if (!label.hidden) visible += 1;
   }
   byId("universities-empty").hidden = visible > 0;
@@ -87,9 +85,9 @@ function filterUniversities() {
 search.addEventListener("input", filterUniversities);
 
 function universityOptions() {
-  options.replaceChildren(...major.universities.map((university) => {
+  options.replaceChildren(...universities.map((university) => {
     const label = element("label"), input = element("input");
-    input.type = "checkbox"; input.value = university;
+    input.type = "checkbox"; input.value = university; input.checked = selected.has(university);
     label.append(input, document.createTextNode(university)); return label;
   }));
   universitiesField.disabled = false;
@@ -116,13 +114,15 @@ async function loadMajor() {
     let shard = cache.get(current.id);
     if (!shard) {
       shard = await json(`/capacity/data/${current.path}?snapshot=${catalog.snapshotId}`, controller.signal);
-      if (shard.snapshotId !== catalog.snapshotId || shard.id !== current.id || shard.group !== group.id || shard.major !== current.label || !Array.isArray(shard.records) || !shard.records.every((row) => YEARS.includes(row.year) && Number.isSafeInteger(row.capacity) && row.capacity >= 0 && current.universities.includes(normalizeUniversity(row.university)))) throw new Error("Invalid capacity snapshot");
+      if (shard.snapshotId !== catalog.snapshotId || shard.id !== current.id || shard.group !== group.id || shard.major !== current.label || !Array.isArray(shard.records) || !shard.records.every((row) => row.major === current.label && YEARS.includes(row.year) && Number.isSafeInteger(row.capacity) && row.capacity >= 0 && current.universities.includes(row.university))) throw new Error("Invalid capacity snapshot");
       cache.set(current.id, shard);
     }
     if (token !== request || major !== current) return;
-    records = shard.records; status(""); render();
+    records = shard.records; universities = universityNames(records.map((row) => recordUniversity(row)));
+    universityOptions(); status(""); render();
   } catch (error) {
     if (token !== request || error.name === "AbortError") return;
+    byId("universities-empty").textContent = "فهرست دانشگاه‌ها دریافت نشد.";
     status("دریافت داده‌ها انجام نشد. اتصال اینترنت را بررسی کن و دوباره تلاش کن.", loadMajor);
   } finally { if (token === request) explorer.removeAttribute("aria-busy"); }
 }
@@ -132,7 +132,7 @@ majorSelect.addEventListener("change", () => {
   resetMajor(); explorer.removeAttribute("aria-busy");
   major = group.majors.find((item) => item.id === id) ?? null;
   if (!major) return;
-  universityOptions();
+  byId("universities-empty").textContent = "در حال آماده‌کردن فهرست دانشگاه‌ها…";
   if (group.id === "experimental" && ["شیمی محض", "شیمی کاربردی"].includes(major.label)) {
     byId("capacity-coverage").hidden = false;
     byId("capacity-coverage").textContent = "دادهٔ شیمی در گروه تجربیِ این نسخه فقط دوره‌های روزانهٔ استان تهران را پوشش می‌دهد.";
@@ -154,10 +154,10 @@ function valuesRow(university, values, total = false) {
 
 function renderDetails() {
   if (!byId("capacity-details").open || !records) return;
-  const chosen = records.filter((row) => selected.has(normalizeUniversity(row.university))).sort((a, b) => b.year - a.year || compareLabels(normalizeUniversity(a.university), normalizeUniversity(b.university)) || compareLabels(a.program_type || "", b.program_type || ""));
+  const chosen = records.filter((row) => selected.has(recordUniversity(row))).sort((a, b) => b.year - a.year || compareLabels(recordUniversity(a), recordUniversity(b)) || compareLabels(a.program_type || "", b.program_type || ""));
   byId("capacity-detail-rows").replaceChildren(...chosen.map((record) => {
     const row = element("tr");
-    const university = normalizeUniversity(record.university) + (record.campus ? ` · ${normalizeUniversity(record.campus)}` : "");
+    const university = recordUniversity(record) + (record.campus ? ` · ${normalizeUniversity(record.campus)}` : "");
     const conditions = element("td", record.admission_conditions || record.admission_category || "—");
     if (record.notes) conditions.append(element("small", record.notes));
     const source = element("td", `${record.source_id} · صفحه ${record.source_page || "نامشخص"}`);
@@ -176,7 +176,7 @@ function render() {
     return;
   }
   status("");
-  const rows = capacityTotals(records, [...selected]);
+  const rows = capacityTotals(records, [...selected], { major: major.label });
   byId("capacity-results-title").textContent = `ظرفیت پذیرش ${major.label}`;
   byId("capacity-table").querySelector("tbody").replaceChildren(...rows.map((row) => valuesRow(row.university, row.years)));
   const totals = Object.fromEntries(YEARS.map((year) => {

@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { readFileSync } from "node:fs";
-import { normalizeUniversity, universityNames } from "../../public/capacity/model.js";
+import { recordUniversity, universityNames } from "../../public/capacity/model.js";
 
 type Record = { year: number; university: string; capacity: number };
 type Major = { id: string; label: string; universities: string[]; path: string };
@@ -8,8 +8,8 @@ const catalog = JSON.parse(readFileSync("public/capacity/data/catalog.json", "ut
   groups: { id: string; label: string; majors: Major[] }[];
 };
 const rawMedicine = catalog.groups[0].majors.find((major) => major.label === "پزشکی")!;
-const medicine = { ...rawMedicine, universities: universityNames(rawMedicine.universities) };
-const records: Record[] = JSON.parse(readFileSync(`public/capacity/data/${medicine.path}`, "utf8")).records;
+const records: Record[] = JSON.parse(readFileSync(`public/capacity/data/${rawMedicine.path}`, "utf8")).records;
+const medicine = { ...rawMedicine, universities: universityNames(records.map((record) => recordUniversity(record))) };
 const persian = (value: number) => new Intl.NumberFormat("fa-IR").format(value);
 async function enter(page: Page, group = "تجربی") {
   await page.goto("/capacity/");
@@ -40,7 +40,7 @@ test("multiple selected universities show exact snapshot sums in descending year
   for (const university of medicine.universities.slice(0, 2)) {
     const row = table.locator("tbody tr").filter({ has: page.getByRole("rowheader", { name: university, exact: true }) });
     const cells = ["به‌زودی", ...[1404, 1403, 1402, 1401].map((year) => {
-      const matching = records.filter((record) => record.year === year && normalizeUniversity(record.university) === university);
+      const matching = records.filter((record) => record.year === year && recordUniversity(record) === university);
       return matching.length ? persian(matching.reduce((sum, record) => sum + record.capacity, 0)) : "ثبت نشده";
     })];
     expect(await row.locator("td").allTextContents()).toEqual(cells);
@@ -60,7 +60,8 @@ test("major and group changes reset dependent universities and results", async (
   await expect(page.locator("#capacity-results")).toBeHidden();
   await expect(page.locator("#university-options input:checked")).toHaveCount(0);
   const labels = await page.locator("#university-options label").allTextContents();
-  expect(labels).toEqual(universityNames(nursing.universities));
+  const nursingRecords: Record[] = JSON.parse(readFileSync(`public/capacity/data/${nursing.path}`, "utf8")).records;
+  expect(labels).toEqual(universityNames(nursingRecords.map((record) => recordUniversity(record))));
   await page.getByRole("button", { name: "تغییر گروه" }).click();
   await expect(page.locator("#group-picker")).toBeVisible();
   await page.getByRole("button", { name: "انسانی", exact: true }).click();
@@ -73,7 +74,7 @@ test("university spelling variants share one option and one complete year histor
   await page.locator("#capacity-major").selectOption(medicine.id);
   await expect(page.locator("#university-options")).not.toContainText("گیالن");
   await expect(page.locator("#university-options")).not.toContainText("اسالمی");
-  const university = "دانشگاه علوم پزشکی گیلان";
+  const university = "دانشگاه علوم پزشکی گیلان - رشت";
   const option = page.locator("#university-options").getByRole("checkbox", { name: university, exact: true });
   await expect(option).toHaveCount(1);
   await option.check();
@@ -92,25 +93,49 @@ test("details correct the university and campus names without joining campuses",
   const major = catalog.groups[0].majors.find((entry) => entry.label === "اتاق عمل")!;
   await enter(page);
   await page.locator("#capacity-major").selectOption(major.id);
-  await page.locator("#university-options").getByRole("checkbox", { name: "دانشگاه علوم پزشکی گیلان", exact: true }).check();
+  await page.locator("#university-options").getByRole("checkbox", { name: "دانشگاه علوم پزشکی گیلان - رشت", exact: true }).check();
   await page.getByText("جزئیات ظرفیت و منابع", { exact: true }).click();
   const names = page.locator("#capacity-detail-rows tr td:nth-child(2)");
   await expect(names.filter({ hasText: "محل تحصیل دانشکده پیراپزشکی گیلان" })).not.toHaveCount(0);
   for (const name of await names.allTextContents()) expect(name).not.toContain("گیالن");
 });
 
-test("failed shard fetch can be retried without losing university selections", async ({ page }) => {
+test("renamed universities have one option and a complete four-year history", async ({ page }) => {
+  await enter(page);
+  await page.locator("#capacity-major").selectOption(medicine.id);
+  for (const [university, cells] of [
+    ["دانشگاه آزاد اسلامی واحد علوم پزشکی تبریز", ["به‌زودی", "۱۳۲", "۱۱۰", "۸۰", "۷۵"]],
+    ["دانشگاه آزاد اسلامی واحد خودگردان قشم", ["به‌زودی", "۹۱", "۷۹", "۵۵", "۴۵"]],
+    ["دانشگاه شاهد - تهران", ["به‌زودی", "۸۸", "۸۶", "۷۲", "۶۲"]],
+  ] as const) {
+    await page.locator("#university-options").getByRole("checkbox", { name: university, exact: true }).check();
+    const row = page.getByRole("table", { name: "ظرفیت پذیرش به تفکیک سال" }).locator("tbody tr")
+      .filter({ has: page.getByRole("rowheader", { name: university, exact: true }) });
+    await expect(row.locator("td")).toHaveText([...cells]);
+  }
+  for (const oldName of ["دانشگاه آزاد اسلامی استان آذربایجان شرقی - واحد تبریز", "دانشگاه آزاد اسلامی استان هرمزگان - مرکز آموزش بین المللی قشم", "دانشگاه شاهد - ان ) رشته های پزشکی(تهر", "دانشگاه اراک"]) {
+    await expect(page.locator("#university-options").getByRole("checkbox", { name: oldName, exact: true })).toHaveCount(0);
+  }
+  await page.locator("#university-options").getByRole("checkbox", { name: "دانشگاه علوم پزشکی زابل", exact: true }).check();
+  const zabol = page.getByRole("table", { name: "ظرفیت پذیرش به تفکیک سال" }).locator("tbody tr")
+    .filter({ has: page.getByRole("rowheader", { name: "دانشگاه علوم پزشکی زابل", exact: true }) });
+  await expect(zabol.locator("td").nth(3)).toHaveText("۱۰۵");
+});
+
+test("failed shard fetch can be retried before enabling university choices", async ({ page }) => {
   let fail = true;
   await page.route(`**/capacity/data/${medicine.path}*`, async (route) => {
     if (fail) await route.fulfill({ status: 503, body: "unavailable" }); else await route.continue();
   });
   await enter(page);
   await page.locator("#capacity-major").selectOption(medicine.id);
-  await page.locator("#university-options").getByRole("checkbox").first().check();
   await expect(page.locator("#capacity-message")).toContainText("دریافت داده‌ها");
+  await expect(page.getByLabel("جست‌وجوی دانشگاه")).toBeDisabled();
+  await expect(page.locator("#university-options input")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "تلاش دوباره" })).toBeVisible();
   fail = false;
   await page.getByRole("button", { name: "تلاش دوباره" }).click();
+  await page.locator("#university-options").getByRole("checkbox").first().check();
   await expect(page.locator("#capacity-results")).toBeVisible();
   await expect(page.locator("#university-options input:checked")).toHaveCount(1);
 });

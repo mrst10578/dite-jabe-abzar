@@ -1,4 +1,5 @@
 import { UNIVERSITY_ALIASES } from "./university-aliases.js";
+import { INSTITUTION_ALIASES, MAJOR_INSTITUTION_ALIASES, UNIVERSITY_ROW_CORRECTIONS } from "./university-identities.js";
 
 const collator = new Intl.Collator("fa", { sensitivity: "base", numeric: true });
 export const YEARS = [1404, 1403, 1402, 1401];
@@ -47,24 +48,41 @@ const splitUniversityWords = new Map(Object.entries({
 }));
 const splitUniversityPattern = new RegExp(`(^|[^\\p{L}\\p{M}])(${[...splitUniversityWords.keys()].join("|")})(?=$|[^\\p{L}\\p{M}])`, "gu");
 
-export function normalizeUniversity(value) {
-  const normalized = normalizePersian(value)
+export function normalizeUniversity(value, context = {}) {
+  let normalized = normalizePersian(value)
     .replace(/[\p{L}\p{M}]+/gu, (word) => universitySpelling.get(word) ?? word)
     .replace(splitUniversityPattern, (_, prefix, word) => prefix + splitUniversityWords.get(word))
     .replace(/[-‐‑‒–—−]/g, " - ").replace(/\s+/g, " ").trim();
-  return Object.hasOwn(UNIVERSITY_ALIASES, normalized) ? UNIVERSITY_ALIASES[normalized] : normalized;
+  const scoped = MAJOR_INSTITUTION_ALIASES[context.major] ?? {};
+  for (let step = 0; step < 10; step += 1) {
+    const table = [scoped, INSTITUTION_ALIASES, UNIVERSITY_ALIASES].find((aliases) => Object.hasOwn(aliases, normalized));
+    if (!table || table[normalized] === normalized) return normalized;
+    normalized = table[normalized];
+  }
+  throw new Error("University alias cycle");
 }
 
-export function universityNames(values) {
-  return [...new Set(values.map(normalizeUniversity))].sort(compareLabels);
+export function universityNames(values, context = {}) {
+  return [...new Set(values.map((value) => normalizeUniversity(value, context)))].sort(compareLabels);
 }
 
-export function capacityTotals(records, universities) {
-  const result = new Map(universityNames(universities).map((university) => [university, {
+export function recordUniversity(record, context = {}) {
+  const code = String(record.code || record.notes?.match(/کدرشته[\s\u200c]*محل منبع:\s*(\d+)/)?.[1] || "");
+  const correction = UNIVERSITY_ROW_CORRECTIONS.find((row) => row.year === record.year
+    && row.major === record.major && row.source_id === record.source_id
+    && String(row.source_page) === String(record.source_page) && row.code === code
+    && row.university === record.university && row.capacity === record.capacity);
+  return normalizeUniversity(correction?.target ?? record.university, { major: record.major ?? context.major });
+}
+
+export function capacityTotals(records, universities, context = {}) {
+  const majors = new Set(records.map((row) => row.major).filter(Boolean));
+  const effectiveContext = context.major ? context : majors.size === 1 ? { major: [...majors][0] } : context;
+  const result = new Map(universityNames(universities, effectiveContext).map((university) => [university, {
     university, years: Object.fromEntries(YEARS.map((year) => [year, null])),
   }]));
   for (const record of records) {
-    const target = result.get(normalizeUniversity(record.university));
+    const target = result.get(recordUniversity(record, effectiveContext));
     if (target && YEARS.includes(record.year)) {
       target.years[record.year] = (target.years[record.year] ?? 0) + record.capacity;
     }
