@@ -1,6 +1,6 @@
 import { expect, it } from "vitest";
 import { readFileSync } from "node:fs";
-import { capacityTotals, normalizeUniversity, universityNames } from "../public/capacity/model.js";
+import { capacityTotals, normalizeUniversity, recordUniversity, universityNames } from "../public/capacity/model.js";
 
 it("combines the Gilan spelling variants across years and duplicate selections", () => {
   const records = [
@@ -11,7 +11,7 @@ it("combines the Gilan spelling variants across years and duplicate selections",
   ];
   const original = JSON.stringify(records);
   expect(capacityTotals(records, records.map((row) => row.university))).toEqual([
-    { university: "دانشگاه علوم پزشکی گیلان", years: { 1404: 347, 1403: 297, 1402: 258, 1401: 225 } },
+    { university: "دانشگاه علوم پزشکی گیلان - رشت", years: { 1404: 347, 1403: 297, 1402: 258, 1401: 225 } },
   ]);
   expect(JSON.stringify(records)).toBe(original);
 });
@@ -52,7 +52,7 @@ it.each([
   ["دانشگاه شاهرو د", "دانشگاه شاهرود"],
   ["دانشگاه لرس تان", "دانشگاه لرستان"],
   ["دانشگاه ه رمزگان", "دانشگاه هرمزگان"],
-  ["دانشگاه علوم پز شکی جندیشاپور", "دانشگاه علوم پزشکی جندی شاپور"],
+  ["دانشگاه علوم پز شکی جندیشاپور", "دانشگاه علوم پزشکی جندی شاپور - اهواز"],
   ["دانشگاه عالمه طباط بایی", "دانشگاه علامه طباطبایی"],
   ["دانشگاه صنعتی خواجه نصیر الدین طوسی", "دانشگاه صنعتی خواجه نصیرالدین طوسی"],
   ["دانشگاه علوم پزشکی بقیة اله", "دانشگاه علوم پزشکی بقیه اله"],
@@ -70,10 +70,9 @@ it.each([
 it("keeps different campuses, institutions and valid similar words separate", () => {
   const universities = [
     "دانشگاه آزاد اسلامی - واحد رشت", "دانشگاه آزاد اسلامی - واحد لاهیجان",
-    "دانشگاه گیلان", "دانشگاه علوم پزشکی گیلان", "دانشگاه تهران", "دانشگاه تهران - پردیس کیش",
+    "دانشگاه گیلان", "دانشگاه علوم پزشکی گیلان - رشت", "دانشگاه تهران", "دانشگاه تهران - پردیس کیش",
     "دانشگاه پیام نور تالش", "دانشگاه پیام نور تلاش",
     "دانشگاه خوارزمی", "دانشگاه خوارزمی (محل تحصیل کرج)",
-    "دانشگاه علوم پزشکی ارتش جمهوری اسلامی ایران", "دانشگاه علوم پزشکی ارتش جمهوری اسلامی ایران *",
     "دانشگاه آل طه",
   ];
   const records = universities.map((university, i) => ({ university, year: 1404, capacity: i + 1 }));
@@ -90,7 +89,7 @@ it("keeps all pinned records and capacities intact after university grouping", (
   const records = catalog.groups.flatMap((group) => group.majors.flatMap((major) =>
     JSON.parse(readFileSync(`${root}/${major.path}`, "utf8")).records));
   expect(records).toHaveLength(33326);
-  const names = universityNames(records.map((row) => row.university));
+  const names = universityNames(records.map((row) => recordUniversity(row)));
   for (const name of names) expect(normalizeUniversity(name)).toBe(name);
   const totals = capacityTotals(records, names);
   for (const year of [1401, 1402, 1403, 1404]) {

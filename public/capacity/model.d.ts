@@ -1,10 +1,12 @@
-export type CapacityRecord = { university: string; year: number; capacity: number };
+export type CapacityRecord = { university: string; year: number; capacity: number; major?: string; code?: string | number; notes?: string; source_id?: string; source_page?: string | number };
+export type UniversityContext = { major?: string };
 export type CapacityTotal = { university: string; years: Record<number, number | null> };
 export const YEARS: number[];
 export const GROUPS: { id: string; label: string }[];
 export function normalizePersian(value: unknown): string;
 export function compareLabels(left: string, right: string): number;
-export function normalizeUniversity(value: unknown): string;
-export function universityNames(values: string[]): string[];
-export function capacityTotals(records: CapacityRecord[], universities: string[]): CapacityTotal[];
+export function normalizeUniversity(value: unknown, context?: UniversityContext): string;
+export function recordUniversity(record: CapacityRecord, context?: UniversityContext): string;
+export function universityNames(values: string[], context?: UniversityContext): string[];
+export function capacityTotals(records: CapacityRecord[], universities: string[], context?: UniversityContext): CapacityTotal[];
 export function bookletGroup(sourceId: string): string | null;
