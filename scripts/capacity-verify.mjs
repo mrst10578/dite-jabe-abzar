@@ -8,7 +8,7 @@ export async function verifySnapshot(directory) {
   if (manifest.schemaVersion !== 1 || !/^[a-f0-9]{16}$/.test(manifest.snapshotId) || !/^[a-f0-9]{40}$/.test(manifest.source?.commit)) throw new Error("Invalid snapshot manifest");
   const paths = new Set();
   for (const file of manifest.files) {
-    if (!/^(catalog\.json|source\/(SUMMARY\.json|sources\.csv|140[1-4]\.csv)|majors\/[a-f0-9]{16}\.json)$/.test(file.path) || paths.has(file.path)) throw new Error("Invalid snapshot file path");
+    if (!/^(catalog\.json|source\/(SUMMARY\.json|sources\.csv|140[1-5]\.csv)|majors\/[a-f0-9]{16}\.json)$/.test(file.path) || paths.has(file.path)) throw new Error("Invalid snapshot file path");
     paths.add(file.path);
     const bytes = await readFile(join(directory, file.path));
     if (bytes.length !== file.bytes || createHash("sha256").update(bytes).digest("hex") !== file.sha256) throw new Error(`Snapshot integrity/hash mismatch: ${file.path}`);
