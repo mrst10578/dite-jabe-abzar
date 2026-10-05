@@ -9,7 +9,8 @@ if (!csvPath || !/^[a-f0-9]{40}$/.test(sourceCommit || "") || !Number.isFinite(D
 
 const dir = "public/capacity/data";
 const csvBytes = await readFile(csvPath);
-const rows1405Humanities = parseCsv(csvBytes.toString("utf8")).map((row) => ({
+const incomingSourceRows = parseCsv(csvBytes.toString("utf8"));
+const rows1405Humanities = incomingSourceRows.map((row) => ({
   ...row,
   year: Number(row.year),
   capacity: Number(row.capacity),
@@ -55,12 +56,17 @@ const snapshotId = createHash("sha256")
   .slice(0, 16);
 
 let added = 0;
+let replacedRows = 0;
+let replacedCapacity = 0;
 for (const group of catalog.groups) {
   for (const major of group.majors) {
     const file = `${dir}/${major.path}`;
     const shard = JSON.parse(await readFile(file, "utf8"));
     if (group.id === "humanities") {
       const incoming = rowsByMajor.get(major.label) ?? [];
+      const outgoing = shard.records.filter((row) => row.year === 1405);
+      replacedRows += outgoing.length;
+      replacedCapacity += outgoing.reduce((sum, row) => sum + Number(row.capacity || 0), 0);
       shard.records = shard.records.filter((row) => row.year !== 1405);
       shard.records.push(...incoming);
       added += incoming.length;
@@ -80,16 +86,21 @@ if (added !== 2513) throw new Error(`Merged only ${added} 1405 humanities rows`)
 catalog.snapshotId = snapshotId;
 catalog.source = source;
 catalog.years = [1405, 1404, 1403, 1402, 1401];
-catalog.rows = oldManifest.rows + rows1405Humanities.length;
+catalog.rows = oldManifest.rows - replacedRows + rows1405Humanities.length;
 
 const existing1405Path = `${dir}/source/1405.csv`;
 const existing1405Bytes = await readFile(existing1405Path);
 const existing1405Rows = parseCsv(existing1405Bytes.toString("utf8"));
-if (existing1405Rows.length !== 5903) throw new Error(`Unexpected existing 1405 row count: ${existing1405Rows.length}`);
+const base1405Rows = existing1405Rows.filter((row) => !String(row.source_id || "").startsWith("1405-humanities"));
+if (base1405Rows.length !== 5903) throw new Error(`Unexpected non-humanities 1405 row count: ${base1405Rows.length}`);
 const header = existing1405Bytes.toString("utf8").split(/\r?\n/, 1)[0].replace(/^\ufeff/, "");
-const humanitiesLines = csvBytes.toString("utf8").replace(/^\ufeff/, "").split(/\r?\n/);
-if (humanitiesLines.shift() !== header) throw new Error("1405 source CSV headers do not match");
-const combined1405 = existing1405Bytes.toString("utf8").trimEnd() + "\n" + humanitiesLines.filter(Boolean).join("\n") + "\n";
+const fields = header.split(",");
+const escapeCsv = (value) => {
+  const text = String(value ?? "");
+  return /[",\r\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+};
+const combinedSourceRows = [...base1405Rows, ...incomingSourceRows];
+const combined1405 = header + "\n" + combinedSourceRows.map((row) => fields.map((field) => escapeCsv(row[field])).join(",")).join("\n") + "\n";
 const combinedRows = parseCsv(combined1405);
 if (combinedRows.length !== 8416) throw new Error(`Unexpected combined 1405 row count: ${combinedRows.length}`);
 await writeFile(existing1405Path, combined1405);
@@ -123,7 +134,7 @@ await writeFile(summaryPath, JSON.stringify(sourceSummary, null, 2) + "\n");
 await writeFile(`${dir}/catalog.json`, JSON.stringify(catalog) + "\n");
 
 const old1405 = oldManifest.years["1405"] ?? { rows: 0, capacity: 0 };
-if (old1405.rows !== 5903 || old1405.capacity !== 108972) {
+if (![5903, 8416].includes(old1405.rows)) {
   throw new Error(`Unexpected pre-humanities 1405 manifest totals: ${JSON.stringify(old1405)}`);
 }
 const oldHumanities = oldManifest.groups.humanities;
@@ -135,17 +146,17 @@ const manifest = {
   source,
   years: {
     ...oldManifest.years,
-    "1405": { rows: old1405.rows + rows1405Humanities.length, capacity: old1405.capacity + capacity1405Humanities },
+    "1405": { rows: old1405.rows - replacedRows + rows1405Humanities.length, capacity: old1405.capacity - replacedCapacity + capacity1405Humanities },
   },
   groups: {
     ...oldManifest.groups,
     humanities: {
-      rows: oldHumanities.rows + rows1405Humanities.length,
-      capacity: oldHumanities.capacity + capacity1405Humanities,
+      rows: oldHumanities.rows - replacedRows + rows1405Humanities.length,
+      capacity: oldHumanities.capacity - replacedCapacity + capacity1405Humanities,
     },
   },
-  rows: oldManifest.rows + rows1405Humanities.length,
-  capacity: oldManifest.capacity + capacity1405Humanities,
+  rows: oldManifest.rows - replacedRows + rows1405Humanities.length,
+  capacity: oldManifest.capacity - replacedCapacity + capacity1405Humanities,
 };
 
 if (manifest.years["1405"].rows !== 8416 || manifest.years["1405"].capacity !== 132198) throw new Error("Wrong 1405 totals");
