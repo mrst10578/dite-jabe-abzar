@@ -55,7 +55,7 @@ async function enterGroup(id) {
     picker.hidden = true; explorer.hidden = false; majorSelect.focus(); status("");
     byId("snapshot-details").hidden = false;
     const date = new Intl.DateTimeFormat("fa-IR", { dateStyle: "medium", timeZone: "UTC" }).format(new Date(catalog.source.commitDate));
-    byId("snapshot-description").textContent = `نسخهٔ داده‌ها تا ${date}؛ شامل ${number.format(catalog.rows)} ردیف ظرفیت در سال‌های ۱۴۰۱ تا ۱۴۰۵. دادهٔ ۱۴۰۵ فعلاً گروه تجربی را پوشش می‌دهد.`;
+    byId("snapshot-description").textContent = `نسخهٔ داده‌ها تا ${date}؛ شامل ${number.format(catalog.rows)} ردیف ظرفیت در سال‌های ۱۴۰۱ تا ۱۴۰۵. دادهٔ ۱۴۰۵ فعلاً گروه‌های تجربی و ریاضی را پوشش می‌دهد؛ گروه انسانی هنوز در حال تکمیل است.`;
     byId("snapshot-source").href = `https://github.com/mrst10578/Entekhab-Reshte/tree/${catalog.source.commit}/data/capacity`;
   } catch {
     if (token === request) status("دریافت فهرست رشته‌ها انجام نشد. اتصال اینترنت را بررسی کن و دوباره تلاش کن.", () => enterGroup(id));
@@ -146,7 +146,7 @@ function valuesRow(university, values, total = false) {
   heading.scope = "row"; row.append(heading);
   for (const year of DISPLAY_YEARS) {
     const value = values[year] ?? null;
-    const pending = year === 1405 && group?.id !== "experimental";
+    const pending = year === 1405 && group?.id === "humanities";
     const cell = element("td", pending ? "به‌زودی" : value === null ? "ثبت نشده" : number.format(value), pending ? "soon" : value === null ? "missing" : "");
     if (pending) cell.title = "دادهٔ ۱۴۰۵ این گروه هنوز اضافه نشده است.";
     else if (value === null) cell.title = "برای این ترکیب دادهٔ ظرفیت ثبت نشده است.";
