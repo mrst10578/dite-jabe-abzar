@@ -10,7 +10,7 @@ test("dividers separate the compass, admissions cards and guide section", async 
     await expect(guide).toBeVisible();
     await expect(guide.locator("a")).toHaveCount(0);
     await expect(page.locator("#aris-psych-test-launch")).toBeVisible();
-    await expect(page.locator(".flow-divider-frame")).toHaveCount(2);
+    await expect(page.locator(".flow-divider-frame")).toHaveCount(3);
     const sections = [
       page.locator(".flow-supports"),
       page.locator(".flow-divider-frame").nth(0),
@@ -20,6 +20,7 @@ test("dividers separate the compass, admissions cards and guide section", async 
       page.locator(".flow-divider-frame").nth(1),
       guide,
       page.locator("#aris-selection-module"),
+      page.locator(".flow-divider-frame").nth(2),
     ];
     for (let index = 1; index < sections.length; index++) {
       await expect(sections[index]).toBeVisible();
