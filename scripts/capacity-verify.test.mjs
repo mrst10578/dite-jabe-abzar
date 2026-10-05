@@ -14,7 +14,8 @@ it("exports the capacity page and fixed snapshot in the ordinary static build", 
     await writeFile(join(root, "public/index.html"), "data:font/woff2;base64,dGVzdA==");
     execFileSync(process.execPath, [resolve("scripts/build-capacity.mjs")], { cwd: root });
     expect(await readFile(join(root, "dist/capacity/index.html"), "utf8")).toBe(await readFile("public/capacity/index.html", "utf8"));
-    const committed = JSON.parse(await readFile("public/capacity/data/manifest.json", "utf8"));\n    expect((await verifySnapshot(join(root, "dist/capacity/data"))).snapshotId).toBe(committed.snapshotId);
+    const committed = JSON.parse(await readFile("public/capacity/data/manifest.json", "utf8"));
+    expect((await verifySnapshot(join(root, "dist/capacity/data"))).snapshotId).toBe(committed.snapshotId);
     for (const file of ["app.js", "model.js", "capacity.css"]) {
       expect(await readFile(join(root, "dist/capacity", file), "utf8")).toBe(await readFile(join("public/capacity", file), "utf8"));
     }
