@@ -124,14 +124,14 @@ export function projectHome(document, manifest) {
       <div class="flow-data-card__copy">
         <span class="flow-data-card__eyebrow">ابزار آمار پذیرش</span>
         <h3>ظرفیت پذیرش دانشگاه‌ها در رشته‌های مختلف</h3>
-        <p>گروه آزمایشی، رشته و دانشگاه‌های موردنظرت را انتخاب کن و ظرفیت اعلام‌شده در سال‌های ۱۴۰۱ تا ۱۴۰۴ را کنار هم ببین. این ابزار در صفحه‌ای مستقل باز می‌شود.</p>
+        <p>گروه آزمایشی، رشته و دانشگاه‌های موردنظرت را انتخاب کن و ظرفیت اعلام‌شده در سال‌های ۱۴۰۱ تا ۱۴۰۵ را کنار هم ببین. دادهٔ ۱۴۰۵ فعلاً برای گروه تجربی فعال است.</p>
         <a class="flow-data-action" href="/capacity/">ورود به ابزار ظرفیت پذیرش</a>
       </div>
       <div class="flow-data-card__visual" aria-hidden="true">
         ${ready ? image("flow-capacity-garden.png", "flow-data-card__art", 1254, 1254, "", true) : ""}
       </div>
       <div class="flow-admission-years" aria-label="سال‌های تحت پوشش">
-        <span class="is-soon"><b>۱۴۰۵</b><small>به‌زودی</small></span>
+        <span><b>۱۴۰۵</b><small>تجربی فعال</small></span>
         <span><b>۱۴۰۴</b><small>قابل مشاهده</small></span>
         <span><b>۱۴۰۳</b><small>قابل مشاهده</small></span>
         <span><b>۱۴۰۲</b><small>قابل مشاهده</small></span>
