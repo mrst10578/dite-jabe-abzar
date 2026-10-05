@@ -76,13 +76,15 @@ export function projectHome(document, manifest) {
   append(hero, art, copy);
   const tools = byId("aris-smart-tools"), soon = byClass(tools, "smart-tools__soon-grid");
   const details = markup('<details class="flow-other-tools"><summary>ابزارهای دیگر</summary></details>');
-  append(details, soon);
+  const futureIntro = markup(`<div class="flow-future-intro" aria-hidden="true">${ready ? image("flow-future-capsule.png", "flow-future-capsule", 1122, 1402, "", true) : ""}<span>ابزارهای بعدی Flow در حال شکل‌گرفتن‌اند</span></div>`);
+  append(details, futureIntro, soon);
   detach(byClass(tools, "smart-tools__divider"));
   replaceContent(one(byClass(tools, "smart-tool--beta"), (node) => node.tagName === "h3", "compass heading"), "قطب‌نمای انتخاب رشته");
   if (ready) before(tools.childNodes[0], markup(image("compass.webp", "flow-support-art", 1254, 1254, "", true)));
   const supports = markup('<section class="flow-supports" aria-label="قطب‌نمای انتخاب رشته"></section>');
   const guide = markup(`<article class="flow-guide-entry">${ready ? image("guide-book.webp", "flow-support-art", 1254, 1254, "", true) : ""}<div><h2>راهنمای انتخاب رشته</h2><p>مقالات و راهنماهای کاربردی برای آشنایی با رشته‌ها و مسیرهای تحصیلی مختلف.</p></div></article>`);
-  append(supports, tools, byId("aris-smart-tools-script"));
+  const decisionCore = markup(`<div class="flow-decision-core-wrap" aria-hidden="true">${ready ? image("flow-decision-core.png", "flow-decision-core", 1254, 1254, "", true) : ""}</div>`);
+  append(supports, tools, decisionCore, byId("aris-smart-tools-script"));
 
   const dataTools = markup(`<section class="flow-data-tools" aria-labelledby="flow-data-tools-title">
     <header class="flow-data-tools__head">
@@ -98,7 +100,10 @@ export function projectHome(document, manifest) {
         <p>این دیتابیس هزاران کارنامه و رکورد قبولی از سال ۱۳۹۰ تا ۱۴۰۴ را در یک مجموعه یکپارچه پوشش می‌دهد؛ می‌توانید قبولی‌های سال‌های مختلف را کنار هم ببینید، انتخاب‌ها را با نمونه‌های واقعی مقایسه کنید و با دید بازتری سراغ چینش انتخاب رشته بروید.</p>
         <a class="flow-data-action" href="https://konkour.data-base.loprax.workers.dev" target="_blank" rel="noopener noreferrer">ورود به دیتابیس قبولی‌ها</a>
       </div>
-      <div class="flow-data-card__stat" aria-hidden="true"><strong>۱۵</strong><span>سال داده</span><small>۱۳۹۰ ← ۱۴۰۴</small></div>
+      <div class="flow-data-card__visual" aria-hidden="true">
+        ${ready ? image("flow-data-archive.png", "flow-data-card__art", 1254, 1254, "", true) : ""}
+        <span class="flow-data-card__visual-label"><strong>۱۵</strong><small>سال داده · ۱۳۹۰ تا ۱۴۰۴</small></span>
+      </div>
     </article>
 
     <article class="flow-data-card" id="last-admission-data">
@@ -109,6 +114,9 @@ export function projectHome(document, manifest) {
         <a class="flow-data-action" href="/last-admissions/">ورود به آخرین قبولی‌ها</a>
         <p class="flow-data-card__note">رشته، دانشگاه و نوع دوره را فیلتر کن و رتبه‌های ثبت‌شده هر سه منطقه را کنار هم مقایسه کن.</p>
       </div>
+      <div class="flow-data-card__visual" aria-hidden="true">
+        ${ready ? image("flow-acceptance-gate.png", "flow-data-card__art flow-data-card__art--portrait", 1122, 1402, "", true) : ""}
+      </div>
     </article>
 
     <article class="flow-data-card flow-data-card--tool" id="admission-count-tool">
@@ -117,6 +125,9 @@ export function projectHome(document, manifest) {
         <h3>ظرفیت پذیرش دانشگاه‌ها در رشته‌های مختلف</h3>
         <p>گروه آزمایشی، رشته و دانشگاه‌های موردنظرت را انتخاب کن و ظرفیت اعلام‌شده در سال‌های ۱۴۰۱ تا ۱۴۰۴ را کنار هم ببین. این ابزار در صفحه‌ای مستقل باز می‌شود.</p>
         <a class="flow-data-action" href="/capacity/">ورود به ابزار ظرفیت پذیرش</a>
+      </div>
+      <div class="flow-data-card__visual" aria-hidden="true">
+        ${ready ? image("flow-capacity-garden.png", "flow-data-card__art", 1254, 1254, "", true) : ""}
       </div>
       <div class="flow-admission-years" aria-label="سال‌های تحت پوشش">
         <span class="is-soon"><b>۱۴۰۵</b><small>به‌زودی</small></span>
@@ -130,20 +141,27 @@ export function projectHome(document, manifest) {
   </section>`);
 
   const selection = byId("aris-selection-module");
-  const divider = () => markup(`<div class="flow-divider-frame" aria-hidden="true">${ready ? image("botanical-divider.webp", "flow-botanical-divider", 1536, 656, "", true) : ""}</div>`);
+  const divider = (file, modifier) => markup(`<div class="flow-divider-frame" aria-hidden="true">${ready ? image(file, `flow-botanical-divider ${modifier}`, 2172, 724, "", true) : ""}</div>`);
   before(selection, supports);
-  before(selection, divider());
+  before(selection, divider("flow-divider-direct.png", "flow-divider--direct"));
   before(selection, dataTools);
-  before(selection, divider());
+  before(selection, divider("flow-divider-split.png", "flow-divider--split"));
   before(selection, guide);
   const next = main.childNodes[main.childNodes.indexOf(selection) + 1];
-  if (next) before(next, details); else append(main, details);
+  const finalDivider = divider("flow-divider-knot.png", "flow-divider--knot");
+  if (next) {
+    before(next, finalDivider);
+    before(next, details);
+  } else {
+    append(main, finalDivider, details);
+  }
   detach(byClass(stage, "channel-pulse"));
   setAttr(byId("major-search"), "placeholder", "نام رشته یا علاقه‌ات را بنویس");
   setAttr(byId("province-search"), "placeholder", "نام استان، شهر یا دانشگاه را بنویس");
   const majorForm = byId("search-form"), provinceForm = byId("province-search-form");
   setAttr(majorForm, "aria-label", "رشته‌شناسی");
   setAttr(provinceForm, "aria-label", "استان‌شناسی");
+  if (ready) before(provinceForm, markup(`<div class="flow-province-art-wrap" aria-hidden="true">${image("flow-iran-atlas.png", "flow-province-art", 1122, 1402, "", true)}</div>`));
   replaceContent(byClass(majorForm, "search-submit"), "جست‌وجو");
   replaceContent(byClass(provinceForm, "province-search-submit"), "جست‌وجو");
   const field = byClass(majorForm, "search-field");
