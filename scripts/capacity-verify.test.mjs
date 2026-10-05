@@ -28,7 +28,7 @@ it("verifies the committed snapshot and preserves every canonical source field",
   const manifest = await verifySnapshot(directory);
   expect(manifest?.rows).toBe(41742);
   expect(manifest?.capacity).toBe(653043);
-  expect(manifest?.source.commit).toBe("052b7785b5d5ca193545c7fd1149b7b0dc8711ba");
+  expect(manifest?.source.commit).toBe("0b713e519547c23db4a4dcb200ac9c0a00ba796d");
   const catalog = JSON.parse(await readFile(join(directory, "catalog.json"), "utf8"));
   const records = [];
   for (const group of catalog.groups) for (const major of group.majors) {
