@@ -15,7 +15,7 @@ it.each([
   ["دانشگاه شاهد - تهران", "دانشگاه شاهد - ان ) رشته های پزشکی(تهر", [62, 72, 86, 88]],
 ])("unites the verified four-year identity of %s", (university, oldName, capacities) => {
   expect(capacityTotals(records, [university, oldName], { major: "پزشکی" })).toEqual([
-    { university, years: Object.fromEntries([1401, 1402, 1403, 1404].map((year, i) => [year, capacities[i]])) },
+    { university, years: { 1405: null, ...Object.fromEntries([1401, 1402, 1403, 1404].map((year, i) => [year, capacities[i]])) } },
   ]);
 });
 
