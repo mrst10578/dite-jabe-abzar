@@ -17,44 +17,7 @@ const catalog = JSON.parse(readFileSync("public/capacity/data/catalog.json", "ut
 };
 const rawMedicine = catalog.groups[0].majors.find((major) => major.label === "پزشکی")!;
 const records: CapacityRecord[] = JSON.parse(readFileSync(`public/capacity/data/${rawMedicine.path}`, "utf8")).records;
-function parseCsv(input: string): Array<Record<string, string>> {
-  const text = input.replace(/^\ufeff/, "");
-  const rows: string[][] = [];
-  let row: string[] = [];
-  let field = "";
-  let quoted = false;
-  const finishField = () => { row.push(field); field = ""; };
-  const finishRow = () => {
-    finishField();
-    if (row.some((value) => value !== "")) rows.push(row);
-    row = [];
-  };
-  for (let index = 0; index < text.length; index += 1) {
-    const char = text[index];
-    if (quoted) {
-      if (char === '"') {
-        if (text[index + 1] === '"') { field += '"'; index += 1; }
-        else quoted = false;
-      } else field += char;
-    } else if (char === '"') quoted = true;
-    else if (char === ",") finishField();
-    else if (char === "\n" || char === "\r") {
-      if (char === "\r" && text[index + 1] === "\n") index += 1;
-      finishRow();
-    } else field += char;
-  }
-  if (field || row.length) finishRow();
-  const header = rows.shift() ?? [];
-  return rows.map((values) => Object.fromEntries(header.map((key, index) => [key, values[index] ?? ""])));
-}
-const supplement1405: CapacityRecord[] = parseCsv(readFileSync("public/capacity/data/source/1405.csv", "utf8"))
-  .map((row) => ({
-    ...row,
-    year: Number(row.year),
-    capacity: Number(row.capacity),
-    source_page: row.source_page,
-  })) as CapacityRecord[];
-const medicineRecords = [...records, ...supplement1405.filter((record) => record.major === "پزشکی")];
+const medicineRecords = records;
 const medicine = { ...rawMedicine, universities: universityNames(medicineRecords.map((record) => recordUniversity(record)), { major: "پزشکی" }) };
 const expectedYears = (allRecords: CapacityRecord[], university: string) => [1405, 1404, 1403, 1402, 1401].map((year) => {
   const matching = allRecords.filter((record) => record.year === year && recordUniversity(record) === university);
@@ -107,7 +70,7 @@ test("major and group changes reset dependent universities and results", async (
   await expect(page.locator("#university-options input:checked")).toHaveCount(0);
   const labels = await page.locator("#university-options label").allTextContents();
   const nursingRecords: CapacityRecord[] = JSON.parse(readFileSync(`public/capacity/data/${nursing.path}`, "utf8")).records;
-  const nursingAll = [...nursingRecords, ...supplement1405.filter((record) => record.major === "پرستاری")];
+  const nursingAll = nursingRecords;
   expect(labels).toEqual(universityNames(nursingAll.map((record) => recordUniversity(record)), { major: "پرستاری" }));
   await page.getByRole("button", { name: "تغییر گروه" }).click();
   await expect(page.locator("#group-picker")).toBeVisible();
@@ -147,7 +110,7 @@ test("details correct the university and campus names without joining campuses",
   for (const name of await names.allTextContents()) expect(name).not.toContain("گیالن");
 });
 
-test("renamed universities have one option and a complete four-year history", async ({ page }) => {
+test("renamed universities have one option and a complete multi-year history", async ({ page }) => {
   await enter(page);
   await page.locator("#capacity-major").selectOption(medicine.id);
   for (const university of [
