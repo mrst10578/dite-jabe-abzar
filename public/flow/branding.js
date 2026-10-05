@@ -26,7 +26,7 @@
   }
   const plane = '<svg class="flow-channel-icon" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M22.162 2.656a1.23 1.23 0 0 0-1.272-.166L1.43 10.208c-.93.367-.925 1.68.01 2.04l4.567 1.759 1.769 5.694a1.08 1.08 0 0 0 1.835.402l2.548-2.68 4.897 3.609c.746.55 1.811.146 2.01-.755L22.65 3.84a1.23 1.23 0 0 0-.488-1.184ZM8.116 13.383l9.135-5.745-7.558 7.111-.344 3.19-1.233-4.556Z"/></svg>';
   const image = '<img class="flow-footer-logo" src="' + logo + '" width="128" height="54" alt="FLOW" decoding="async">';
-  const join = plane + '<span>عضویت در کانال فلو</span>';
+  const join = '<span class="flow-channel-orb" aria-hidden="true">' + plane + '</span><span class="flow-channel-copy"><b>عضویت در کانال فلو</b><small>ورود به Telegram</small></span><span class="flow-channel-launch" aria-hidden="true">↗</span>';
   function documentBrand(root) {
     const doc = root.ownerDocument || root;
     const walker = doc.createTreeWalker(root, 4);
