@@ -2,6 +2,8 @@ import { YEARS, GROUPS, compareLabels, normalizeUniversity, recordUniversity, un
 
 const byId = (id) => document.getElementById(id);
 const number = new Intl.NumberFormat("fa-IR");
+const DISPLAY_YEARS = [1405, ...YEARS];
+let supplemental1405Promise = null;
 const picker = byId("group-picker"), explorer = byId("capacity-explorer");
 const majorSelect = byId("capacity-major"), universitiesField = byId("capacity-universities");
 const options = byId("university-options"), search = byId("university-search");
@@ -22,6 +24,62 @@ async function json(url, signal) {
   const response = await fetch(url, { signal });
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   return response.json();
+}
+
+function parseCsv(input) {
+  const text = input.replace(/^\ufeff/, "");
+  const rows = [];
+  let row = [], field = "", quoted = false, closed = false;
+  function finishField() { row.push(field); field = ""; closed = false; }
+  function finishRow() { finishField(); if (row.some((value) => value !== "")) rows.push(row); row = []; }
+  for (let index = 0; index < text.length; index += 1) {
+    const char = text[index];
+    if (quoted) {
+      if (char === '"') {
+        if (text[index + 1] === '"') { field += '"'; index += 1; }
+        else { quoted = false; closed = true; }
+      } else field += char;
+    } else if (char === '"') {
+      if (field || closed) throw new Error("Unexpected CSV quote");
+      quoted = true;
+    } else if (char === ",") finishField();
+    else if (char === "\n" || char === "\r") {
+      if (char === "\r" && text[index + 1] === "\n") index += 1;
+      finishRow();
+    } else {
+      if (closed) throw new Error("Unexpected text after CSV quote");
+      field += char;
+    }
+  }
+  if (quoted) throw new Error("Unclosed CSV quote");
+  if (field || row.length || closed) finishRow();
+  const header = rows.shift();
+  if (!header) return [];
+  return rows.map((values) => Object.fromEntries(header.map((key, index) => [key, values[index] ?? ""])));
+}
+
+async function load1405Supplement() {
+  if (!supplemental1405Promise) {
+    supplemental1405Promise = fetch("/capacity/data/source/1405.csv")
+      .then((response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.text();
+      })
+      .then((text) => parseCsv(text).map((row) => ({
+        ...row,
+        year: Number(row.year),
+        capacity: Number(row.capacity),
+        source_page: Number(row.source_page),
+        base_source_page: Number(row.base_source_page),
+      })).filter((row) =>
+        row.year === 1405 &&
+        Number.isSafeInteger(row.capacity) &&
+        row.capacity >= 0 &&
+        row.major &&
+        row.university
+      ));
+  }
+  return supplemental1405Promise;
 }
 
 function resetMajor() {
@@ -54,7 +112,7 @@ async function enterGroup(id) {
     picker.hidden = true; explorer.hidden = false; majorSelect.focus(); status("");
     byId("snapshot-details").hidden = false;
     const date = new Intl.DateTimeFormat("fa-IR", { dateStyle: "medium", timeZone: "UTC" }).format(new Date(catalog.source.commitDate));
-    byId("snapshot-description").textContent = `نسخهٔ ثابت داده‌ها تا ${date}؛ شامل ${number.format(catalog.rows)} ردیف ظرفیت در سال‌های ۱۴۰۱ تا ۱۴۰۴.`;
+    byId("snapshot-description").textContent = `نسخهٔ پایه تا ${date}؛ شامل ${number.format(catalog.rows)} ردیف سال‌های ۱۴۰۱ تا ۱۴۰۴، به‌علاوه دادهٔ تکمیلی ۱۴۰۵ گروه تجربی.`;
     byId("snapshot-source").href = `https://github.com/mrst10578/Entekhab-Reshte/tree/${catalog.source.commit}/data/capacity`;
   } catch {
     if (token === request) status("دریافت فهرست رشته‌ها انجام نشد. اتصال اینترنت را بررسی کن و دوباره تلاش کن.", () => enterGroup(id));
@@ -117,8 +175,13 @@ async function loadMajor() {
       if (shard.snapshotId !== catalog.snapshotId || shard.id !== current.id || shard.group !== group.id || shard.major !== current.label || !Array.isArray(shard.records) || !shard.records.every((row) => row.major === current.label && YEARS.includes(row.year) && Number.isSafeInteger(row.capacity) && row.capacity >= 0 && current.universities.includes(row.university))) throw new Error("Invalid capacity snapshot");
       cache.set(current.id, shard);
     }
+    let mergedRecords = shard.records;
+    if (group.id === "experimental") {
+      const supplement = await load1405Supplement();
+      mergedRecords = [...mergedRecords, ...supplement.filter((row) => row.major === current.label)];
+    }
     if (token !== request || major !== current) return;
-    records = shard.records; universities = universityNames(records.map((row) => recordUniversity(row)));
+    records = mergedRecords; universities = universityNames(records.map((row) => recordUniversity(row)), { major: current.label });
     universityOptions(); status(""); render();
   } catch (error) {
     if (token !== request || error.name === "AbortError") return;
@@ -142,10 +205,13 @@ majorSelect.addEventListener("change", () => {
 
 function valuesRow(university, values, total = false) {
   const row = element("tr"), heading = element("th", university);
-  heading.scope = "row"; row.append(heading, element("td", "به‌زودی", "soon"));
-  for (const year of YEARS) {
-    const cell = element("td", values[year] === null ? "ثبت نشده" : number.format(values[year]), values[year] === null ? "missing" : "");
-    if (values[year] === null) cell.title = "برای این ترکیب دادهٔ ظرفیت ثبت نشده است.";
+  heading.scope = "row"; row.append(heading);
+  for (const year of DISPLAY_YEARS) {
+    const value = values[year] ?? null;
+    const pending = year === 1405 && group?.id !== "experimental";
+    const cell = element("td", pending ? "به‌زودی" : value === null ? "ثبت نشده" : number.format(value), pending ? "soon" : value === null ? "missing" : "");
+    if (pending) cell.title = "دادهٔ ۱۴۰۵ این گروه هنوز اضافه نشده است.";
+    else if (value === null) cell.title = "برای این ترکیب دادهٔ ظرفیت ثبت نشده است.";
     row.append(cell);
   }
   if (total) row.dataset.total = "true";
@@ -176,10 +242,10 @@ function render() {
     return;
   }
   status("");
-  const rows = capacityTotals(records, [...selected], { major: major.label });
+  const rows = capacityTotals(records, [...selected], { major: major.label }, DISPLAY_YEARS);
   byId("capacity-results-title").textContent = `ظرفیت پذیرش ${major.label}`;
   byId("capacity-table").querySelector("tbody").replaceChildren(...rows.map((row) => valuesRow(row.university, row.years)));
-  const totals = Object.fromEntries(YEARS.map((year) => {
+  const totals = Object.fromEntries(DISPLAY_YEARS.map((year) => {
     const known = rows.map((row) => row.years[year]).filter((value) => value !== null);
     return [year, known.length ? known.reduce((sum, value) => sum + value, 0) : null];
   }));
