@@ -112,7 +112,7 @@ export function projectHome(document, manifest) {
         <span class="flow-data-card__eyebrow">آخرین مرزهای قبولی</span>
         <h3>دیتای آخرین قبولی‌های دانشگاه‌ها در چند رشته مختلف</h3>
         <p>اینجا آخرین رتبه‌ها و نمونه‌های قبولی رشته‌های منتخب در دانشگاه‌های مختلف قرار می‌گیرد تا سریع‌تر ببینید مرز قبولی هر رشته و دانشگاه در داده‌های موجود کجا بوده و مقایسه بین انتخاب‌ها ساده‌تر شود.</p>
-        <a class="flow-data-action" href="/last-admissions/">ورود به آخرین قبولی‌ها</a>
+        <a class="flow-data-action" href="/last-admissions.html">ورود به آخرین قبولی‌ها</a>
         <p class="flow-data-card__note">رشته، دانشگاه و نوع دوره را فیلتر کن و رتبه‌های ثبت‌شده هر سه منطقه را کنار هم مقایسه کن.</p>
       </div>
       <div class="flow-data-card__visual" aria-hidden="true">
