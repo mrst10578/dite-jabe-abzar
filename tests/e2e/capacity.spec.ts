@@ -3,7 +3,15 @@ import { readFileSync } from "node:fs";
 import { recordUniversity, universityNames } from "../../public/capacity/model.js";
 import { parseCsv } from "../../scripts/capacity-snapshot.mjs";
 
-type Record = { year: number; university: string; capacity: number };
+type Record = {
+  year: number;
+  university: string;
+  capacity: number;
+  major?: string;
+  source_id?: string;
+  source_page?: number | string;
+  notes?: string;
+};
 type Major = { id: string; label: string; universities: string[]; path: string };
 const catalog = JSON.parse(readFileSync("public/capacity/data/catalog.json", "utf8")) as {
   groups: { id: string; label: string; majors: Major[] }[];
@@ -12,9 +20,9 @@ const rawMedicine = catalog.groups[0].majors.find((major) => major.label === "پ
 const records: Record[] = JSON.parse(readFileSync(`public/capacity/data/${rawMedicine.path}`, "utf8")).records;
 const supplement1405: Record[] = parseCsv(readFileSync("public/capacity/data/source/1405.csv", "utf8"))
   .map((row) => ({ ...row, year: Number(row.year), capacity: Number(row.capacity) })) as Record[];
-const medicineRecords = [...records, ...supplement1405.filter((record: any) => record.major === "پزشکی")];
+const medicineRecords = [...records, ...supplement1405.filter((record) => record.major === "پزشکی")];
 const medicine = { ...rawMedicine, universities: universityNames(medicineRecords.map((record) => recordUniversity(record)), { major: "پزشکی" }) };
-const expectedYears = (allRecords: any[], university: string) => [1405, 1404, 1403, 1402, 1401].map((year) => {
+const expectedYears = (allRecords: Record[], university: string) => [1405, 1404, 1403, 1402, 1401].map((year) => {
   const matching = allRecords.filter((record) => record.year === year && recordUniversity(record) === university);
   return matching.length ? persian(matching.reduce((sum, record) => sum + record.capacity, 0)) : "ثبت نشده";
 });
@@ -65,7 +73,7 @@ test("major and group changes reset dependent universities and results", async (
   await expect(page.locator("#university-options input:checked")).toHaveCount(0);
   const labels = await page.locator("#university-options label").allTextContents();
   const nursingRecords: Record[] = JSON.parse(readFileSync(`public/capacity/data/${nursing.path}`, "utf8")).records;
-  const nursingAll = [...nursingRecords, ...supplement1405.filter((record: any) => record.major === "پرستاری")];
+  const nursingAll = [...nursingRecords, ...supplement1405.filter((record) => record.major === "پرستاری")];
   expect(labels).toEqual(universityNames(nursingAll.map((record) => recordUniversity(record)), { major: "پرستاری" }));
   await page.getByRole("button", { name: "تغییر گروه" }).click();
   await expect(page.locator("#group-picker")).toBeVisible();
