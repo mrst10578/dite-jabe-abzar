@@ -1,4 +1,3 @@
-import { createHash } from "node:crypto";
 import { readFile, mkdtemp, mkdir, cp, writeFile, rm } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
