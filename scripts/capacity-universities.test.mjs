@@ -88,7 +88,7 @@ it("keeps all pinned records and capacities intact after university grouping", (
   const catalog = JSON.parse(readFileSync(`${root}/catalog.json`, "utf8"));
   const records = catalog.groups.flatMap((group) => group.majors.flatMap((major) =>
     JSON.parse(readFileSync(`${root}/${major.path}`, "utf8")).records));
-  expect(records).toHaveLength(39229);
+  expect(records).toHaveLength(41742);
   const names = universityNames(records.map((row) => recordUniversity(row)));
   for (const name of names) expect(normalizeUniversity(name)).toBe(name);
   const totals = capacityTotals(records, names);
