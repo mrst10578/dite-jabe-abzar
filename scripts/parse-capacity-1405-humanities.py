@@ -194,8 +194,28 @@ def parse_regular(pages):
                 continue
 
             has_male, has_female = "مرد" in core, "زن" in core
-            gender = "زن و مرد" if has_male and has_female else ("مرد" if has_male else ("زن" if has_female else "در جدول ذکر نشده"))
-            conditions = norm(core.replace("مرد", " ").replace("زن", " "))
+            capacity_tail_slots = 2
+            if has_male or has_female:
+                gender = "زن و مرد" if has_male and has_female else ("مرد" if has_male else "زن")
+            elif len(values) >= 4:
+                male_capacity = None if values[-4] == "-" else int(values[-4])
+                female_capacity = None if values[-3] == "-" else int(values[-3])
+                if (male_capacity or 0) > 0 and (female_capacity or 0) > 0:
+                    gender = "زن و مرد"
+                elif (male_capacity or 0) > 0:
+                    gender = "مرد"
+                elif (female_capacity or 0) > 0:
+                    gender = "زن"
+                else:
+                    gender = "در جدول ذکر نشده"
+                capacity_tail_slots = 4
+            else:
+                gender = "در جدول ذکر نشده"
+
+            conditions_core = re.sub(r"\b(?:مرد|زن)\b", " ", core)
+            tail_pattern = r"(?:^|\s)(?:-|\d+)" + r"(?:\s+(?:-|\d+))" * (capacity_tail_slots - 1) + r"\s*$"
+            conditions_core = re.sub(tail_pattern, " ", conditions_core)
+            conditions = norm(conditions_core)
             category = "شرایط خاص" if any(word in normalized_line + " " + current_university
                                            for word in ("تعهد", "بورس", "مصاحبه", "شرایط خاص", "مناطق محروم")) else "عادی"
 
@@ -235,6 +255,8 @@ def extract_campus(line):
                 cut = min(cut, found)
         campus = tail[:cut].strip(" -")
         if campus and len(campus) < 140:
+            while campus.count("(") > campus.count(")"):
+                campus += ")"
             return "دانشگاه فرهنگیان", campus
     return None
 
