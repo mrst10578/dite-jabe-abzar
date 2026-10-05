@@ -86,7 +86,7 @@ const existing1405Path = `${dir}/source/1405.csv`;
 const existing1405Bytes = await readFile(existing1405Path);
 const existing1405Rows = parseCsv(existing1405Bytes.toString("utf8"));
 if (existing1405Rows.length !== 3900) throw new Error(`Unexpected existing 1405 row count: ${existing1405Rows.length}`);
-const header = existing1405Bytes.toString("utf8").split(/\r?\n/, 1)[0];
+const header = existing1405Bytes.toString("utf8").split(/\r?\n/, 1)[0].replace(/^\ufeff/, "");
 const mathLines = csvBytes.toString("utf8").replace(/^\ufeff/, "").split(/\r?\n/);
 if (mathLines.shift() !== header) throw new Error("1405 source CSV headers do not match");
 const combined1405 = existing1405Bytes.toString("utf8").trimEnd() + "\n" + mathLines.filter(Boolean).join("\n") + "\n";
