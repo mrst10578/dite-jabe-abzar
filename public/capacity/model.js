@@ -2,7 +2,7 @@ import { UNIVERSITY_ALIASES } from "./university-aliases.js";
 import { INSTITUTION_ALIASES, MAJOR_INSTITUTION_ALIASES, UNIVERSITY_ROW_CORRECTIONS } from "./university-identities.js";
 
 const collator = new Intl.Collator("fa", { sensitivity: "base", numeric: true });
-export const YEARS = [1404, 1403, 1402, 1401];
+export const YEARS = [1405, 1404, 1403, 1402, 1401];
 export const GROUPS = [
   { id: "experimental", label: "تجربی" },
   { id: "math", label: "ریاضی" },
@@ -93,6 +93,6 @@ export function capacityTotals(records, universities, context = {}, years = YEAR
 export function bookletGroup(sourceId) {
   if (sourceId.includes("humanities")) return "humanities";
   if (sourceId.includes("math")) return "math";
-  if (/^140[1-4]-booklet$/.test(sourceId)) return "experimental";
+  if (/^140[1-5]-booklet$/.test(sourceId)) return "experimental";
   return null;
 }
