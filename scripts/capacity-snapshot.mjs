@@ -80,8 +80,13 @@ export async function buildSnapshot(sourceRoot, outputRoot, source) {
     const directory = join(sourceRoot, "normalized", String(year));
     let info = dataset.years[year];
     if (!info && year === 1405) {
-      const supplemental = JSON.parse(await readFile(join(directory, "SUMMARY.json"), "utf8"));
-      info = { year: 1405, rows: supplemental.rows, capacity: supplemental.capacity, input_files: [{ path: "capacities-experimental.csv", rows: supplemental.rows, capacity: supplemental.capacity }] };
+      try {
+        const supplemental = JSON.parse(await readFile(join(directory, "SUMMARY.json"), "utf8"));
+        info = { year: 1405, rows: supplemental.rows, capacity: supplemental.capacity, input_files: [{ path: "capacities-experimental.csv", rows: supplemental.rows, capacity: supplemental.capacity }] };
+      } catch (error) {
+        if (error?.code !== "ENOENT") throw error;
+        continue;
+      }
     }
     if (!info?.input_files?.length) throw new Error(`Missing source files for ${year}`);
     const csvBytes = await readFile(join(directory, "capacities-all.csv"));
