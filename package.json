@@ -19,7 +19,7 @@
     "predev": "node scripts/build-static.mjs",
     "build:cloudflare": "node scripts/build-cloudflare.mjs",
     "dev:cloudflare": "npm run build:cloudflare && wrangler dev",
-    "deploy:cloudflare": "npm run build:cloudflare && wrangler deploy",
+    "deploy:cloudflare": "npm run build:cloudflare && wrangler deploy && wrangler deploy --name entekhab-reshte-backup",
     "check:cloudflare": "npm run build:cloudflare && wrangler deploy --dry-run",
     "test:cloudflare": "npm run build:cloudflare && node scripts/test-cloudflare.mjs",
     "preview:flow": "node scripts/build-static.mjs",
