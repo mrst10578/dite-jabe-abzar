@@ -138,7 +138,8 @@ await externalizeAmbientAudio(document, {
   outputDirectory: "public/flow/generated/audio",
   publicPath: "/flow/generated/audio/",
 });
-preview = serialize(document);\npreview = preview.replace('href="/last-admissions.html"', 'href="/last-admissions/"');
+preview = serialize(document);
+preview = preview.replace('href="/last-admissions.html"', 'href="/last-admissions/"');
 
 await writeFile("public/flow-preview.html", preview);
 await mkdir("dist", { recursive: true });
