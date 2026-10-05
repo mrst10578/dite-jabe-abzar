@@ -45,6 +45,7 @@ export function replaceContent(node, html) {
 }
 
 export function projectHome(document, manifest) {
+  // production-sync:last-admissions-20261005
   const byId = (id) => one(document, (node) => attr(node, "id") === id, `#${id}`);
   const byClass = (root, name) => one(root, (node) => hasClass(node, name), `.${name}`);
   const html = one(document, (node) => node.tagName === "html", "html");
