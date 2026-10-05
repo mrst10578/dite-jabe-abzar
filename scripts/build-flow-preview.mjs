@@ -139,6 +139,14 @@ await externalizeAmbientAudio(document, {
   publicPath: "/flow/generated/audio/",
 });
 preview = serialize(document);
+preview = preview.replace(
+  '<span class="flow-data-action flow-data-action--disabled" aria-disabled="true">نمایش آخرین قبولی‌ها · به‌زودی</span>',
+  '<a class="flow-data-action" href="/last-admissions/">ورود به آخرین قبولی‌ها</a>',
+);
+preview = preview.replace(
+  'جایگاه این بخش آماده است؛ فایل HTML که بدهی، همین قسمت به نسخه کاملاً Native سایت تبدیل می‌شود.',
+  'رشته، دانشگاه و نوع دوره را فیلتر کن و رتبه‌های ثبت‌شده هر سه منطقه را کنار هم مقایسه کن.',
+);
 preview = preview.replace('href="/last-admissions.html"', 'href="/last-admissions/"');
 
 await writeFile("public/flow-preview.html", preview);
