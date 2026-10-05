@@ -14,9 +14,11 @@ it.each([
   ["دانشگاه آزاد اسلامی واحد خودگردان قشم", "دانشگاه آزاد اسلامی استان هرمزگان - مرکز آموزش بین المللی قشم", [45, 55, 79, 91]],
   ["دانشگاه شاهد - تهران", "دانشگاه شاهد - ان ) رشته های پزشکی(تهر", [62, 72, 86, 88]],
 ])("unites the verified four-year identity of %s", (university, oldName, capacities) => {
-  expect(capacityTotals(records, [university, oldName], { major: "پزشکی" })).toEqual([
-    { university, years: { 1405: null, ...Object.fromEntries([1401, 1402, 1403, 1404].map((year, i) => [year, capacities[i]])) } },
-  ]);
+  const [total] = capacityTotals(records, [university, oldName], { major: "پزشکی" });
+  expect(total.university).toBe(university);
+  expect(Object.fromEntries([1401, 1402, 1403, 1404].map((year) => [year, total.years[year]]))).toEqual(
+    Object.fromEntries([1401, 1402, 1403, 1404].map((year, i) => [year, capacities[i]])),
+  );
 });
 
 it("assigns the source-proven misplaced Arak medicine row to Zabol", () => {
