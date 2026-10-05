@@ -1,0 +1,63 @@
+name: Live resilience probe
+
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Wait for Cloudflare and verify both Workers
+        shell: bash
+        run: |
+          set -euo pipefail
+          primary="https://entekhab-reshte.flow1.workers.dev"
+          backup="https://entekhab-reshte-backup.flow1.workers.dev"
+
+          wait_for_release() {
+            host="$1"
+            for attempt in $(seq 1 24); do
+              body="$(mktemp)"
+              code="$(curl -4 -sS -L --connect-timeout 5 --max-time 20 -o "$body" -w "%{http_code}" "$host/" || true)"
+              if [ "$code" = "200" ] && grep -q "data-flow-resilience" "$body"; then
+                rm -f "$body"
+                return 0
+              fi
+              rm -f "$body"
+              sleep 10
+            done
+            echo "::error::$host did not publish the resilient build in time."
+            return 1
+          }
+
+          wait_for_release "$primary"
+          wait_for_release "$backup"
+
+          probe() {
+            host="$1"
+            path="$2"
+            total="$3"
+            parallel="$4"
+            file="$(mktemp)"
+            seq 1 "$total" | xargs -P"$parallel" -I{} bash -c '
+              result=$(curl -4 -sS -o /dev/null --connect-timeout 5 --max-time 20                 -w "%{http_code} %{time_total}" "'"$host$path"'?probe={}" 2>&1)
+              rc=$?
+              if [ "$rc" -eq 0 ]; then echo "OK $result"; else echo "ERR rc=$rc $result"; fi
+            ' | tee "$file"
+            ok=$(grep -c '^OK 200 ' "$file" || true)
+            err=$(grep -vc '^OK 200 ' "$file" || true)
+            echo "$host$path ok=$ok err=$err"
+            rm -f "$file"
+            test "$ok" -eq "$total"
+          }
+
+          for host in "$primary" "$backup"; do
+            probe "$host" "/" 80 16
+            probe "$host" "/sw.js" 30 10
+            probe "$host" "/capacity/" 40 10
+          done
