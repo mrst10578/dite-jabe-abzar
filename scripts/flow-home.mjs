@@ -98,7 +98,7 @@ export function projectHome(document, manifest) {
         <span class="flow-data-card__eyebrow">پوشش سال‌های ۱۳۹۰ تا ۱۴۰۴</span>
         <h3>دیتابیس قبولی سال‌های گذشته</h3>
         <p>این دیتابیس هزاران کارنامه و رکورد قبولی از سال ۱۳۹۰ تا ۱۴۰۴ را در یک مجموعه یکپارچه پوشش می‌دهد؛ می‌توانید قبولی‌های سال‌های مختلف را کنار هم ببینید، انتخاب‌ها را با نمونه‌های واقعی مقایسه کنید و با دید بازتری سراغ چینش انتخاب رشته بروید.</p>
-        <a class="flow-data-action" href="https://konkour.database.loprax.workers.dev" target="_blank" rel="noopener noreferrer">ورود به دیتابیس قبولی‌ها</a>
+        <a class="flow-data-action" href="https://konkour-database.loprax.workers.dev" target="_blank" rel="noopener noreferrer">ورود به دیتابیس قبولی‌ها</a>
       </div>
       <div class="flow-data-card__visual" aria-hidden="true">
         ${ready ? image("flow-data-archive.png", "flow-data-card__art", 1254, 1254, "", true) : ""}
