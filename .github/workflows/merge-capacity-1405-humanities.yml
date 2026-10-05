@@ -1,0 +1,60 @@
+name: Merge 1405 humanities capacity snapshot
+
+on:
+  push:
+    paths:
+      - ".github/workflows/merge-capacity-1405-humanities.yml"
+      - "scripts/activate-1405-humanities.mjs"
+      - "scripts/parse-capacity-1405-humanities.py"
+
+permissions:
+  contents: write
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download verified 1405 humanities booklet
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+          curl --fail --location --retry 4 --retry-delay 2 --connect-timeout 20 --max-time 300             -A "Mozilla/5.0"             "https://dl.novinkonkor.com/daftarche_entekhab_reshte/1405/Ensani.pdf"             -o /tmp/Ensani.pdf
+          echo "dc53d8c1f61bfd2f9fcb6d8d1cf97ea134c46aa140e0ed7129c3a9f50b5b2d06  /tmp/Ensani.pdf" | sha256sum -c -
+
+      - name: Rebuild verified humanities CSV
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/parse-capacity-1405-humanities.py /tmp/Ensani.pdf             --csv /tmp/capacities-humanities.csv             --summary /tmp/humanities-summary.json             --expect-rows 2513 --expect-capacity 23226
+
+      - name: Activate humanities snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/activate-1405-humanities.mjs /tmp/capacities-humanities.csv 052b7785b5d5ca193545c7fd1149b7b0dc8711ba 2026-10-05T13:30:55Z
+          node - <<'NODE'
+          const fs = require("fs");
+          const m = JSON.parse(fs.readFileSync("public/capacity/data/manifest.json", "utf8"));
+          if (m.rows !== 41742 || m.capacity !== 653043) throw new Error("global totals mismatch");
+          if (m.years["1405"].rows !== 8416 || m.years["1405"].capacity !== 132198) throw new Error("1405 totals mismatch");
+          if (m.groups.humanities.rows !== 13559 || m.groups.humanities.capacity !== 133367) throw new Error("humanities totals mismatch");
+          const c = JSON.parse(fs.readFileSync("public/capacity/data/catalog.json", "utf8"));
+          if (c.source.commit !== "052b7785b5d5ca193545c7fd1149b7b0dc8711ba") throw new Error("source pin mismatch");
+          NODE
+          git diff --check
+
+      - name: Commit merged snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/capacity/data
+          git diff --cached --stat
+          git diff --cached --quiet && exit 0
+          git commit -m "data: add 1405 humanities capacity snapshot"
+          git push
