@@ -112,7 +112,7 @@ describe("capacity snapshot", () => {
 describe("capacity presentation", () => {
   it("adds distinct intake/gender rows and distinguishes missing years from zero", () => {
     const rows = [{ year: 1404, university: "تهران", capacity: 10 }, { year: 1404, university: "تهران", capacity: 15 }, { year: 1402, university: "تهران", capacity: 0 }, { year: 1404, university: "شیراز", capacity: 100 }];
-    expect(capacityTotals(rows, ["تهران"])).toEqual([{ university: "تهران", years: { 1401: null, 1402: 0, 1403: null, 1404: 25 } }]);
+    expect(capacityTotals(rows, ["تهران"])).toEqual([{ university: "تهران", years: { 1405: null, 1404: 25, 1403: null, 1402: 0, 1401: null } }]);
     expect(capacityTotals(rows, [])).toEqual([]);
   });
   it("normalizes Persian searches and sorts labels using Persian collation", () => {
