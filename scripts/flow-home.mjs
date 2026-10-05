@@ -80,9 +80,9 @@ export function projectHome(document, manifest) {
   detach(byClass(tools, "smart-tools__divider"));
   replaceContent(one(byClass(tools, "smart-tool--beta"), (node) => node.tagName === "h3", "compass heading"), "قطب‌نمای انتخاب رشته");
   if (ready) before(tools.childNodes[0], markup(image("compass.webp", "flow-support-art", 1254, 1254, "", true)));
-  const supports = markup('<section class="flow-supports" aria-label="قطب‌نما و راهنماهای انتخاب رشته"></section>');
+  const supports = markup('<section class="flow-supports" aria-label="قطب‌نمای انتخاب رشته"></section>');
   const guide = markup(`<article class="flow-guide-entry">${ready ? image("guide-book.webp", "flow-support-art", 1254, 1254, "", true) : ""}<div><h2>راهنمای انتخاب رشته</h2><p>مقالات و راهنماهای کاربردی برای آشنایی با رشته‌ها و مسیرهای تحصیلی مختلف.</p></div></article>`);
-  append(supports, tools, guide, byId("aris-smart-tools-script"));
+  append(supports, tools, byId("aris-smart-tools-script"));
 
   const dataTools = markup(`<section class="flow-data-tools" aria-labelledby="flow-data-tools-title">
     <header class="flow-data-tools__head">
@@ -130,9 +130,12 @@ export function projectHome(document, manifest) {
   </section>`);
 
   const selection = byId("aris-selection-module");
-  if (ready) before(selection, markup(`<div class="flow-divider-frame">${image("botanical-divider.webp", "flow-botanical-divider", 1536, 656, "", true)}</div>`));
+  const divider = () => markup(`<div class="flow-divider-frame" aria-hidden="true">${ready ? image("botanical-divider.webp", "flow-botanical-divider", 1536, 656, "", true) : ""}</div>`);
   before(selection, supports);
+  before(selection, divider());
   before(selection, dataTools);
+  before(selection, divider());
+  before(selection, guide);
   const next = main.childNodes[main.childNodes.indexOf(selection) + 1];
   if (next) before(next, details); else append(main, details);
   detach(byClass(stage, "channel-pulse"));

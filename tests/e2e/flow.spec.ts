@@ -51,7 +51,8 @@ test("active Flow assets load without placeholders", async ({ page }) => {
   await expect(page.locator("html")).toHaveAttribute("data-flow-ready", "true");
   await expect(page.locator("body")).toHaveAttribute("data-flow-assets", "ready");
   const assets = page.locator(".flow-wordmark, .flow-hero-image, .flow-support-art, .flow-botanical-divider");
-  await expect(assets).toHaveCount(5);
+  await expect(assets).toHaveCount(6);
+  for (const asset of await assets.all()) await asset.scrollIntoViewIfNeeded();
   await expect.poll(() => assets.evaluateAll((images) => images.every((image) => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0))).toBe(true);
   const sources = await assets.evaluateAll((images) => images.map((image) => (image as HTMLImageElement).currentSrc));
   expect(sources.every((src) => !src.includes("-source.webp"))).toBe(true);
