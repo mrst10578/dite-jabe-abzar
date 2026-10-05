@@ -77,7 +77,7 @@ append(head, markup(`<style data-flow-tokens>${tokens}</style>`));
 append(head, markup('<link rel="stylesheet" href="/flow/theme.css">'));
 append(head, markup('<link rel="stylesheet" href="/flow/surfaces.css">'));
 append(head, markup('<link rel="stylesheet" href="/flow/reader.css">'));
-append(head, markup('<link rel="stylesheet" href="/flow/branding.css">'));
+append(head, markup('<link rel="stylesheet" href="/flow/branding.css?v=20261005-2">'));
 append(head, markup('<link rel="stylesheet" href="/flow/home-controls.css">'));
 append(head, markup('<link rel="stylesheet" href="/flow/search.css">'));
 append(head, markup('<link rel="stylesheet" href="/flow/guides.css">'));
