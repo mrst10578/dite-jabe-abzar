@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - ".github/workflows/merge-capacity-1405-math.yml"
+      - "scripts/activate-1405-math.mjs"
+      - "scripts/parse-capacity-1405-math.py"
 
 permissions:
   contents: write
