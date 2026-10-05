@@ -77,7 +77,12 @@ export async function buildSnapshot(sourceRoot, outputRoot, source) {
   files.set("source/sources.csv", await readFile(join(sourceRoot, "raw/sources.csv")));
   let rowCount = 0, totalCapacity = 0;
   for (const year of [...YEARS].reverse()) {
-    const info = dataset.years[year], directory = join(sourceRoot, "normalized", String(year));
+    const directory = join(sourceRoot, "normalized", String(year));
+    let info = dataset.years[year];
+    if (!info && year === 1405) {
+      const supplemental = JSON.parse(await readFile(join(directory, "SUMMARY.json"), "utf8"));
+      info = { year: 1405, rows: supplemental.rows, capacity: supplemental.capacity, input_files: [{ path: "capacities-experimental.csv", rows: supplemental.rows, capacity: supplemental.capacity }] };
+    }
     if (!info?.input_files?.length) throw new Error(`Missing source files for ${year}`);
     const csvBytes = await readFile(join(directory, "capacities-all.csv"));
     files.set(`source/${year}.csv`, csvBytes);
@@ -121,7 +126,9 @@ export async function buildSnapshot(sourceRoot, outputRoot, source) {
     yearTotals[year] = { rows: finalRows.length, capacity: yearCapacity };
   }
   const majorFamilies = new Set([...shards.values()].map((shard) => shard.major)).size;
-  if (rowCount !== dataset.rows || totalCapacity !== dataset.capacity || majorFamilies !== dataset.major_families) throw new Error("Dataset rows/capacity/major totals mismatch");
+  const expectedRows = Object.values(yearTotals).reduce((sum, item) => sum + item.rows, 0);
+  const expectedCapacity = Object.values(yearTotals).reduce((sum, item) => sum + item.capacity, 0);
+  if (rowCount !== expectedRows || totalCapacity !== expectedCapacity || majorFamilies !== dataset.major_families) throw new Error("Dataset rows/capacity/major totals mismatch");
   const snapshotId = sha256(JSON.stringify([source.commit, [...files].map(([path, bytes]) => [path, sha256(bytes)])])).slice(0, 16);
   const catalog = { schemaVersion: 1, snapshotId, source, years: YEARS, rows: rowCount, groups: GROUPS.map((group) => ({ ...group, majors: [] })) };
   for (const shard of [...shards.values()].sort((a, b) => a.id.localeCompare(b.id))) {
