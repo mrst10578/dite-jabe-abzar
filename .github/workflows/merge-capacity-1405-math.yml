@@ -1,0 +1,73 @@
+name: Merge 1405 math capacity snapshot
+
+on:
+  push:
+    paths:
+      - ".github/workflows/merge-capacity-1405-math.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download verified 1405 math booklet
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+          ok=0
+          for url in \
+            "https://dl.novinkonkor.com/daftarche_entekhab_reshte/1405/Riazi.pdf" \
+            "https://www8.sanjesh.org/download/1405/sar/csnote/Riazi_v1.pdf"
+          do
+            echo "Trying $url"
+            if curl --fail --location --retry 3 --retry-delay 2 --connect-timeout 20 --max-time 300 -A "Mozilla/5.0" "$url" -o /tmp/Riazi.pdf; then
+              if [ "$(sha256sum /tmp/Riazi.pdf | awk '{print $1}')" = "515003f7dc758a9c90807c0a2174604604dca93e85985f5831ef35ebc5e1e389" ]; then
+                ok=1
+                break
+              fi
+            fi
+          done
+          test "$ok" -eq 1
+
+      - name: Rebuild verified math CSV
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/parse-capacity-1405-math.py /tmp/Riazi.pdf \
+            --csv /tmp/capacities-math.csv \
+            --summary /tmp/math-summary.json \
+            --expect-rows 2003 --expect-capacity 52310
+
+      - name: Activate math snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/activate-1405-math.mjs /tmp/capacities-math.csv b70f9a15329ccc71903be970c7fbadebd3b744c8 2026-10-05T07:14:26Z
+          node - <<'NODE'
+          const fs = require("fs");
+          const m = JSON.parse(fs.readFileSync("public/capacity/data/manifest.json", "utf8"));
+          if (m.rows !== 39229 || m.capacity !== 629817) throw new Error("global totals mismatch");
+          if (m.years["1405"].rows !== 5903 || m.years["1405"].capacity !== 108972) throw new Error("1405 totals mismatch");
+          if (m.groups.math.rows !== 12370 || m.groups.math.capacity !== 263334) throw new Error("math totals mismatch");
+          const c = JSON.parse(fs.readFileSync("public/capacity/data/catalog.json", "utf8"));
+          if (c.source.commit !== "b70f9a15329ccc71903be970c7fbadebd3b744c8") throw new Error("source pin mismatch");
+          NODE
+          git diff --check
+
+      - name: Commit merged snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/capacity/data
+          git diff --cached --stat
+          git diff --cached --quiet && exit 0
+          git commit -m "data: add 1405 math capacity snapshot"
+          git push
