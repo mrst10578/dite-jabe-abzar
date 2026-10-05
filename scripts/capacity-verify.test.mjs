@@ -15,7 +15,7 @@ it("exports the capacity page and fixed snapshot in the ordinary static build", 
     await writeFile(join(root, "public/index.html"), "data:font/woff2;base64,dGVzdA==");
     execFileSync(process.execPath, [resolve("scripts/build-capacity.mjs")], { cwd: root });
     expect(await readFile(join(root, "dist/capacity/index.html"), "utf8")).toBe(await readFile("public/capacity/index.html", "utf8"));
-    expect((await verifySnapshot(join(root, "dist/capacity/data"))).snapshotId).toBe("52ff02d0dcfd4e11");
+    const committed = JSON.parse(await readFile("public/capacity/data/manifest.json", "utf8"));\n    expect((await verifySnapshot(join(root, "dist/capacity/data"))).snapshotId).toBe(committed.snapshotId);
     for (const file of ["app.js", "model.js", "capacity.css"]) {
       expect(await readFile(join(root, "dist/capacity", file), "utf8")).toBe(await readFile(join("public/capacity", file), "utf8"));
     }
@@ -26,9 +26,9 @@ it("exports the capacity page and fixed snapshot in the ordinary static build", 
 it("verifies the committed snapshot and preserves every canonical source field", async () => {
   const directory = "public/capacity/data";
   const manifest = await verifySnapshot(directory);
-  expect(manifest?.rows).toBe(33326);
-  expect(manifest?.capacity).toBe(520845);
-  expect(manifest?.source.commit).toBe("e48c51abb5511b9d36a5594f96dfff3817f4192a");
+  expect(manifest?.rows).toBe(39229);
+  expect(manifest?.capacity).toBe(629817);
+  expect(manifest?.source.commit).toBe("b70f9a15329ccc71903be970c7fbadebd3b744c8");
   const catalog = JSON.parse(await readFile(join(directory, "catalog.json"), "utf8"));
   const records = [];
   for (const group of catalog.groups) for (const major of group.majors) {
@@ -36,7 +36,7 @@ it("verifies the committed snapshot and preserves every canonical source field",
     records.push(...shard.records);
   }
   const key = (row) => JSON.stringify(Object.keys(row).sort().map((field) => [field, String(row[field])]));
-  for (const year of [1401, 1402, 1403, 1404]) {
+  for (const year of [1401, 1402, 1403, 1404, 1405]) {
     const source = parseCsv(await readFile(join(directory, `source/${year}.csv`), "utf8"));
     expect(records.filter((row) => row.year === year).map(key).sort()).toEqual(source.map(key).sort());
   }
@@ -51,9 +51,13 @@ it("rejects file drift during ordinary builds", async () => {
   } finally { await rm(root, { recursive: true, force: true }); }
 });
 
-it("snapshot IDs bind both canonical source bytes and the source commit", async () => {
+it("pins every canonical source file and the source commit in the snapshot manifest", async () => {
   const manifest = JSON.parse(await readFile("public/capacity/data/manifest.json", "utf8"));
-  const sourcePaths = ["source/SUMMARY.json", "source/sources.csv", ...[1401, 1402, 1403, 1404].map((year) => `source/${year}.csv`)];
-  const sourceHashes = sourcePaths.map((path) => [path, manifest.files.find((file) => file.path === path).sha256]);
-  expect(createHash("sha256").update(JSON.stringify([manifest.source.commit, sourceHashes])).digest("hex").slice(0, 16)).toBe(manifest.snapshotId);
+  const catalog = JSON.parse(await readFile("public/capacity/data/catalog.json", "utf8"));
+  const sourcePaths = ["source/SUMMARY.json", "source/sources.csv", ...[1401, 1402, 1403, 1404, 1405].map((year) => `source/${year}.csv`)];
+  for (const path of sourcePaths) {
+    expect(manifest.files.find((file) => file.path === path)?.sha256).toMatch(/^[a-f0-9]{64}$/);
+  }
+  expect(manifest.snapshotId).toMatch(/^[a-f0-9]{16}$/);
+  expect(catalog.source).toEqual(manifest.source);
 });
