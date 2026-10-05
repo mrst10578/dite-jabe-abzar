@@ -28,3 +28,8 @@ await copyFile("public/index.html", "dist/index.html");
 
 await import("./build-flow-preview.mjs");
 await import("./build-capacity.mjs");
+
+// Publish the last-admissions tool in the regular static build too. Workers Builds currently runs `npm run build`, so files must be copied into `dist` explicitly just like the capacity tool.
+await mkdir("dist/last-admissions", { recursive: true });
+await copyFile("public/last-admissions/index.html", "dist/last-admissions/index.html");
+await copyFile("public/last-admissions/index.html", "dist/last-admissions.html");
