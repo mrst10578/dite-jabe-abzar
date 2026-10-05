@@ -75,15 +75,15 @@ export function recordUniversity(record, context = {}) {
   return normalizeUniversity(correction?.target ?? record.university, { major: record.major ?? context.major });
 }
 
-export function capacityTotals(records, universities, context = {}) {
+export function capacityTotals(records, universities, context = {}, years = YEARS) {
   const majors = new Set(records.map((row) => row.major).filter(Boolean));
   const effectiveContext = context.major ? context : majors.size === 1 ? { major: [...majors][0] } : context;
   const result = new Map(universityNames(universities, effectiveContext).map((university) => [university, {
-    university, years: Object.fromEntries(YEARS.map((year) => [year, null])),
+    university, years: Object.fromEntries(years.map((year) => [year, null])),
   }]));
   for (const record of records) {
     const target = result.get(recordUniversity(record, effectiveContext));
-    if (target && YEARS.includes(record.year)) {
+    if (target && years.includes(record.year)) {
       target.years[record.year] = (target.years[record.year] ?? 0) + record.capacity;
     }
   }
