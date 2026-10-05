@@ -154,8 +154,25 @@ export function projectHome(document, manifest) {
   replaceContent(one(help, (node) => node.tagName === "b", "province count"), "۳۱ استان");
   replaceContent(byClass(document, "demo-label"), "بانک رشته‌ها");
   const footer = byClass(document, "aris-home-footer");
-  replaceContent(nodes(footer, (node) => node.tagName === "p")[0], "Flow · شناخت رشته، شناخت مسیر");
-  const footerLink = one(footer, (node) => node.tagName === "a", "footer channel");
-  setAttr(footerLink, "href", "https://t.me/Flow_Konkour");
-  replaceContent(footerLink, "همراه Flow در مسیر انتخاب رشته · @Flow_Konkour");
+  replaceContent(footer, `
+    <div class="flow-home-footer__shell">
+      <div class="flow-home-footer__brand">
+        <img class="flow-home-footer__logo" src="/flow/assets/flow-wordmark.webp" width="180" height="78" alt="Flow" loading="lazy" decoding="async">
+        <span class="flow-home-footer__eyebrow">FLOW · SELECTION TOOLBOX</span>
+        <h2>انتخاب بهتر، با شناخت بیشتر.</h2>
+        <p>ابزارها، داده‌ها و راهنماهایی که مسیر انتخاب رشته را شفاف‌تر می‌کنند، اینجا کنار هم جمع شده‌اند.</p>
+        <span class="flow-home-footer__status"><i aria-hidden="true"></i> جعبه ابزار Flow در حال توسعه و تکمیل مداوم است.</span>
+      </div>
+      <div class="flow-home-footer__telegram">
+        <span class="flow-home-footer__telegram-label">کانال رسمی Flow در تلگرام</span>
+        <strong>تحلیل‌ها و آپدیت‌های انتخاب رشته را از دست نده.</strong>
+        <a class="aris-footer-join" href="https://t.me/Flow_Konkour">عضویت در کانال فلو</a>
+        <span class="flow-channel-handle" dir="ltr">@Flow_KonKour</span>
+      </div>
+    </div>
+    <div class="flow-home-footer__bottom">
+      <span>Flow · جعبه ابزار انتخاب رشته</span>
+      <span>شناخت رشته · شناخت مسیر · انتخاب دقیق‌تر</span>
+    </div>
+  `);
 }
