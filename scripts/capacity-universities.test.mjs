@@ -11,7 +11,7 @@ it("combines the Gilan spelling variants across years and duplicate selections",
   ];
   const original = JSON.stringify(records);
   expect(capacityTotals(records, records.map((row) => row.university))).toEqual([
-    { university: "دانشگاه علوم پزشکی گیلان - رشت", years: { 1404: 347, 1403: 297, 1402: 258, 1401: 225 } },
+    { university: "دانشگاه علوم پزشکی گیلان - رشت", years: { 1405: null, 1404: 347, 1403: 297, 1402: 258, 1401: 225 } },
   ]);
   expect(JSON.stringify(records)).toBe(original);
 });
@@ -22,7 +22,7 @@ it("combines Islamic Azad spelling, Arabic letters, spacing and separator varian
     { university: "دانشگاه آزاد اسلامی استان گیلان - واحد رشت", year: 1403, capacity: 30 },
     { university: "دانشگاه آزاد اسلامي استان گيلان-واحد رشت", year: 1402, capacity: 40 },
   ], ["دانشگاه آزاد اسلامی استان گیلان - واحد رشت"])).toEqual([
-    { university: "دانشگاه آزاد اسلامی استان گیلان - واحد رشت", years: { 1404: 20, 1403: 30, 1402: 40, 1401: null } },
+    { university: "دانشگاه آزاد اسلامی استان گیلان - واحد رشت", years: { 1405: null, 1404: 20, 1403: 30, 1402: 40, 1401: null } },
   ]);
 });
 
@@ -63,7 +63,7 @@ it.each([
   ["دانشگاه صنعتی شریف - تهران )محل تحصیل پردیس خودگردان مهندسی و علوم در جزیره کیش(", "دانشگاه صنعتی شریف - تهران (محل تحصیل پردیس خودگردان مهندسی و علوم در جزیره کیش)"],
 ])("corrects a confirmed university spelling: %s", (raw, university) => {
   expect(capacityTotals([{ university: raw, year: 1404, capacity: 10 }], [university])[0]).toEqual({
-    university, years: { 1404: 10, 1403: null, 1402: null, 1401: null },
+    university, years: { 1405: null, 1404: 10, 1403: null, 1402: null, 1401: null },
   });
 });
 
@@ -88,11 +88,11 @@ it("keeps all pinned records and capacities intact after university grouping", (
   const catalog = JSON.parse(readFileSync(`${root}/catalog.json`, "utf8"));
   const records = catalog.groups.flatMap((group) => group.majors.flatMap((major) =>
     JSON.parse(readFileSync(`${root}/${major.path}`, "utf8")).records));
-  expect(records).toHaveLength(33326);
+  expect(records).toHaveLength(39229);
   const names = universityNames(records.map((row) => recordUniversity(row)));
   for (const name of names) expect(normalizeUniversity(name)).toBe(name);
   const totals = capacityTotals(records, names);
-  for (const year of [1401, 1402, 1403, 1404]) {
+  for (const year of [1401, 1402, 1403, 1404, 1405]) {
     expect(totals.reduce((sum, row) => sum + (row.years[year] ?? 0), 0)).toBe(
       records.filter((row) => row.year === year).reduce((sum, row) => sum + row.capacity, 0));
   }
