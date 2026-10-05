@@ -50,12 +50,16 @@ test("active Flow assets load without placeholders", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("data-flow-ready", "true");
   await expect(page.locator("body")).toHaveAttribute("data-flow-assets", "ready");
-  const assets = page.locator(".flow-wordmark, .flow-hero-image, .flow-support-art, .flow-botanical-divider");
-  await expect(assets).toHaveCount(6);
+  await page.locator(".flow-other-tools").evaluate((node) => ((node as HTMLDetailsElement).open = true));
+  const assets = page.locator(".flow-wordmark, .flow-hero-image, .flow-support-art, .flow-botanical-divider, .flow-data-card__art, .flow-decision-core, .flow-province-art, .flow-future-capsule");
+  await expect(assets).toHaveCount(13);
   for (const asset of await assets.all()) await asset.scrollIntoViewIfNeeded();
   await expect.poll(() => assets.evaluateAll((images) => images.every((image) => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0))).toBe(true);
   const sources = await assets.evaluateAll((images) => images.map((image) => (image as HTMLImageElement).currentSrc));
   expect(sources.every((src) => !src.includes("-source.webp"))).toBe(true);
+  for (const filename of ["flow-data-archive.png", "flow-acceptance-gate.png", "flow-capacity-garden.png", "flow-iran-atlas.png", "flow-decision-core.png", "flow-divider-direct.png", "flow-divider-split.png", "flow-divider-knot.png", "flow-future-capsule.png"]) {
+    expect(sources.some((src) => src.includes(filename)), filename).toBe(true);
+  }
   await page.setViewportSize({ width: 390, height: 844 });
   await expect.poll(() => page.locator(".flow-hero-image").evaluate((image) => (image as HTMLImageElement).currentSrc)).toContain("hero-mobile.webp");
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
