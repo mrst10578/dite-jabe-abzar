@@ -35,7 +35,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/activate-1405-humanities.mjs /tmp/capacities-humanities.csv 052b7785b5d5ca193545c7fd1149b7b0dc8711ba 2026-10-05T13:30:55Z
+          node scripts/activate-1405-humanities.mjs /tmp/capacities-humanities.csv 0b713e519547c23db4a4dcb200ac9c0a00ba796d 2026-10-05T16:00:40Z
           node - <<'NODE'
           const fs = require("fs");
           const m = JSON.parse(fs.readFileSync("public/capacity/data/manifest.json", "utf8"));
@@ -43,7 +43,7 @@ jobs:
           if (m.years["1405"].rows !== 8416 || m.years["1405"].capacity !== 132198) throw new Error("1405 totals mismatch");
           if (m.groups.humanities.rows !== 13559 || m.groups.humanities.capacity !== 133367) throw new Error("humanities totals mismatch");
           const c = JSON.parse(fs.readFileSync("public/capacity/data/catalog.json", "utf8"));
-          if (c.source.commit !== "052b7785b5d5ca193545c7fd1149b7b0dc8711ba") throw new Error("source pin mismatch");
+          if (c.source.commit !== "0b713e519547c23db4a4dcb200ac9c0a00ba796d") throw new Error("source pin mismatch");
           NODE
           git diff --check
 
