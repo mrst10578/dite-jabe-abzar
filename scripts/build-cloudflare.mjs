@@ -1,4 +1,4 @@
-import { copyFile, cp, readdir, rm, stat } from "node:fs/promises";
+import { copyFile, cp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 // Only generated output is cleared; public/index.html remains the source of truth.
@@ -7,6 +7,31 @@ await import("./build-static.mjs");
 await cp("public", "dist", { recursive: true });
 // The source HTML stays intact; publish the generated active Flow entry.
 await copyFile("public/flow-preview.html", "dist/index.html");
+
+// Inline recovery into all public entry points so it can react even when a
+// critical external JS or CSS request fails.
+const resilienceRuntime = (await readFile("scripts/resilience-inline.js", "utf8"))
+  .replaceAll("</script", "<\\/script");
+const resilienceTag = `<script data-flow-resilience>${resilienceRuntime}</script>`;
+
+for (const relative of [
+  "index.html",
+  "flow-preview.html",
+  "capacity/index.html",
+  "last-admissions/index.html",
+]) {
+  const path = join("dist", relative);
+  let html;
+  try {
+    html = await readFile(path, "utf8");
+  } catch (error) {
+    if (error.code === "ENOENT") continue;
+    throw error;
+  }
+  if (html.includes("data-flow-resilience")) continue;
+  if (!html.includes("<head>")) throw new Error(`Missing <head> in ${path}`);
+  await writeFile(path, html.replace("<head>", `<head>\n${resilienceTag}`));
+}
 
 // Workers Free limits: https://developers.cloudflare.com/workers/platform/limits/
 const maxFileBytes = 25 * 1024 * 1024;
