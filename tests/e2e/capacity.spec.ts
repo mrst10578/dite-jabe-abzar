@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import { recordUniversity, universityNames } from "../../public/capacity/model.js";
+import { parseCsv } from "../../scripts/capacity-snapshot.mjs";
 
 type Record = { year: number; university: string; capacity: number };
 type Major = { id: string; label: string; universities: string[]; path: string };
@@ -9,7 +10,14 @@ const catalog = JSON.parse(readFileSync("public/capacity/data/catalog.json", "ut
 };
 const rawMedicine = catalog.groups[0].majors.find((major) => major.label === "پزشکی")!;
 const records: Record[] = JSON.parse(readFileSync(`public/capacity/data/${rawMedicine.path}`, "utf8")).records;
-const medicine = { ...rawMedicine, universities: universityNames(records.map((record) => recordUniversity(record))) };
+const supplement1405: Record[] = parseCsv(readFileSync("public/capacity/data/source/1405.csv", "utf8"))
+  .map((row) => ({ ...row, year: Number(row.year), capacity: Number(row.capacity) })) as Record[];
+const medicineRecords = [...records, ...supplement1405.filter((record: any) => record.major === "پزشکی")];
+const medicine = { ...rawMedicine, universities: universityNames(medicineRecords.map((record) => recordUniversity(record)), { major: "پزشکی" }) };
+const expectedYears = (allRecords: any[], university: string) => [1405, 1404, 1403, 1402, 1401].map((year) => {
+  const matching = allRecords.filter((record) => record.year === year && recordUniversity(record) === university);
+  return matching.length ? persian(matching.reduce((sum, record) => sum + record.capacity, 0)) : "ثبت نشده";
+});
 const persian = (value: number) => new Intl.NumberFormat("fa-IR").format(value);
 async function enter(page: Page, group = "تجربی") {
   await page.goto("/capacity/");
@@ -39,11 +47,7 @@ test("multiple selected universities show exact snapshot sums in descending year
   expect(await table.locator("thead th").allTextContents()).toEqual(["دانشگاه", "۱۴۰۵", "۱۴۰۴", "۱۴۰۳", "۱۴۰۲", "۱۴۰۱"]);
   for (const university of medicine.universities.slice(0, 2)) {
     const row = table.locator("tbody tr").filter({ has: page.getByRole("rowheader", { name: university, exact: true }) });
-    const cells = ["به‌زودی", ...[1404, 1403, 1402, 1401].map((year) => {
-      const matching = records.filter((record) => record.year === year && recordUniversity(record) === university);
-      return matching.length ? persian(matching.reduce((sum, record) => sum + record.capacity, 0)) : "ثبت نشده";
-    })];
-    expect(await row.locator("td").allTextContents()).toEqual(cells);
+    expect(await row.locator("td").allTextContents()).toEqual(expectedYears(medicineRecords, university));
   }
   await page.getByText("جزئیات ظرفیت و منابع", { exact: true }).click();
   await expect(page.getByRole("table", { name: "جزئیات ردیف‌های ظرفیت" })).toBeVisible();
@@ -61,7 +65,8 @@ test("major and group changes reset dependent universities and results", async (
   await expect(page.locator("#university-options input:checked")).toHaveCount(0);
   const labels = await page.locator("#university-options label").allTextContents();
   const nursingRecords: Record[] = JSON.parse(readFileSync(`public/capacity/data/${nursing.path}`, "utf8")).records;
-  expect(labels).toEqual(universityNames(nursingRecords.map((record) => recordUniversity(record))));
+  const nursingAll = [...nursingRecords, ...supplement1405.filter((record: any) => record.major === "پرستاری")];
+  expect(labels).toEqual(universityNames(nursingAll.map((record) => recordUniversity(record)), { major: "پرستاری" }));
   await page.getByRole("button", { name: "تغییر گروه" }).click();
   await expect(page.locator("#group-picker")).toBeVisible();
   await page.getByRole("button", { name: "انسانی", exact: true }).click();
@@ -80,7 +85,7 @@ test("university spelling variants share one option and one complete year histor
   await option.check();
   const row = page.getByRole("table", { name: "ظرفیت پذیرش به تفکیک سال" }).locator("tbody tr");
   await expect(row).toHaveCount(1);
-  await expect(row.locator("td")).toHaveText(["به‌زودی", "۳۴۷", "۲۹۷", "۲۵۸", "۲۲۵"]);
+  await expect(row.locator("td")).toHaveText(expectedYears(medicineRecords, university));
   await page.getByLabel("جست‌وجوی دانشگاه").fill("گیالن");
   await expect(option).toBeVisible();
   await page.getByText("جزئیات ظرفیت و منابع", { exact: true }).click();
@@ -103,15 +108,15 @@ test("details correct the university and campus names without joining campuses",
 test("renamed universities have one option and a complete four-year history", async ({ page }) => {
   await enter(page);
   await page.locator("#capacity-major").selectOption(medicine.id);
-  for (const [university, cells] of [
-    ["دانشگاه آزاد اسلامی واحد علوم پزشکی تبریز", ["به‌زودی", "۱۳۲", "۱۱۰", "۸۰", "۷۵"]],
-    ["دانشگاه آزاد اسلامی واحد خودگردان قشم", ["به‌زودی", "۹۱", "۷۹", "۵۵", "۴۵"]],
-    ["دانشگاه شاهد - تهران", ["به‌زودی", "۸۸", "۸۶", "۷۲", "۶۲"]],
+  for (const university of [
+    "دانشگاه آزاد اسلامی واحد علوم پزشکی تبریز",
+    "دانشگاه آزاد اسلامی واحد خودگردان قشم",
+    "دانشگاه شاهد - تهران",
   ] as const) {
     await page.locator("#university-options").getByRole("checkbox", { name: university, exact: true }).check();
     const row = page.getByRole("table", { name: "ظرفیت پذیرش به تفکیک سال" }).locator("tbody tr")
       .filter({ has: page.getByRole("rowheader", { name: university, exact: true }) });
-    await expect(row.locator("td")).toHaveText([...cells]);
+    await expect(row.locator("td")).toHaveText(expectedYears(medicineRecords, university));
   }
   for (const oldName of ["دانشگاه آزاد اسلامی استان آذربایجان شرقی - واحد تبریز", "دانشگاه آزاد اسلامی استان هرمزگان - مرکز آموزش بین المللی قشم", "دانشگاه شاهد - ان ) رشته های پزشکی(تهر", "دانشگاه اراک"]) {
     await expect(page.locator("#university-options").getByRole("checkbox", { name: oldName, exact: true })).toHaveCount(0);
