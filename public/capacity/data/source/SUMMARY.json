@@ -138,8 +138,8 @@
   "legacy_scope_note": "Top-level scope/years retain the original ten health majors. dataset is the current complete capacity export.",
   "dataset": {
     "major_families": 83,
-    "rows": 33326,
-    "capacity": 520845,
+    "rows": 39229,
+    "capacity": 629817,
     "years": {
       "1401": {
         "year": 1401,
@@ -1416,6 +1416,28 @@
           "untraceable_source_pages": 0,
           "aggregate_totals_matched": true
         }
+      },
+      "1405": {
+        "year": 1405,
+        "rows": 5903,
+        "capacity": 108972,
+        "input_files": [
+          {
+            "path": "capacities-1405-experimental.csv",
+            "rows": 3900,
+            "capacity": 56662
+          },
+          {
+            "path": "capacities-math.csv",
+            "rows": 2003,
+            "capacity": 52310
+          }
+        ],
+        "coverage": [
+          "experimental",
+          "math"
+        ],
+        "partial": true
       }
     },
     "humanities_summary": "HUMANITIES_SUMMARY.json",
