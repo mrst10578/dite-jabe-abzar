@@ -20,9 +20,35 @@ function status(text, action = null) { message.textContent = text; retryAction =
 retry.addEventListener("click", () => retryAction?.());
 
 async function json(url, signal) {
-  const response = await fetch(url, { signal });
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  return response.json();
+  let lastError;
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    if (signal?.aborted) throw signal.reason ?? new DOMException("Aborted", "AbortError");
+    const controller = new AbortController();
+    const abort = () => controller.abort();
+    const timeout = setTimeout(() => controller.abort(), 12000);
+    signal?.addEventListener("abort", abort, { once: true });
+    try {
+      const response = await fetch(url, {
+        signal: controller.signal,
+        cache: "force-cache",
+      });
+      if (response.ok) return response.json();
+      if (response.status < 500 && response.status !== 429) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      lastError = new Error(`HTTP ${response.status}`);
+    } catch (error) {
+      if (signal?.aborted) throw signal.reason ?? new DOMException("Aborted", "AbortError");
+      lastError = error;
+    } finally {
+      clearTimeout(timeout);
+      signal?.removeEventListener("abort", abort);
+    }
+    if (attempt < 3) {
+      await new Promise((resolve) => setTimeout(resolve, 350 * (attempt + 1)));
+    }
+  }
+  throw lastError ?? new Error("Request failed");
 }
 
 function resetMajor() {
@@ -188,3 +214,6 @@ function render() {
   byId("capacity-table").querySelector("tfoot").replaceChildren(valuesRow("جمع ظرفیت‌های ثبت‌شده", totals, true));
   results.hidden = false; renderDetails();
 }
+
+
+document.documentElement.dataset.capacityReady = "true";
