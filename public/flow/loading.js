@@ -13,9 +13,14 @@
     const loader = document.getElementById("flow-startup");
     if (!loader) { timer = setTimeout(check, 100); return; }
     document.body.setAttribute("aria-busy", "true");
-    const ready = window.ArisSelectionModule && window.ArisPsychologyTest &&
-      document.getElementById("aris-selection-module")?.dataset.arisModuleReady === "true" &&
-      document.getElementById("major-search") && document.readyState !== "loading";
+    // The psychology global and arisModuleReady data flag belonged to an older
+    // bootstrap path and are no longer created. Waiting for them keeps the
+    // startup overlay on screen forever even though the homepage is usable.
+    const ready = Boolean(
+      window.ArisSelectionModule &&
+      document.getElementById("major-search") &&
+      document.readyState !== "loading"
+    );
     if (ready) { release(); return; }
     if (Date.now() - started > 20000) {
       document.documentElement.dataset.flowLoading = "error";
