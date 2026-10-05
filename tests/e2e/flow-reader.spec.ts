@@ -35,7 +35,7 @@ test("five representative Flow readers preserve authored content and sources", a
     expect(await authoredContent(page), profile.slug).toEqual(rebrandedOriginal);
     expect(await page.locator("#major-document table").count(), profile.slug).toBeGreaterThanOrEqual(profile.minTables);
     await expect(page.locator(".aris-footer-credit")).toContainText("FLOW");
-    await expect(page.locator(".aris-footer-join")).toHaveAttribute("href", "https://t.me/Flow_KonKour");
+    await expect(page.locator("#major-document .aris-footer-join")).toHaveAttribute("href", "https://t.me/Flow_KonKour");
     await expect(page.locator(".flow-reader-art")).toHaveCount(1);
   }
 });
