@@ -83,7 +83,106 @@
       "bytes": 34310,
       "alphaVerified": true,
       "layoutNote": "Native transparent canvas includes vertical padding; position the ornament using its alpha bounds during UI integration."
+    },
+    {
+      "file": "flow-data-archive.png",
+      "slot": "historical-admissions",
+      "width": 1254,
+      "height": 1254,
+      "priority": "support",
+      "transparent": true,
+      "status": "ready",
+      "bytes": 1970647,
+      "alphaVerified": true
+    },
+    {
+      "file": "flow-acceptance-gate.png",
+      "slot": "last-admissions",
+      "width": 1122,
+      "height": 1402,
+      "priority": "support",
+      "transparent": true,
+      "status": "ready",
+      "bytes": 1937826,
+      "alphaVerified": true
+    },
+    {
+      "file": "flow-capacity-garden.png",
+      "slot": "capacity-tool",
+      "width": 1254,
+      "height": 1254,
+      "priority": "support",
+      "transparent": true,
+      "status": "ready",
+      "bytes": 1844328,
+      "alphaVerified": true
+    },
+    {
+      "file": "flow-iran-atlas.png",
+      "slot": "province-search",
+      "width": 1122,
+      "height": 1402,
+      "priority": "polish",
+      "transparent": true,
+      "status": "ready",
+      "bytes": 2343941,
+      "alphaVerified": true
+    },
+    {
+      "file": "flow-decision-core.png",
+      "slot": "decision-core",
+      "width": 1254,
+      "height": 1254,
+      "priority": "polish",
+      "transparent": true,
+      "status": "ready",
+      "bytes": 1807852,
+      "alphaVerified": true
+    },
+    {
+      "file": "flow-divider-direct.png",
+      "slot": "section-divider-direct",
+      "width": 2172,
+      "height": 724,
+      "priority": "polish",
+      "transparent": true,
+      "status": "ready",
+      "bytes": 912675,
+      "alphaVerified": true
+    },
+    {
+      "file": "flow-divider-split.png",
+      "slot": "section-divider-split",
+      "width": 2172,
+      "height": 724,
+      "priority": "polish",
+      "transparent": true,
+      "status": "ready",
+      "bytes": 1224778,
+      "alphaVerified": true
+    },
+    {
+      "file": "flow-divider-knot.png",
+      "slot": "section-divider-knot",
+      "width": 2172,
+      "height": 724,
+      "priority": "polish",
+      "transparent": true,
+      "status": "ready",
+      "bytes": 1043754,
+      "alphaVerified": true
+    },
+    {
+      "file": "flow-future-capsule.png",
+      "slot": "future-tools",
+      "width": 1122,
+      "height": 1402,
+      "priority": "polish",
+      "transparent": true,
+      "status": "ready",
+      "bytes": 1761660,
+      "alphaVerified": true
     }
   ],
-  "generationNote": "All six generated assets are active; native image dimensions and transparency retained."
+  "generationNote": "Original Flow asset set plus nine generated 2026-10 visual assets; PNG transparency retained and homepage delivery is lazy except critical hero branding."
 }
