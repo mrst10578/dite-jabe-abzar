@@ -26,9 +26,9 @@ it("exports the capacity page and fixed snapshot in the ordinary static build", 
 it("verifies the committed snapshot and preserves every canonical source field", async () => {
   const directory = "public/capacity/data";
   const manifest = await verifySnapshot(directory);
-  expect(manifest?.rows).toBe(39229);
-  expect(manifest?.capacity).toBe(629817);
-  expect(manifest?.source.commit).toBe("b70f9a15329ccc71903be970c7fbadebd3b744c8");
+  expect(manifest?.rows).toBe(41742);
+  expect(manifest?.capacity).toBe(653043);
+  expect(manifest?.source.commit).toBe("052b7785b5d5ca193545c7fd1149b7b0dc8711ba");
   const catalog = JSON.parse(await readFile(join(directory, "catalog.json"), "utf8"));
   const records = [];
   for (const group of catalog.groups) for (const major of group.majors) {
