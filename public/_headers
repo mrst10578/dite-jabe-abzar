@@ -3,6 +3,8 @@
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: SAMEORIGIN
   Permissions-Policy: geolocation=(), microphone=(), camera=()
+
+/
   Cache-Control: public, max-age=3600, stale-while-revalidate=86400
 
 /index.html
@@ -11,26 +13,11 @@
 /flow-preview.html
   Cache-Control: public, max-age=3600, stale-while-revalidate=86400
 
-/flow/generated/documents/*
-  Cache-Control: public, max-age=31536000, immutable
-
-/flow/generated/province-images/*
-  Cache-Control: public, max-age=2592000, stale-while-revalidate=604800
-
-/flow/generated/audio/*
-  Cache-Control: public, max-age=2592000, stale-while-revalidate=604800
-
-/flow/assets/*
-  Cache-Control: public, max-age=2592000, stale-while-revalidate=604800
-
 /flow/*
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
 
-/capacity/data/*
-  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
-
 /capacity/*
-  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
 
 /last-admissions/*
   Cache-Control: public, max-age=3600, stale-while-revalidate=86400
