@@ -32,3 +32,9 @@ await import("./build-capacity.mjs");
 // Publish the last-admissions tool in the regular static build too. Workers Builds currently runs `npm run build`, so files must be copied into `dist` explicitly just like the capacity tool.
 await mkdir("dist/last-admissions", { recursive: true });
 await copyFile("public/last-admissions/index.html", "dist/last-admissions/index.html");
+
+// Cloudflare Workers Builds currently runs `npm run build` for this project.
+// Keep resilience and header policy files in the production asset directory
+// even when the dedicated build:cloudflare wrapper is not used.
+await copyFile("public/sw.js", "dist/sw.js");
+await copyFile("public/_headers", "dist/_headers");
