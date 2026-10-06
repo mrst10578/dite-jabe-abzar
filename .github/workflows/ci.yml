@@ -47,6 +47,9 @@ jobs:
       - name: Cloudflare deploy dry run
         run: npm run check:cloudflare
 
+      - name: Backup Worker deploy dry run
+        run: npx wrangler deploy --config wrangler.backup.jsonc --dry-run
+
       - name: Workers static asset routing
         run: npm run test:cloudflare
 
