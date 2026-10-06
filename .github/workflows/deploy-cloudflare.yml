@@ -1,0 +1,105 @@
+name: Deploy Flow to Cloudflare Workers
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flow-cloudflare-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+      WRANGLER_SEND_METRICS: "false"
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID_HINT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build Cloudflare assets
+        run: npm run build:cloudflare
+
+      - name: Resolve Cloudflare credentials
+        id: cf
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          raw="${CLOUDFLARE_API_TOKEN:-}"
+          if [ -z "$raw" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::CLOUDFLARE_API_TOKEN is not configured; the connected Cloudflare build can still deploy the primary Worker."
+            exit 0
+          fi
+
+          token="$(printf '%s' "$raw" | grep -oE '(cfut_|cfat_)[A-Za-z0-9._~-]+' | head -n 1 || true)"
+          if [ -z "$token" ]; then
+            token="$(printf '%s' "$raw" | tr -d '\r\n' | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//; s/^Authorization:[[:space:]]*Bearer[[:space:]]+//I; s/^Bearer[[:space:]]+//I; s/^CLOUDFLARE_API_TOKEN=//')"
+            token="${token#\"}"
+            token="${token%\"}"
+            token="${token#\'}"
+            token="${token%\'}"
+          fi
+
+          if [ -z "$token" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Could not extract a Cloudflare API token."
+            exit 0
+          fi
+
+          echo "::add-mask::$token"
+          echo "CLOUDFLARE_API_TOKEN=$token" >> "$GITHUB_ENV"
+
+          account_id="${CLOUDFLARE_ACCOUNT_ID_HINT:-}"
+          if [ -z "$account_id" ]; then
+            accounts="$(curl -fsS -H "Authorization: Bearer $token" https://api.cloudflare.com/client/v4/accounts)"
+            mapfile -t ids < <(echo "$accounts" | jq -r '.result[]?.id')
+
+            for id in "${ids[@]}"; do
+              subdomain="$(curl -fsS -H "Authorization: Bearer $token" "https://api.cloudflare.com/client/v4/accounts/$id/workers/subdomain" | jq -r '.result.subdomain // empty' || true)"
+              if [ "$subdomain" = "flow1" ]; then
+                account_id="$id"
+                break
+              fi
+            done
+
+            if [ -z "$account_id" ] && [ "${#ids[@]}" -eq 1 ]; then
+              account_id="${ids[0]}"
+            fi
+          fi
+
+          if [ -z "$account_id" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Could not safely identify the Cloudflare account whose workers.dev subdomain is flow1."
+            exit 0
+          fi
+
+          echo "CLOUDFLARE_ACCOUNT_ID=$account_id" >> "$GITHUB_ENV"
+          echo "configured=true" >> "$GITHUB_OUTPUT"
+
+      - name: Deploy primary Worker
+        if: steps.cf.outputs.configured == 'true'
+        run: npx wrangler deploy --config wrangler.jsonc
+
+      - name: Deploy isolated backup Worker
+        if: steps.cf.outputs.configured == 'true'
+        run: npx wrangler deploy --config wrangler.backup.jsonc
