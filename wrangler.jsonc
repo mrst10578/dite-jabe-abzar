@@ -1,18 +1,8 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "entekhab-reshte",
+  "name": "entekhab-reshte-backup",
   "compatibility_date": "2026-10-02",
   "workers_dev": true,
-  "routes": [
-    {
-      "pattern": "flowkonkour.dpdns.org",
-      "custom_domain": true
-    },
-    {
-      "pattern": "www.flowkonkour.dpdns.org",
-      "custom_domain": true
-    }
-  ],
   "previews": {},
   "assets": {
     "directory": "./dist",
