@@ -32,6 +32,9 @@ try {
   const response = await fetch(baseURL, { signal: AbortSignal.timeout(10_000) });
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /text\/html/);
+  assert.match(response.headers.get("cache-control") ?? "", /max-age=3600/);
+  assert.equal(response.headers.get("x-content-type-options"), "nosniff");
+  assert.equal(response.headers.get("x-frame-options"), "SAMEORIGIN");
   const body = Buffer.from(await response.arrayBuffer());
   const source = await readFile("dist/index.html");
   const hash = (value) => createHash("sha256").update(value).digest("hex");
@@ -39,6 +42,16 @@ try {
   assert.equal(hash(body), hash(source), "Serving assets must not alter the embedded content");
 
   assert.match(body.toString("utf8"), /data-flow-assets="ready"/);
+
+  const serviceWorker = await fetch(`${baseURL}/sw.js`);
+  assert.equal(serviceWorker.status, 200, "Service worker must be published");
+  assert.match(serviceWorker.headers.get("cache-control") ?? "", /no-cache/);
+  assert.equal(serviceWorker.headers.get("service-worker-allowed"), "/");
+  assert.match(await serviceWorker.text(), /flow-toolbox-v1/);
+
+  const flowTheme = await fetch(`${baseURL}/flow/theme.css`);
+  assert.equal(flowTheme.status, 200, "Flow theme must be served");
+  assert.match(flowTheme.headers.get("cache-control") ?? "", /max-age=86400/);
   const manifest = JSON.parse(await readFile("public/flow/assets/manifest.json", "utf8"));
   for (const asset of manifest.assets) {
     const response = await fetch(`${baseURL}/flow/assets/${asset.file}`);
