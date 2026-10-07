@@ -1,6 +1,7 @@
 // Reviewed institution identities; campus and branch differences are preserved.
 // Only reviewed aliases for the same main institution; named out-of-town campuses stay separate.
 export const INSTITUTION_ALIASES = {
+  "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی لرستان": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی لرستان - خرم آباد",
   "دانشگاه بوعلی سینا": "دانشگاه بوعلی سینا - همدان",
   "دانشگاه شهید بهشتی": "دانشگاه شهید بهشتی - تهران",
   "دانشگاه صنعتی شریف": "دانشگاه صنعتی شریف - تهران",
