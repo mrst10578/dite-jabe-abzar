@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "purpose": "capacity-deploy-verification",
+  "commit": "34bc9380ee5bab2257727315ee2ee1e088af1cf2",
+  "audit": "experimental-university-identities-1401-1405",
+  "unresolvedMalformedUniversityLabels": 0,
+  "rowsAudited": 15824,
+  "capacitiesAudited": 256412,
+  "createdAt": "2026-10-07T11:10:00Z"
+}
