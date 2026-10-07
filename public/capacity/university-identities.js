@@ -1,6 +1,7 @@
 // Reviewed institution identities; campus and branch differences are preserved.
 // Only reviewed aliases for the same main institution; named out-of-town campuses stay separate.
 export const INSTITUTION_ALIASES = {
+  "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی لرستان": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی لرستان - خرم آباد",
   "دانشگاه بوعلی سینا": "دانشگاه بوعلی سینا - همدان",
   "دانشگاه شهید بهشتی": "دانشگاه شهید بهشتی - تهران",
   "دانشگاه صنعتی شریف": "دانشگاه صنعتی شریف - تهران",
@@ -701,6 +702,351 @@ export const UNIVERSITY_ROW_CORRECTIONS = [
       "url": "https://dl.konkur.in/2022/08/Entekhab-Reshte-Tajrobi1401-%5Bkonkur.in%5D.pdf",
       "sha256": "57a21cd62421488786a23e4a72f237b0726a228a679342b570419715fc33b8e7",
       "reason": "Original exact row institution cell names دانشگاه علوم پزشکی زاهدان; parser truncated institution and substituted quota heading text."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "پرستاری",
+    "source_id": "1405-booklet",
+    "source_page": 75,
+    "code": "32271",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم پزشکی بروجن)",
+    "capacity": 1,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Source-title OCR contains «پزشکی بروجن»; rows 32271–32280 form the same Brojen block on pages 75–76."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "پرستاری",
+    "source_id": "1405-booklet",
+    "source_page": 75,
+    "code": "32272",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم پزشکی بروجن)",
+    "capacity": 35,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Source-title OCR and adjacent code block identify the Brojen medical-school campus."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "اتاق عمل",
+    "source_id": "1405-booklet",
+    "source_page": 75,
+    "code": "32273",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم پزشکی بروجن)",
+    "capacity": 18,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Adjacent source rows on page 75 are the Brojen medical-school block."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "اتاق عمل",
+    "source_id": "1405-booklet",
+    "source_page": 75,
+    "code": "32274",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم پزشکی بروجن)",
+    "capacity": 1,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Adjacent source rows on page 75 are the Brojen medical-school block."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "فوریت‌های پزشکی پیش‌بیمارستانی",
+    "source_id": "1405-booklet",
+    "source_page": 75,
+    "code": "32275",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم پزشکی بروجن)",
+    "capacity": 15,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Adjacent source rows on page 75 are the Brojen medical-school block."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "فوریت‌های پزشکی پیش‌بیمارستانی",
+    "source_id": "1405-booklet",
+    "source_page": 75,
+    "code": "32276",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم پزشکی بروجن)",
+    "capacity": 1,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Adjacent source rows on page 75 are the Brojen medical-school block."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "هوشبری",
+    "source_id": "1405-booklet",
+    "source_page": 75,
+    "code": "32277",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم پزشکی بروجن)",
+    "capacity": 1,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Adjacent source rows on page 75 are the Brojen medical-school block."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "هوشبری",
+    "source_id": "1405-booklet",
+    "source_page": 75,
+    "code": "32278",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم پزشکی بروجن)",
+    "capacity": 16,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Adjacent source rows on page 75 are the Brojen medical-school block."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "فوریت‌های پزشکی پیش‌بیمارستانی",
+    "source_id": "1405-booklet",
+    "source_page": 76,
+    "code": "32279",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم پزشکی بروجن)",
+    "capacity": 20,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Continuation of the same Brojen block from page 75 onto page 76."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "فوریت‌های پزشکی پیش‌بیمارستانی",
+    "source_id": "1405-booklet",
+    "source_page": 76,
+    "code": "32280",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم پزشکی بروجن)",
+    "capacity": 5,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Continuation of the same Brojen block from page 75 onto page 76."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "پرستاری",
+    "source_id": "1405-booklet",
+    "source_page": 88,
+    "code": "32637",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی جندی شاپور اهواز (محل تحصیل دانشکده پرستاری)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی جندی شاپور اهواز (محل تحصیل دانشکده پرستاری مسجدسلیمان)",
+    "capacity": 1,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Source-title OCR explicitly contains «مسجدسلیمان ) پرستاری»."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "پرستاری",
+    "source_id": "1405-booklet",
+    "source_page": 88,
+    "code": "32638",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی جندی شاپور اهواز (محل تحصیل دانشکده پرستاری)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی جندی شاپور اهواز (محل تحصیل دانشکده پرستاری مسجدسلیمان)",
+    "capacity": 25,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Follows code 32637 in the same Masjed Soleyman nursing block."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "پرستاری",
+    "source_id": "1405-booklet",
+    "source_page": 88,
+    "code": "32639",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی جندی شاپور اهواز (محل تحصیل دانشکده پرستاری)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی جندی شاپور اهواز (محل تحصیل دانشکده پرستاری مسجدسلیمان)",
+    "capacity": 3,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Follows codes 32637–32638 in the same Masjed Soleyman nursing block."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "پزشکی",
+    "source_id": "1405-booklet",
+    "source_page": 89,
+    "code": "32645",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی جندی شاپور اهواز (محل تحصیل دانشکده علوم)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی جندی شاپور اهواز (محل تحصیل دانشکده علوم پزشکی بهبهان)",
+    "capacity": 28,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Source-title OCR explicitly contains «پزشکی بهبهان»."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "پزشکی",
+    "source_id": "1405-booklet",
+    "source_page": 89,
+    "code": "32646",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی جندی شاپور اهواز (محل تحصیل دانشکده علوم)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی جندی شاپور اهواز (محل تحصیل دانشکده علوم پزشکی بهبهان)",
+    "capacity": 5,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Follows code 32645 in the same Behbahan medical-school block."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "پزشکی",
+    "source_id": "1405-booklet",
+    "source_page": 129,
+    "code": "33679",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی اراک (محل تحصیل دانشکده علوم پزشکی و خدمات)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی اراک (محل تحصیل دانشکده علوم پزشکی و خدمات بهداشتی درمانی خمین)",
+    "capacity": 20,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Source-title OCR explicitly continues with «بهداشتی درمانی خمین»."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "فوریت‌های پزشکی پیش‌بیمارستانی",
+    "source_id": "1405-booklet",
+    "source_page": 53,
+    "code": "31747",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی ارومیه (محل تحصیل دانشکده علوم)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی ارومیه (محل تحصیل دانشکده علوم پزشکی خوی)",
+    "capacity": 1,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "The page-53 block is the Khoy medical-school campus; the following row text preserves «علوم پزشکی خوی»."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "فوریت‌های پزشکی پیش‌بیمارستانی",
+    "source_id": "1405-booklet",
+    "source_page": 53,
+    "code": "31748",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی ارومیه (محل تحصیل دانشکده علوم)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی ارومیه (محل تحصیل دانشکده علوم پزشکی خوی)",
+    "capacity": 15,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Same page-53 Khoy medical-school block as adjacent codes 31747–31750."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "مامایی",
+    "source_id": "1405-booklet",
+    "source_page": 53,
+    "code": "31749",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی ارومیه (محل تحصیل دانشکده علوم)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی ارومیه (محل تحصیل دانشکده علوم پزشکی خوی)",
+    "capacity": 15,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Same page-53 Khoy medical-school block as adjacent codes 31747–31750."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "مامایی",
+    "source_id": "1405-booklet",
+    "source_page": 53,
+    "code": "31750",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی ارومیه (محل تحصیل دانشکده علوم)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی ارومیه (محل تحصیل دانشکده علوم پزشکی خوی)",
+    "capacity": 5,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Admission-condition OCR on this exact row preserves «علوم پزشکی خوی»."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "پرستاری",
+    "source_id": "1405-booklet",
+    "source_page": 88,
+    "code": "32629",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی جندی شاپور اهواز (محل تحصیل دانشکده پرستاری)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی جندی شاپور اهواز (محل تحصیل دانشکده پرستاری بندر ماهشهر)",
+    "capacity": 25,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "The truncated page-88 heading is the Bandarmahshahr nursing block immediately before Bostan; the same 1405 source retains the full Bandarmahshahr campus name elsewhere."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "پرستاری",
+    "source_id": "1405-booklet",
+    "source_page": 88,
+    "code": "32630",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی جندی شاپور اهواز (محل تحصیل دانشکده پرستاری)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی جندی شاپور اهواز (محل تحصیل دانشکده پرستاری بندر ماهشهر)",
+    "capacity": 1,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Same Bandarmahshahr page-88 nursing block as code 32629; code 32630 is its special-quota companion row."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "بهداشت عمومی",
+    "source_id": "1405-booklet",
+    "source_page": 209,
+    "code": "19443",
+    "university": "مجتمع آموزش عالی سالمت شهرستان نیکشهر )",
+    "target": "دانشکده علوم پزشکی و خدمات بهداشتی درمانی چابهار (محل تحصیل مجتمع آموزش عالی سلامت شهرستان نیکشهر)",
+    "capacity": 20,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Codes 19442–19444 are one Nikshahr higher-health-education-complex block under Chabahar; only code 19443 lost the parent institution across the page break."
     }
   }
 ];
