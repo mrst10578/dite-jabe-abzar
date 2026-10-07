@@ -1,10 +1,11 @@
 {
   "schemaVersion": 1,
   "purpose": "capacity-deploy-verification",
-  "commit": "34bc9380ee5bab2257727315ee2ee1e088af1cf2",
-  "audit": "experimental-university-identities-1401-1405",
+  "commit": "004405bb8a57bf1dd7b41b5ad4b7f2cbe765d0e3",
+  "audit": "math-university-identities-1401-1405",
   "unresolvedMalformedUniversityLabels": 0,
-  "rowsAudited": 15824,
-  "capacitiesAudited": 256412,
-  "createdAt": "2026-10-07T11:10:00Z"
+  "rowsAudited": 12245,
+  "capacitiesAudited": 261731,
+  "createdAt": "2026-10-07T11:54:00Z",
+  "previousAudit": "experimental-university-identities-1401-1405"
 }
