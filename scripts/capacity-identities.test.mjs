@@ -56,7 +56,7 @@ it("applies all 31 source-proven corrections to existing rows with pinned PDF pr
   const allRecords = catalog.groups.flatMap((group) => group.majors.flatMap((major) =>
     JSON.parse(readFileSync(`${directory}/${major.path}`, "utf8")).records));
   const sources = parseCsv(readFileSync(`${directory}/source/sources.csv`, "utf8"));
-  expect(UNIVERSITY_ROW_CORRECTIONS).toHaveLength(51);
+  expect(UNIVERSITY_ROW_CORRECTIONS).toHaveLength(53);
   for (const correction of UNIVERSITY_ROW_CORRECTIONS) {
     const matching = allRecords.filter((row) => row.year === correction.year && row.major === correction.major
       && row.source_id === correction.source_id && row.notes.includes(` ${correction.code}`));
