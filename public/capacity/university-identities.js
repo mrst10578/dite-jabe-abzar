@@ -1033,5 +1033,20 @@ export const UNIVERSITY_ROW_CORRECTIONS = [
       "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
       "reason": "Same Bandarmahshahr page-88 nursing block as code 32629; code 32630 is its special-quota companion row."
     }
+  },
+  {
+    "year": 1405,
+    "major": "بهداشت عمومی",
+    "source_id": "1405-booklet",
+    "source_page": 209,
+    "code": "19443",
+    "university": "مجتمع آموزش عالی سالمت شهرستان نیکشهر )",
+    "target": "دانشکده علوم پزشکی و خدمات بهداشتی درمانی چابهار (محل تحصیل مجتمع آموزش عالی سلامت شهرستان نیکشهر)",
+    "capacity": 20,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Codes 19442–19444 are one Nikshahr higher-health-education-complex block under Chabahar; only code 19443 lost the parent institution across the page break."
+    }
   }
 ];
