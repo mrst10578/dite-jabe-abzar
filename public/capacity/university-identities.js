@@ -1003,5 +1003,35 @@ export const UNIVERSITY_ROW_CORRECTIONS = [
       "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
       "reason": "Admission-condition OCR on this exact row preserves «علوم پزشکی خوی»."
     }
+  },
+  {
+    "year": 1405,
+    "major": "پرستاری",
+    "source_id": "1405-booklet",
+    "source_page": 88,
+    "code": "32629",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی جندی شاپور اهواز (محل تحصیل دانشکده پرستاری)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی جندی شاپور اهواز (محل تحصیل دانشکده پرستاری بندر ماهشهر)",
+    "capacity": 25,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "The truncated page-88 heading is the Bandarmahshahr nursing block immediately before Bostan; the same 1405 source retains the full Bandarmahshahr campus name elsewhere."
+    }
+  },
+  {
+    "year": 1405,
+    "major": "پرستاری",
+    "source_id": "1405-booklet",
+    "source_page": 88,
+    "code": "32630",
+    "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی جندی شاپور اهواز (محل تحصیل دانشکده پرستاری)",
+    "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی جندی شاپور اهواز (محل تحصیل دانشکده پرستاری بندر ماهشهر)",
+    "capacity": 1,
+    "evidence": {
+      "url": "Tajrobi.pdf (user-provided pinned source)",
+      "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
+      "reason": "Same Bandarmahshahr page-88 nursing block as code 32629; code 32630 is its special-quota companion row."
+    }
   }
 ];
