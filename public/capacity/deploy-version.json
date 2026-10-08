@@ -1,11 +1,12 @@
 {
   "schemaVersion": 1,
   "purpose": "capacity-deploy-verification",
-  "commit": "004405bb8a57bf1dd7b41b5ad4b7f2cbe765d0e3",
-  "audit": "math-university-identities-1401-1405",
+  "commit": "89f2d4a3872f2f4005ad504f13d12257e2d6c1c8",
+  "audit": "math-continuity-1401-1405",
   "unresolvedMalformedUniversityLabels": 0,
   "rowsAudited": 12245,
   "capacitiesAudited": 261731,
-  "createdAt": "2026-10-07T11:54:00Z",
-  "previousAudit": "experimental-university-identities-1401-1405"
+  "continuityFixes": "Kharazmi, Petroleum University, University of Art, Buin Zahra, Qaenat, Hazrat Masoumeh, Tehran Foman/Caspian, Quran Sciences University",
+  "createdAt": "2026-10-08T06:06:00Z",
+  "previousAudit": "math-university-identities-1401-1405"
 }
