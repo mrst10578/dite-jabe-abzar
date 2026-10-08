@@ -52,16 +52,17 @@ it("limits source correction to the verified year, major, source, page, code and
   }
 });
 
-it("applies all 31 source-proven corrections to existing rows with pinned PDF provenance", () => {
+it("applies every source-proven correction to existing rows with pinned PDF provenance", () => {
   const allRecords = catalog.groups.flatMap((group) => group.majors.flatMap((major) =>
     JSON.parse(readFileSync(`${directory}/${major.path}`, "utf8")).records));
   const sources = parseCsv(readFileSync(`${directory}/source/sources.csv`, "utf8"));
-  expect(UNIVERSITY_ROW_CORRECTIONS).toHaveLength(54);
+  expect(UNIVERSITY_ROW_CORRECTIONS).toHaveLength(63);
   for (const correction of UNIVERSITY_ROW_CORRECTIONS) {
     const matching = allRecords.filter((row) => row.year === correction.year && row.major === correction.major
       && row.source_id === correction.source_id && row.notes.includes(` ${correction.code}`));
-    expect(matching).toHaveLength(1);
-    expect(recordUniversity(matching[0])).toBe(normalizeUniversity(correction.target));
+    if (correction.allow_multiple) expect(matching.length).toBeGreaterThan(1);
+    else expect(matching).toHaveLength(1);
+    for (const row of matching) expect(recordUniversity(row)).toBe(normalizeUniversity(correction.target, { major: correction.major }));
     expect(sources.find((source) => source.source_id === correction.source_id)?.sha256).toBe(correction.evidence.sha256);
   }
 });

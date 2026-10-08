@@ -240,6 +240,34 @@ export const MAJOR_INSTITUTION_ALIASES = {
   },
   "دندانپزشکی": {
     "دانشگاه آزاد اسلامی استان آذربایجان شرقی - واحد تبریز": "دانشگاه آزاد اسلامی واحد علوم پزشکی تبریز"
+  },
+  "مهندسی برق": {
+    "دانشگاه خوارزمی": "دانشگاه خوارزمی (محل تحصیل کرج)"
+  },
+  "مهندسی صنایع": {
+    "دانشگاه خوارزمی": "دانشگاه خوارزمی (محل تحصیل کرج)"
+  },
+  "مهندسی عمران": {
+    "دانشگاه خوارزمی": "دانشگاه خوارزمی (محل تحصیل کرج)"
+  },
+  "مهندسی کامپیوتر": {
+    "دانشگاه خوارزمی": "دانشگاه خوارزمی (محل تحصیل کرج)"
+  },
+  "مهندسی معماری": {
+    "دانشگاه خوارزمی": "دانشگاه خوارزمی (محل تحصیل تهران)"
+  },
+  "مهندسی شهرسازی": {
+    "دانشگاه خوارزمی": "دانشگاه خوارزمی (محل تحصیل تهران)",
+    "دانشگاه هنر ایران": "دانشگاه هنر ایران (محل تحصیل تهران)"
+  },
+  "مهندسی شیمی": {
+    "دانشگاه صنعت نفت": "دانشگاه صنعت نفت (محل تحصیل واحد آبادان)"
+  },
+  "مهندسی مکانیک": {
+    "دانشگاه صنعت نفت": "دانشگاه صنعت نفت (محل تحصیل واحد آبادان)"
+  },
+  "مهندسی نفت": {
+    "دانشگاه صنعت نفت": "دانشگاه صنعت نفت (محل تحصیل واحد آبادان)"
   }
 };
 
@@ -1053,6 +1081,144 @@ export const UNIVERSITY_ROW_CORRECTIONS = [
       "url": "Tajrobi.pdf (user-provided pinned source)",
       "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
       "reason": "Codes 19442–19444 are one Nikshahr higher-health-education-complex block under Chabahar; only code 19443 lost the parent institution across the page break."
+    }
+  },
+  {
+    "year": 1401,
+    "major": "مهندسی معماری",
+    "source_id": "1401-math-booklet",
+    "source_page": 60,
+    "code": "30507",
+    "university": "دانشگاه هنر تهران",
+    "target": "دانشگاه هنر ایران (محل تحصیل کرج)",
+    "capacity": 34,
+    "evidence": {
+      "url": "Pinned 1401 math booklet",
+      "sha256": "4fc9da801e1bdf948d82ea90f0a4ec4f85a195fc7032d0966c1381f33ca8d8d1",
+      "reason": "Province is Alborz in the normalized source; this is the Karaj architecture campus."
+    }
+  },
+  {
+    "year": 1402,
+    "major": "مهندسی معماری",
+    "source_id": "1402-math-booklet",
+    "source_page": 68,
+    "code": "30533",
+    "university": "دانشگاه هنر تهران",
+    "target": "دانشگاه هنر ایران (محل تحصیل کرج)",
+    "capacity": 17,
+    "allow_multiple": true,
+    "evidence": {
+      "url": "Pinned 1402 math booklet",
+      "sha256": "f2ff50d2a5504efe687ba644668d6113a13e019efc0b04e7b88dfaecf0f44ec2",
+      "reason": "Province is Alborz; first gender-split half of the Karaj architecture capacity."
+    }
+  },
+  {
+    "year": 1402,
+    "major": "مهندسی معماری",
+    "source_id": "1402-math-booklet",
+    "source_page": 68,
+    "code": "30533",
+    "university": "دانشگاه هنر تهران",
+    "target": "دانشگاه هنر ایران (محل تحصیل کرج)",
+    "capacity": 18,
+    "allow_multiple": true,
+    "evidence": {
+      "url": "Pinned 1402 math booklet",
+      "sha256": "f2ff50d2a5504efe687ba644668d6113a13e019efc0b04e7b88dfaecf0f44ec2",
+      "reason": "Province is Alborz; second gender-split half of the Karaj architecture capacity."
+    }
+  },
+  {
+    "year": 1402,
+    "major": "مهندسی معماری",
+    "source_id": "1402-math-booklet",
+    "source_page": 180,
+    "code": "36858",
+    "university": "دانشگاه هنر تهران",
+    "target": "دانشگاه هنر ایران (محل تحصیل تهران)",
+    "capacity": 1,
+    "evidence": {
+      "url": "Pinned 1402 math booklet",
+      "sha256": "f2ff50d2a5504efe687ba644668d6113a13e019efc0b04e7b88dfaecf0f44ec2",
+      "reason": "The source condition identifies University of Art Tehran in the special-allocation table."
+    }
+  },
+  {
+    "year": 1403,
+    "major": "مهندسی معماری",
+    "source_id": "1403-math-booklet",
+    "source_page": 64,
+    "code": "30353",
+    "university": "دانشگاه هنر ایران",
+    "target": "دانشگاه هنر ایران (محل تحصیل کرج)",
+    "capacity": 35,
+    "evidence": {
+      "url": "Pinned 1403 math booklet",
+      "sha256": "ef8906ab33eaae0f0cd97ec284d4ed3defcef070516d9fa5bd4961255d64324c",
+      "reason": "Admission conditions explicitly state محل تحصیل کرج."
+    }
+  },
+  {
+    "year": 1403,
+    "major": "مهندسی معماری",
+    "source_id": "1403-math-booklet",
+    "source_page": 77,
+    "code": "30625",
+    "university": "دانشگاه هنر ایران",
+    "target": "دانشگاه هنر ایران (محل تحصیل تهران)",
+    "capacity": 35,
+    "evidence": {
+      "url": "Pinned 1403 math booklet",
+      "sha256": "ef8906ab33eaae0f0cd97ec284d4ed3defcef070516d9fa5bd4961255d64324c",
+      "reason": "Admission conditions explicitly state محل تحصیل تهران."
+    }
+  },
+  {
+    "year": 1404,
+    "major": "مهندسی معماری",
+    "source_id": "1404-math-booklet",
+    "source_page": 52,
+    "code": "30311",
+    "university": "دانشگاه هنر ایران",
+    "target": "دانشگاه هنر ایران (محل تحصیل کرج)",
+    "capacity": 33,
+    "evidence": {
+      "url": "Pinned 1404 math booklet",
+      "sha256": "547bb8deb105476e8854ba88be81aaaa228c0644fb8f889c20bf7d4f4324a866",
+      "reason": "Admission conditions explicitly state محل تحصیل کرج."
+    }
+  },
+  {
+    "year": 1404,
+    "major": "مهندسی معماری",
+    "source_id": "1404-math-booklet",
+    "source_page": 62,
+    "code": "30550",
+    "university": "دانشگاه هنر ایران",
+    "target": "دانشگاه هنر ایران (محل تحصیل تهران)",
+    "capacity": 33,
+    "evidence": {
+      "url": "Pinned 1404 math booklet",
+      "sha256": "547bb8deb105476e8854ba88be81aaaa228c0644fb8f889c20bf7d4f4324a866",
+      "reason": "Source row is the Tehran architecture campus."
+    }
+  },
+  {
+    "year": 1401,
+    "major": "مهندسی شهرسازی",
+    "source_id": "1401-correction-1",
+    "source_page": 1,
+    "code": "30506",
+    "university": "دانشگاه هنر تهران",
+    "target": "دانشگاه هنر ایران (محل تحصیل تهران و کرج)",
+    "capacity": 17,
+    "allow_multiple": true,
+    "evidence": {
+      "url": "Pinned 1401 math booklet",
+      "sha256": "4fc9da801e1bdf948d82ea90f0a4ec4f85a195fc7032d0966c1381f33ca8d8d1",
+      "reason": "Official correction says the study location changed from Karaj to Tehran and Karaj; both gender rows share the same code and capacity."
     }
   }
 ];
