@@ -777,6 +777,7 @@ export const UNIVERSITY_ROW_CORRECTIONS = [
     "university": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم)",
     "target": "دانشگاه علوم پزشکی و خدمات بهداشتی درمانی شهرکرد (محل تحصیل دانشکده علوم پزشکی بروجن)",
     "capacity": 18,
+    "allow_multiple": true,
     "evidence": {
       "url": "Tajrobi.pdf (user-provided pinned source)",
       "sha256": "e9f6d83e0be75e62a5b240dfcbf66856ba0d9c575e762a04fbb610b545618756",
@@ -1107,6 +1108,7 @@ export const UNIVERSITY_ROW_CORRECTIONS = [
     "university": "دانشگاه هنر تهران",
     "target": "دانشگاه هنر ایران (محل تحصیل کرج)",
     "capacity": 17,
+    "allow_multiple": true,
     "evidence": {
       "url": "Pinned 1402 math booklet",
       "sha256": "f2ff50d2a5504efe687ba644668d6113a13e019efc0b04e7b88dfaecf0f44ec2",
